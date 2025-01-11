@@ -1513,11 +1513,11 @@ DISTRIBUTIONS
       Try::Tiny 0
       strict 0
       warnings 0
-  Module-Pluggable-6.2
-    pathname: S/SI/SIMONW/Module-Pluggable-6.2.tar.gz
+  Module-Pluggable-6.3
+    pathname: S/SI/SIMONW/Module-Pluggable-6.3.tar.gz
     provides:
       Devel::InnerPackage 0.4
-      Module::Pluggable 6.2
+      Module::Pluggable 6.3
       Module::Pluggable::Object 5.2
     requirements:
       Exporter 5.57
@@ -1700,24 +1700,24 @@ DISTRIBUTIONS
       Text::Wrap 0
       constant 0
       perl 5.008001
-  Object-Pad-0.818
-    pathname: P/PE/PEVANS/Object-Pad-0.818.tar.gz
+  Object-Pad-0.819
+    pathname: P/PE/PEVANS/Object-Pad-0.819.tar.gz
     provides:
-      Object::Pad 0.818
-      Object::Pad::ExtensionBuilder 0.818
-      Object::Pad::MOP::Class 0.818
-      Object::Pad::MOP::Field 0.818
-      Object::Pad::MOP::FieldAttr 0.818
-      Object::Pad::MOP::Method 0.818
-      Object::Pad::MetaFunctions 0.818
+      Object::Pad 0.819
+      Object::Pad::ExtensionBuilder 0.819
+      Object::Pad::MOP::Class 0.819
+      Object::Pad::MOP::Field 0.819
+      Object::Pad::MOP::FieldAttr 0.819
+      Object::Pad::MOP::Method 0.819
+      Object::Pad::MetaFunctions 0.819
     requirements:
       ExtUtils::CBuilder 0
       File::ShareDir 1.00
       Module::Build 0.4004
-      XS::Parse::Keyword 0.46
-      XS::Parse::Keyword::Builder 0.46
-      XS::Parse::Sublike 0.32
-      XS::Parse::Sublike::Builder 0.32
+      XS::Parse::Keyword 0.47
+      XS::Parse::Keyword::Builder 0.48
+      XS::Parse::Sublike 0.35
+      XS::Parse::Sublike::Builder 0.35
       perl 5.018
   POSIX-strftime-Compiler-0.46
     pathname: K/KA/KAZEBURO/POSIX-strftime-Compiler-0.46.tar.gz

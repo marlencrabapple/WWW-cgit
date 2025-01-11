@@ -11,9 +11,6 @@ use Plack::Util::Accessor qw(config);
 sub call ($self, $env, %args) {
   $$env{CGIT_CONFIG} = path($self->config)->absolute;
   my $res = $self->app->($env);
-  
-  p($res, $env);
-
   $res
 }
 

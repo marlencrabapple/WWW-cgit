@@ -1,0 +1,17 @@
+#!/usr/bin/env perl
+
+use utf8;
+use v5.40;
+
+use lib qw(lib ../lib);
+
+use Frame::App::cgit::Controller::Repo;
+
+our $mdstr = "";
+
+while(my $line = <STDIN>) {
+  chomp $line;
+  $mdstr .= $line
+}
+
+say Frame::App::cgit::Controller::Repo->md2html($mdstr)

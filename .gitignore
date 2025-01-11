@@ -12,6 +12,7 @@
 /carton.lock
 /.carton/
 /local/
+/vendor
 
 nytprof.out
 nytprof/
@@ -39,3 +40,5 @@ MYMETA.*
 
 /etc
 #!/etc/
+
+._*

@@ -12,11 +12,6 @@ use Object::Pad;
 use Frame::App::cgit;
 use Frame::App::cgit::config;
 
-#our $app = Frame::App::cgit->new;
-
-# our %cgimap = ( pkgmeta => '/package/meta',
-#                 srcdest => '/package/src' );
-
 our %cgimap = ( "frame-app" => '/' );
 
 our $builder = Plack::Builder->new;
@@ -65,8 +60,6 @@ our $class = class :does(Frame) {
       my $htmlstr = __PACKAGE__->md2html($c->req->parameters->{mdfile});
       $c->render($htmlstr)
     });
-
-    say Dumper($self, $r ,$config)
   }
 
   method md2html :common ($mdin, %args) {
