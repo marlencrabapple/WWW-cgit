@@ -1,0 +1,5 @@
+name = "Frame-App-cgit"
+badges = ["github-actions/test.yml"]
+module_maker="ModuleBuildTiny"
+static_install = "auto"
+

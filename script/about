@@ -1,0 +1,53 @@
+#!/usr/bin/env perl
+
+use utf8;
+use v5.40;
+
+#use lib '../lib';
+# use HTTP::Tinyish;
+use Encode qw(encode decode);
+use Path::Tiny;
+use Text::Markdown::Hoedown;
+use Data::Dumper;
+use Plack;
+use Plack::Util;
+use IO::Async;
+#use Frame::App::cgit::Controller::Repo;
+
+# my $res = get("https://cincotuf.lan:4415/filter/md2html?mdfile=$ARGV[0]")
+
+#say Frame::App::cgit::Controller::Repo->md2html(*STDIN)
+#say Dumper(\%ENV, \@ARGV);
+
+while(my $line = <STDIN>) {
+  chomp $line;
+  say md2html($line)
+}
+
+sub md2html ($mdin, %args) {
+    my ($mdstr, $mdfile, $mdfh);
+
+    if (-e $mdin) {
+      $mdfile = path($mdin);
+      $mdstr = $mdfile->slurp_utf8
+    }
+    elsif (ref $mdin eq 'GLOB') {
+      my @mdlines = <$mdin>;
+      $mdstr = join ',', @mdlines
+    }
+    else {
+      $mdstr = $mdin
+    }
+
+    my $htmlout = markdown(encode('UTF-8', $mdstr)
+      , html_options => HOEDOWN_HTML_HARD_WRAP|HOEDOWN_HTML_ESCAPE,
+        extensions => HOEDOWN_EXT_TABLES|HOEDOWN_EXT_FENCED_CODE
+          |HOEDOWN_EXT_FOOTNOTES|HOEDOWN_EXT_AUTOLINK|HOEDOWN_EXT_STRIKETHROUGH
+          |HOEDOWN_EXT_UNDERLINE|HOEDOWN_EXT_HIGHLIGHT|HOEDOWN_EXT_QUOTE
+          |HOEDOWN_EXT_SUPERSCRIPT|HOEDOWN_EXT_MATH);
+
+    $args{html_out}
+      ? path($args{html_out})->spew_utf8($htmlout)
+      : "$htmlout"
+  }
+  
