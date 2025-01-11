@@ -1,13 +1,9 @@
 requires 'perl', 'v5.40';
 
-requires 'Plack', '1.0053',
-  dist => 'CRABAPP/Plack-1.0053-TRIAL.tar.gz';
-
 requires 'Frame', '0.01.2',
   dist => 'CRABAPP/Frame-0.01.2-TRIAL.tar.gz';
 
 requires 'Data::Printer';
-requires 'Inline::C';
 requires 'CGI::Compile';
 requires 'CGI::Emulate::PSGI';
 requires 'Plack::Builder';
@@ -31,4 +27,3 @@ on 'develop' => sub {
 on 'build' => sub {
   requires 'Minilla'
 }
-
