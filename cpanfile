@@ -3,6 +3,10 @@ requires 'perl', 'v5.40';
 requires 'Frame', '0.01.2',
   dist => 'CRABAPP/Frame-0.01.2-TRIAL.tar.gz';
 
+requires 'Inline::C';
+requires 'Inline::CPP';
+requires 'Inline::Module';
+requires 'FFI::Platypus';
 requires 'Data::Printer';
 requires 'CGI::Compile';
 requires 'CGI::Emulate::PSGI';
@@ -16,6 +20,7 @@ on 'test' => sub {
 };
 
 on 'develop' => sub {
+  requires 'Minilla';
   requires 'Perl::Tidy', '20220613';
   requires 'Perl::Critic', '1.140';
   requires 'Perl::Critic::Community';

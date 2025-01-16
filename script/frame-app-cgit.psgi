@@ -52,9 +52,16 @@ our $class = class :does(Frame) {
   use Data::Dumper;
   use Text::Markdown::Hoedown;
 
+  our $kareha = CGI::Emulate::PSGI->handler(CGI::Compile->compile(
+		"./kareha.pl", "kareha"));
+
   method startup {
     my $r = $self->routes;
     my $config = $self->config;
+
+    $r->get('/:section/:repo/kareha', sub ($c) {
+
+    });
 
     $r->get('/md2html', sub ($c) {
       my $htmlstr = __PACKAGE__->md2html($c->req->parameters->{mdfile});
@@ -87,5 +94,5 @@ our $class = class :does(Frame) {
 
 };
 
-$builder->mount('/filter', $class->new->to_psgi);
+$builder->mount('/', $class->new->to_psgi);
 $builder->to_app

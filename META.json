@@ -38,6 +38,7 @@
       },
       "develop" : {
          "requires" : {
+            "Minilla" : "0",
             "Perl::Critic" : "1.140",
             "Perl::Critic::Community" : "0",
             "Perl::Tidy" : "20220613",
@@ -56,10 +57,12 @@
             "CGI::Compile" : "0",
             "CGI::Emulate::PSGI" : "0",
             "Data::Printer" : "0",
+            "FFI::Platypus" : "0",
             "File::chdir" : "0",
             "Frame" : "v0.1.2",
             "Inline::C" : "0",
-            "Plack" : "1.0053",
+            "Inline::CPP" : "0",
+            "Inline::Module" : "0",
             "Plack::Builder" : "0",
             "Plack::Middleware::Auth::Basic" : "0",
             "Text::Markdown::Hoedown" : "0",
