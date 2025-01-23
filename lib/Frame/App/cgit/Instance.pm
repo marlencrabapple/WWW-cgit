@@ -1,4 +1,4 @@
-package Frame::App::cgit::config;
+package Frame::App::cgit::Instance;
 use parent 'Plack::Middleware';
 
 use utf8;

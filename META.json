@@ -4,7 +4,7 @@
       "Ian P Bradley <ian.bradley@studiocrabapple.com>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v3.1.25, CPAN::Meta::Converter version 2.150010",
+   "generated_by" : "Minilla/v3.1.27, CPAN::Meta::Converter version 2.150010",
    "license" : [
       "perl_5"
    ],
@@ -59,7 +59,7 @@
             "Data::Printer" : "0",
             "FFI::Platypus" : "0",
             "File::chdir" : "0",
-            "Frame" : "v0.1.2",
+            "Frame" : "v0.1.5",
             "Inline::C" : "0",
             "Inline::CPP" : "0",
             "Inline::Module" : "0",

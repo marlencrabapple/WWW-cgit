@@ -1,7 +1,7 @@
 requires 'perl', 'v5.40';
 
-requires 'Frame', '0.01.2',
-  dist => 'CRABAPP/Frame-0.01.2-TRIAL.tar.gz';
+requires 'Frame', '0.01.5',
+  dist => 'CRABAPP/Frame-0.01.5-TRIAL.tar.gz';
 
 requires 'Inline::C';
 requires 'Inline::CPP';
