@@ -8,9 +8,9 @@ use Path::Tiny;
 use Data::Printer;
 use Plack::Util::Accessor qw(config);
 
-sub call ($self, $env, %args) {
-  $$env{CGIT_CONFIG} = path($self->config)->absolute;
-  my $res = $self->app->($env);
-  $res
+sub call ( $self, $env, %args ) {
+    $$env{CGIT_CONFIG} = path( $self->config )->absolute;
+    my $res = $self->app->($env);
+    $res;
 }
 

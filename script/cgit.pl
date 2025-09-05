@@ -15,6 +15,8 @@ use Const::Fast;
 use Path::Tiny;
 use Getopt::Long qw'GetOptionsFromArray :config bundling auto_abbrev';
 use Plack::Runner;
+use Plack::Builder;
+use Plack::App::WrapCGI;
 use Cwd qw(getcwd abs_path);
 
 use Frame::App::cgit;
@@ -59,9 +61,9 @@ ADJUSTPARAMS($params) {
         execute => 1
     )->to_app;
 
-    my $section = 'frame-app';
+    my $section = 'frameapp';
 
-    $app = Frame::App::cgit::config->wrap( $app,
+    $app = Frame::App::cgit::Instance->wrap( $app,
         config => $ENV{ uc($section) . "_CGITRC" }
           // "./etc/${section}-cgitrc" );
 
