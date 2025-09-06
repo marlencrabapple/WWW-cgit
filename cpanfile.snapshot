@@ -35,26 +35,26 @@ DISTRIBUTIONS
       perl 5.006001
       strict 0
       warnings 0
-  B-Keywords-1.27
-    pathname: R/RU/RURBAN/B-Keywords-1.27.tar.gz
+  B-Keywords-1.28
+    pathname: R/RU/RURBAN/B-Keywords-1.28.tar.gz
     provides:
-      B::Keywords 1.27
+      B::Keywords 1.28
     requirements:
       B 0
       ExtUtils::MakeMaker 0
-  CGI-4.67
-    pathname: L/LE/LEEJO/CGI-4.67.tar.gz
+  CGI-4.70
+    pathname: L/LE/LEEJO/CGI-4.70.tar.gz
     provides:
-      CGI 4.67
-      CGI::Carp 4.67
+      CGI 4.70
+      CGI::Carp 4.70
       CGI::Cookie 4.59
-      CGI::File::Temp 4.67
+      CGI::File::Temp 4.70
       CGI::HTML::Functions undef
-      CGI::MultipartBuffer 4.67
-      CGI::Pretty 4.67
-      CGI::Push 4.67
-      CGI::Util 4.67
-      Fh 4.67
+      CGI::MultipartBuffer 4.70
+      CGI::Pretty 4.70
+      CGI::Push 4.70
+      CGI::Util 4.70
+      Fh 4.70
     requirements:
       Carp 0
       Config 0
@@ -196,6 +196,29 @@ DISTRIBUTIONS
       perl 5.008001
       strict 0
       utf8 0
+  Const-Fast-0.014
+    pathname: L/LE/LEONT/Const-Fast-0.014.tar.gz
+    provides:
+      Const::Fast 0.014
+    requirements:
+      Carp 0
+      Module::Build::Tiny 0.021
+      Scalar::Util 0
+      Storable 0
+      Sub::Exporter::Progressive 0.001007
+      perl 5.008
+      strict 0
+      warnings 0
+  Const-Fast-Exporter-0.02
+    pathname: N/NE/NEILB/Const-Fast-Exporter-0.02.tar.gz
+    provides:
+      Const::Fast::Exporter 0.02
+    requirements:
+      Const::Fast 0
+      ExtUtils::MakeMaker 0
+      perl 5.010
+      strict 0
+      warnings 0
   Cookie-Baker-0.12
     pathname: K/KA/KAZEBURO/Cookie-Baker-0.12.tar.gz
     provides:
@@ -892,6 +915,16 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       base 0
       perl 5.006
+  File-XDG-1.03
+    pathname: P/PL/PLICEASE/File-XDG-1.03.tar.gz
+    provides:
+      File::XDG 1.03
+    requirements:
+      ExtUtils::MakeMaker 0
+      File::Path 2.07
+      Path::Tiny 0
+      Ref::Util 0
+      perl 5.006
   File-chdir-0.1011
     pathname: D/DA/DAGOLDEN/File-chdir-0.1011.tar.gz
     provides:
@@ -930,16 +963,20 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       perl 5.008001
-  Frame-0.1.3
-    pathname: C/CR/CRABAPP/Frame-0.1.3-TRIAL.tar.gz
+  Frame-0.01.5-TRIAL
+    pathname: C/CR/CRABAPP/Frame-0.01.5-TRIAL.tar.gz
     provides:
-      Frame 0.001003
+      Frame 0.001005
       Frame::App undef
+      Frame::App::Media::Stream undef
+      Frame::App::Paste undef
+      Frame::App::Static::Index undef
       Frame::Base undef
       Frame::Config undef
       Frame::Controller undef
       Frame::Controller::Default undef
       Frame::Db undef
+      Frame::Db::Model undef
       Frame::Db::Pg undef
       Frame::Db::SQLite undef
       Frame::Example undef
@@ -959,12 +996,20 @@ DISTRIBUTIONS
       Frame::Server::Protocol::WebSocket undef
       Frame::Server::Request undef
       Frame::Tx undef
+      Frame::Util undef
       Plack::Handler::Frame::Server undef
+      Plack::Middleware::Debug::Frame undef
+      Plack::Middleware::Dumb::PW undef
+      srv undef
     requirements:
+      Const::Fast 0
+      Const::Fast::Exporter 0
       Cpanel::JSON::XS 4.32
       Crypt::Argon2 0.029
+      Cwd 0
       DBD::SQLite 1.72
       DBI 1.643
+      Data::Printer 0
       Devel::StackTrace::WithLexicals 2.01
       Feature::Compat::Try 0.05
       Future 0.50
@@ -972,6 +1017,7 @@ DISTRIBUTIONS
       HTML::Escape 1.11
       HTTP::Parser::XS 0.17
       HTTP::Tinyish 0.18
+      Hash::Ordered 0
       IO::Async 0.802
       IO::Async::SSL 0.23
       IO::Socket::SSL 2.075
@@ -980,21 +1026,26 @@ DISTRIBUTIONS
       LWP::UserAgent 6.67
       List::AllUtils 0.19
       Module::Build::Tiny 0.034
+      Module::Refresh 0
       Mozilla::CA 20211001
       Net::Async::HTTP 0.50
       Net::Async::HTTP::Server 0.14
       Net::Async::WebSocket 0.13
       Net::SSLeay 1.92
       Object::Pad 0.808
+      PadWalker 0
       Parallel::Prefork 0.18
       Path::Tiny 0.144
-      Plack 1.0052
+      Plack 1.0053
       SQL::Abstract 2.000001
       Server::Starter 0.35
       Syntax::Keyword::Dynamically 0.11
+      Syntax::Keyword::MultiSub 0
+      Syntax::Keyword::Try 0
+      TOML::Tiny 0
       Text::Xslate v3.5.9
-      YAML::Tiny 1.73
-      namespace::autoclean 0.31
+      Time::HiRes 0
+      Time::Moment 0
       perl v5.40.0
   Future-0.51
     pathname: P/PE/PEVANS/Future-0.51.tar.gz
@@ -1224,6 +1275,18 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       perl 5.008001
+  Hash-Ordered-0.014
+    pathname: D/DA/DAGOLDEN/Hash-Ordered-0.014.tar.gz
+    provides:
+      Hash::Ordered 0.014
+    requirements:
+      Carp 0
+      ExtUtils::MakeMaker 6.17
+      constant 0
+      overload 0
+      perl 5.008
+      strict 0
+      warnings 0
   IO-Async-0.803
     pathname: P/PE/PEVANS/IO-Async-0.803.tar.gz
     provides:
@@ -1332,13 +1395,13 @@ DISTRIBUTIONS
       IPC::Signal 1.00
     requirements:
       ExtUtils::MakeMaker 0
-  Inline-0.86
-    pathname: I/IN/INGY/Inline-0.86.tar.gz
+  Inline-0.87
+    pathname: I/IN/INGY/Inline-0.87.tar.gz
     provides:
-      Foo::Tester 0.86
-      Inline 0.86
-      Inline::Foo 0.86
-      Inline::MakeMaker 0.86
+      Foo::Tester 0.87
+      Inline 0.87
+      Inline::Foo 0.87
+      Inline::MakeMaker 0.87
       Inline::denter undef
     requirements:
       Digest::MD5 0
@@ -1508,6 +1571,18 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       perl 5.008001
       utf8 0
+  MIME-Types-2.28
+    pathname: M/MA/MARKOV/MIME-Types-2.28.tar.gz
+    provides:
+      MIME::Type 2.28
+      MIME::Types 2.28
+      MojoX::MIME::Types 2.28
+    requirements:
+      ExtUtils::MakeMaker 0
+      File::Basename 0
+      File::Spec 0
+      List::Util 0
+      Test::More 0.47
   MRO-Compat-0.15
     pathname: H/HA/HAARG/MRO-Compat-0.15.tar.gz
     provides:
@@ -1531,10 +1606,10 @@ DISTRIBUTIONS
       List::Util 1.29
       Module::Build 0.4004
       perl 5.014
-  Minilla-v3.1.25
-    pathname: S/SK/SKAJI/Minilla-v3.1.25.tar.gz
+  Minilla-v3.1.27
+    pathname: S/SY/SYOHEX/Minilla-v3.1.27.tar.gz
     provides:
-      Minilla v3.1.25
+      Minilla v3.1.27
       Minilla::CLI undef
       Minilla::CLI::Build undef
       Minilla::CLI::Clean undef
@@ -1609,35 +1684,34 @@ DISTRIBUTIONS
       parent 0
       perl 5.010001
       version 0
-  Module-Build-0.42_35
-    pathname: L/LE/LEONT/Module-Build-0.42_35.tar.gz
+  Module-Build-0.4234
+    pathname: L/LE/LEONT/Module-Build-0.4234.tar.gz
     provides:
-      Module::Build 0.42_35
-      Module::Build::Base 0.42_35
-      Module::Build::Compat 0.42_35
-      Module::Build::Config 0.42_35
-      Module::Build::Cookbook 0.42_35
-      Module::Build::Dumper 0.42_35
-      Module::Build::Notes 0.42_35
-      Module::Build::PPMMaker 0.42_35
-      Module::Build::Platform::Default 0.42_35
-      Module::Build::Platform::MacOS 0.42_35
-      Module::Build::Platform::Unix 0.42_35
-      Module::Build::Platform::VMS 0.42_35
-      Module::Build::Platform::VOS 0.42_35
-      Module::Build::Platform::Windows 0.42_35
-      Module::Build::Platform::aix 0.42_35
-      Module::Build::Platform::cygwin 0.42_35
-      Module::Build::Platform::darwin 0.42_35
-      Module::Build::Platform::os2 0.42_35
-      Module::Build::PodParser 0.42_35
+      Module::Build 0.4234
+      Module::Build::Base 0.4234
+      Module::Build::Compat 0.4234
+      Module::Build::Config 0.4234
+      Module::Build::Cookbook 0.4234
+      Module::Build::Dumper 0.4234
+      Module::Build::Notes 0.4234
+      Module::Build::PPMMaker 0.4234
+      Module::Build::Platform::Default 0.4234
+      Module::Build::Platform::MacOS 0.4234
+      Module::Build::Platform::Unix 0.4234
+      Module::Build::Platform::VMS 0.4234
+      Module::Build::Platform::VOS 0.4234
+      Module::Build::Platform::Windows 0.4234
+      Module::Build::Platform::aix 0.4234
+      Module::Build::Platform::cygwin 0.4234
+      Module::Build::Platform::darwin 0.4234
+      Module::Build::Platform::os2 0.4234
+      Module::Build::PodParser 0.4234
     requirements:
       CPAN::Meta 2.142060
       Cwd 0
       Data::Dumper 0
       ExtUtils::CBuilder 0.27
       ExtUtils::Install 0
-      ExtUtils::InstallPaths 0.003
       ExtUtils::Manifest 0
       ExtUtils::Mkbootstrap 0
       ExtUtils::ParseXS 2.21
@@ -1691,10 +1765,10 @@ DISTRIBUTIONS
       Test::Requires 0
       parent 0
       perl 5.008001
-  Module-Build-Tiny-0.051
-    pathname: L/LE/LEONT/Module-Build-Tiny-0.051.tar.gz
+  Module-Build-Tiny-0.052
+    pathname: L/LE/LEONT/Module-Build-Tiny-0.052.tar.gz
     provides:
-      Module::Build::Tiny 0.051
+      Module::Build::Tiny 0.052
     requirements:
       CPAN::Meta 0
       DynaLoader 0
@@ -1772,16 +1846,22 @@ DISTRIBUTIONS
       if 0
       perl 5.006
       strict 0
-  Module-Runtime-0.016
-    pathname: Z/ZE/ZEFRAM/Module-Runtime-0.016.tar.gz
+  Module-Refresh-0.18
+    pathname: B/BP/BPS/Module-Refresh-0.18.tar.gz
     provides:
-      Module::Runtime 0.016
+      Module::Refresh 0.18
     requirements:
-      Module::Build 0
-      Test::More 0.41
-      perl 5.006
-      strict 0
-      warnings 0
+      ExtUtils::MakeMaker 6.36
+      File::Temp 0.19
+      Path::Class 0
+      Test::More 0
+  Module-Runtime-0.018
+    pathname: H/HA/HAARG/Module-Runtime-0.018.tar.gz
+    provides:
+      Module::Runtime 0.018
+    requirements:
+      ExtUtils::MakeMaker 0
+      perl 5.006000
   Moo-2.005005
     pathname: H/HA/HAARG/Moo-2.005005.tar.gz
     provides:
@@ -1972,101 +2052,101 @@ DISTRIBUTIONS
       POSIX 0
       Time::Local 0
       perl 5.008001
-  PPI-1.281
-    pathname: M/MI/MITHALDU/PPI-1.281.tar.gz
+  PPI-1.283
+    pathname: M/MI/MITHALDU/PPI-1.283.tar.gz
     provides:
-      PPI 1.281
-      PPI::Cache 1.281
-      PPI::Document 1.281
-      PPI::Document::File 1.281
-      PPI::Document::Fragment 1.281
-      PPI::Document::Normalized 1.281
-      PPI::Dumper 1.281
-      PPI::Element 1.281
-      PPI::Exception 1.281
-      PPI::Exception::ParserRejection 1.281
-      PPI::Find 1.281
-      PPI::Lexer 1.281
-      PPI::Node 1.281
-      PPI::Normal 1.281
-      PPI::Normal::Standard 1.281
-      PPI::Singletons 1.281
-      PPI::Statement 1.281
-      PPI::Statement::Break 1.281
-      PPI::Statement::Compound 1.281
-      PPI::Statement::Data 1.281
-      PPI::Statement::End 1.281
-      PPI::Statement::Expression 1.281
-      PPI::Statement::Given 1.281
-      PPI::Statement::Include 1.281
-      PPI::Statement::Include::Perl6 1.281
-      PPI::Statement::Null 1.281
-      PPI::Statement::Package 1.281
-      PPI::Statement::Scheduled 1.281
-      PPI::Statement::Sub 1.281
-      PPI::Statement::Unknown 1.281
-      PPI::Statement::UnmatchedBrace 1.281
-      PPI::Statement::Variable 1.281
-      PPI::Statement::When 1.281
-      PPI::Structure 1.281
-      PPI::Structure::Block 1.281
-      PPI::Structure::Condition 1.281
-      PPI::Structure::Constructor 1.281
-      PPI::Structure::For 1.281
-      PPI::Structure::Given 1.281
-      PPI::Structure::List 1.281
-      PPI::Structure::Signature 1.281
-      PPI::Structure::Subscript 1.281
-      PPI::Structure::Unknown 1.281
-      PPI::Structure::When 1.281
-      PPI::Token 1.281
-      PPI::Token::ArrayIndex 1.281
-      PPI::Token::Attribute 1.281
-      PPI::Token::BOM 1.281
-      PPI::Token::Cast 1.281
-      PPI::Token::Comment 1.281
-      PPI::Token::DashedWord 1.281
-      PPI::Token::Data 1.281
-      PPI::Token::End 1.281
-      PPI::Token::HereDoc 1.281
-      PPI::Token::Label 1.281
-      PPI::Token::Magic 1.281
-      PPI::Token::Number 1.281
-      PPI::Token::Number::Binary 1.281
-      PPI::Token::Number::Exp 1.281
-      PPI::Token::Number::Float 1.281
-      PPI::Token::Number::Hex 1.281
-      PPI::Token::Number::Octal 1.281
-      PPI::Token::Number::Version 1.281
-      PPI::Token::Operator 1.281
-      PPI::Token::Pod 1.281
-      PPI::Token::Prototype 1.281
-      PPI::Token::Quote 1.281
-      PPI::Token::Quote::Double 1.281
-      PPI::Token::Quote::Interpolate 1.281
-      PPI::Token::Quote::Literal 1.281
-      PPI::Token::Quote::Single 1.281
-      PPI::Token::QuoteLike 1.281
-      PPI::Token::QuoteLike::Backtick 1.281
-      PPI::Token::QuoteLike::Command 1.281
-      PPI::Token::QuoteLike::Readline 1.281
-      PPI::Token::QuoteLike::Regexp 1.281
-      PPI::Token::QuoteLike::Words 1.281
-      PPI::Token::Regexp 1.281
-      PPI::Token::Regexp::Match 1.281
-      PPI::Token::Regexp::Substitute 1.281
-      PPI::Token::Regexp::Transliterate 1.281
-      PPI::Token::Separator 1.281
-      PPI::Token::Structure 1.281
-      PPI::Token::Symbol 1.281
-      PPI::Token::Unknown 1.281
-      PPI::Token::Whitespace 1.281
-      PPI::Token::Word 1.281
-      PPI::Tokenizer 1.281
-      PPI::Transform 1.281
-      PPI::Transform::UpdateCopyright 1.281
-      PPI::Util 1.281
-      PPI::XSAccessor 1.281
+      PPI 1.283
+      PPI::Cache 1.283
+      PPI::Document 1.283
+      PPI::Document::File 1.283
+      PPI::Document::Fragment 1.283
+      PPI::Document::Normalized 1.283
+      PPI::Dumper 1.283
+      PPI::Element 1.283
+      PPI::Exception 1.283
+      PPI::Exception::ParserRejection 1.283
+      PPI::Find 1.283
+      PPI::Lexer 1.283
+      PPI::Node 1.283
+      PPI::Normal 1.283
+      PPI::Normal::Standard 1.283
+      PPI::Singletons 1.283
+      PPI::Statement 1.283
+      PPI::Statement::Break 1.283
+      PPI::Statement::Compound 1.283
+      PPI::Statement::Data 1.283
+      PPI::Statement::End 1.283
+      PPI::Statement::Expression 1.283
+      PPI::Statement::Given 1.283
+      PPI::Statement::Include 1.283
+      PPI::Statement::Include::Perl6 1.283
+      PPI::Statement::Null 1.283
+      PPI::Statement::Package 1.283
+      PPI::Statement::Scheduled 1.283
+      PPI::Statement::Sub 1.283
+      PPI::Statement::Unknown 1.283
+      PPI::Statement::UnmatchedBrace 1.283
+      PPI::Statement::Variable 1.283
+      PPI::Statement::When 1.283
+      PPI::Structure 1.283
+      PPI::Structure::Block 1.283
+      PPI::Structure::Condition 1.283
+      PPI::Structure::Constructor 1.283
+      PPI::Structure::For 1.283
+      PPI::Structure::Given 1.283
+      PPI::Structure::List 1.283
+      PPI::Structure::Signature 1.283
+      PPI::Structure::Subscript 1.283
+      PPI::Structure::Unknown 1.283
+      PPI::Structure::When 1.283
+      PPI::Token 1.283
+      PPI::Token::ArrayIndex 1.283
+      PPI::Token::Attribute 1.283
+      PPI::Token::BOM 1.283
+      PPI::Token::Cast 1.283
+      PPI::Token::Comment 1.283
+      PPI::Token::DashedWord 1.283
+      PPI::Token::Data 1.283
+      PPI::Token::End 1.283
+      PPI::Token::HereDoc 1.283
+      PPI::Token::Label 1.283
+      PPI::Token::Magic 1.283
+      PPI::Token::Number 1.283
+      PPI::Token::Number::Binary 1.283
+      PPI::Token::Number::Exp 1.283
+      PPI::Token::Number::Float 1.283
+      PPI::Token::Number::Hex 1.283
+      PPI::Token::Number::Octal 1.283
+      PPI::Token::Number::Version 1.283
+      PPI::Token::Operator 1.283
+      PPI::Token::Pod 1.283
+      PPI::Token::Prototype 1.283
+      PPI::Token::Quote 1.283
+      PPI::Token::Quote::Double 1.283
+      PPI::Token::Quote::Interpolate 1.283
+      PPI::Token::Quote::Literal 1.283
+      PPI::Token::Quote::Single 1.283
+      PPI::Token::QuoteLike 1.283
+      PPI::Token::QuoteLike::Backtick 1.283
+      PPI::Token::QuoteLike::Command 1.283
+      PPI::Token::QuoteLike::Readline 1.283
+      PPI::Token::QuoteLike::Regexp 1.283
+      PPI::Token::QuoteLike::Words 1.283
+      PPI::Token::Regexp 1.283
+      PPI::Token::Regexp::Match 1.283
+      PPI::Token::Regexp::Substitute 1.283
+      PPI::Token::Regexp::Transliterate 1.283
+      PPI::Token::Separator 1.283
+      PPI::Token::Structure 1.283
+      PPI::Token::Symbol 1.283
+      PPI::Token::Unknown 1.283
+      PPI::Token::Whitespace 1.283
+      PPI::Token::Word 1.283
+      PPI::Tokenizer 1.283
+      PPI::Transform 1.283
+      PPI::Transform::UpdateCopyright 1.283
+      PPI::Util 1.283
+      PPI::XSAccessor 1.283
     requirements:
       Carp 0
       Clone 0.30
@@ -2121,75 +2201,75 @@ DISTRIBUTIONS
       re 0
       strict 0
       warnings 0
-  PPIx-Regexp-0.088
-    pathname: W/WY/WYANT/PPIx-Regexp-0.088.tar.gz
+  PPIx-Regexp-0.089
+    pathname: W/WY/WYANT/PPIx-Regexp-0.089.tar.gz
     provides:
-      PPIx::Regexp 0.088
+      PPIx::Regexp 0.089
       PPIx::Regexp::Constant 0.085_04
-      PPIx::Regexp::Constant::Inf 0.088
-      PPIx::Regexp::Dumper 0.088
-      PPIx::Regexp::Element 0.088
-      PPIx::Regexp::Lexer 0.088
-      PPIx::Regexp::Node 0.088
-      PPIx::Regexp::Node::Range 0.088
-      PPIx::Regexp::Node::Unknown 0.088
-      PPIx::Regexp::Structure 0.088
-      PPIx::Regexp::Structure::Assertion 0.088
-      PPIx::Regexp::Structure::Atomic_Script_Run 0.088
-      PPIx::Regexp::Structure::BranchReset 0.088
-      PPIx::Regexp::Structure::Capture 0.088
-      PPIx::Regexp::Structure::CharClass 0.088
-      PPIx::Regexp::Structure::Code 0.088
-      PPIx::Regexp::Structure::Main 0.088
-      PPIx::Regexp::Structure::Modifier 0.088
-      PPIx::Regexp::Structure::NamedCapture 0.088
-      PPIx::Regexp::Structure::Quantifier 0.088
-      PPIx::Regexp::Structure::RegexSet 0.088
-      PPIx::Regexp::Structure::Regexp 0.088
-      PPIx::Regexp::Structure::Replacement 0.088
-      PPIx::Regexp::Structure::Script_Run 0.088
-      PPIx::Regexp::Structure::Subexpression 0.088
-      PPIx::Regexp::Structure::Switch 0.088
-      PPIx::Regexp::Structure::Unknown 0.088
-      PPIx::Regexp::Support 0.088
-      PPIx::Regexp::Token 0.088
-      PPIx::Regexp::Token::Assertion 0.088
-      PPIx::Regexp::Token::Backreference 0.088
-      PPIx::Regexp::Token::Backtrack 0.088
-      PPIx::Regexp::Token::CharClass 0.088
-      PPIx::Regexp::Token::CharClass::POSIX 0.088
-      PPIx::Regexp::Token::CharClass::POSIX::Unknown 0.088
-      PPIx::Regexp::Token::CharClass::Simple 0.088
-      PPIx::Regexp::Token::Code 0.088
-      PPIx::Regexp::Token::Comment 0.088
-      PPIx::Regexp::Token::Condition 0.088
-      PPIx::Regexp::Token::Control 0.088
-      PPIx::Regexp::Token::Delimiter 0.088
-      PPIx::Regexp::Token::Greediness 0.088
-      PPIx::Regexp::Token::GroupType 0.088
-      PPIx::Regexp::Token::GroupType::Assertion 0.088
-      PPIx::Regexp::Token::GroupType::Atomic_Script_Run 0.088
-      PPIx::Regexp::Token::GroupType::BranchReset 0.088
-      PPIx::Regexp::Token::GroupType::Code 0.088
-      PPIx::Regexp::Token::GroupType::Modifier 0.088
-      PPIx::Regexp::Token::GroupType::NamedCapture 0.088
-      PPIx::Regexp::Token::GroupType::Script_Run 0.088
-      PPIx::Regexp::Token::GroupType::Subexpression 0.088
-      PPIx::Regexp::Token::GroupType::Switch 0.088
-      PPIx::Regexp::Token::Interpolation 0.088
-      PPIx::Regexp::Token::Literal 0.088
-      PPIx::Regexp::Token::Modifier 0.088
-      PPIx::Regexp::Token::NoOp 0.088
-      PPIx::Regexp::Token::Operator 0.088
-      PPIx::Regexp::Token::Quantifier 0.088
-      PPIx::Regexp::Token::Recursion 0.088
-      PPIx::Regexp::Token::Reference 0.088
-      PPIx::Regexp::Token::Structure 0.088
-      PPIx::Regexp::Token::Unknown 0.088
-      PPIx::Regexp::Token::Unmatched 0.088
-      PPIx::Regexp::Token::Whitespace 0.088
-      PPIx::Regexp::Tokenizer 0.088
-      PPIx::Regexp::Util 0.088
+      PPIx::Regexp::Constant::Inf 0.089
+      PPIx::Regexp::Dumper 0.089
+      PPIx::Regexp::Element 0.089
+      PPIx::Regexp::Lexer 0.089
+      PPIx::Regexp::Node 0.089
+      PPIx::Regexp::Node::Range 0.089
+      PPIx::Regexp::Node::Unknown 0.089
+      PPIx::Regexp::Structure 0.089
+      PPIx::Regexp::Structure::Assertion 0.089
+      PPIx::Regexp::Structure::Atomic_Script_Run 0.089
+      PPIx::Regexp::Structure::BranchReset 0.089
+      PPIx::Regexp::Structure::Capture 0.089
+      PPIx::Regexp::Structure::CharClass 0.089
+      PPIx::Regexp::Structure::Code 0.089
+      PPIx::Regexp::Structure::Main 0.089
+      PPIx::Regexp::Structure::Modifier 0.089
+      PPIx::Regexp::Structure::NamedCapture 0.089
+      PPIx::Regexp::Structure::Quantifier 0.089
+      PPIx::Regexp::Structure::RegexSet 0.089
+      PPIx::Regexp::Structure::Regexp 0.089
+      PPIx::Regexp::Structure::Replacement 0.089
+      PPIx::Regexp::Structure::Script_Run 0.089
+      PPIx::Regexp::Structure::Subexpression 0.089
+      PPIx::Regexp::Structure::Switch 0.089
+      PPIx::Regexp::Structure::Unknown 0.089
+      PPIx::Regexp::Support 0.089
+      PPIx::Regexp::Token 0.089
+      PPIx::Regexp::Token::Assertion 0.089
+      PPIx::Regexp::Token::Backreference 0.089
+      PPIx::Regexp::Token::Backtrack 0.089
+      PPIx::Regexp::Token::CharClass 0.089
+      PPIx::Regexp::Token::CharClass::POSIX 0.089
+      PPIx::Regexp::Token::CharClass::POSIX::Unknown 0.089
+      PPIx::Regexp::Token::CharClass::Simple 0.089
+      PPIx::Regexp::Token::Code 0.089
+      PPIx::Regexp::Token::Comment 0.089
+      PPIx::Regexp::Token::Condition 0.089
+      PPIx::Regexp::Token::Control 0.089
+      PPIx::Regexp::Token::Delimiter 0.089
+      PPIx::Regexp::Token::Greediness 0.089
+      PPIx::Regexp::Token::GroupType 0.089
+      PPIx::Regexp::Token::GroupType::Assertion 0.089
+      PPIx::Regexp::Token::GroupType::Atomic_Script_Run 0.089
+      PPIx::Regexp::Token::GroupType::BranchReset 0.089
+      PPIx::Regexp::Token::GroupType::Code 0.089
+      PPIx::Regexp::Token::GroupType::Modifier 0.089
+      PPIx::Regexp::Token::GroupType::NamedCapture 0.089
+      PPIx::Regexp::Token::GroupType::Script_Run 0.089
+      PPIx::Regexp::Token::GroupType::Subexpression 0.089
+      PPIx::Regexp::Token::GroupType::Switch 0.089
+      PPIx::Regexp::Token::Interpolation 0.089
+      PPIx::Regexp::Token::Literal 0.089
+      PPIx::Regexp::Token::Modifier 0.089
+      PPIx::Regexp::Token::NoOp 0.089
+      PPIx::Regexp::Token::Operator 0.089
+      PPIx::Regexp::Token::Quantifier 0.089
+      PPIx::Regexp::Token::Recursion 0.089
+      PPIx::Regexp::Token::Reference 0.089
+      PPIx::Regexp::Token::Structure 0.089
+      PPIx::Regexp::Token::Unknown 0.089
+      PPIx::Regexp::Token::Unmatched 0.089
+      PPIx::Regexp::Token::Whitespace 0.089
+      PPIx::Regexp::Tokenizer 0.089
+      PPIx::Regexp::Util 0.089
     requirements:
       Carp 0
       Encode 0
@@ -2208,13 +2288,13 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  PPIx-Utils-0.003
-    pathname: D/DB/DBOOK/PPIx-Utils-0.003.tar.gz
+  PPIx-Utils-0.004
+    pathname: D/DB/DBOOK/PPIx-Utils-0.004.tar.gz
     provides:
-      PPIx::Utils 0.003
-      PPIx::Utils::Classification 0.003
-      PPIx::Utils::Language 0.003
-      PPIx::Utils::Traversal 0.003
+      PPIx::Utils 0.004
+      PPIx::Utils::Classification 0.004
+      PPIx::Utils::Language 0.004
+      PPIx::Utils::Traversal 0.004
     requirements:
       B::Keywords 1.09
       Exporter 0
@@ -2315,6 +2395,31 @@ DISTRIBUTIONS
     requirements:
       Test::More 0
       Text::Balanced 1.95
+  Path-Class-0.37
+    pathname: K/KW/KWILLIAMS/Path-Class-0.37.tar.gz
+    provides:
+      Path::Class 0.37
+      Path::Class::Dir 0.37
+      Path::Class::Entity 0.37
+      Path::Class::File 0.37
+    requirements:
+      Carp 0
+      Cwd 0
+      Exporter 0
+      ExtUtils::MakeMaker 6.30
+      File::Copy 0
+      File::Path 0
+      File::Spec 3.26
+      File::Temp 0
+      File::stat 0
+      IO::Dir 0
+      IO::File 0
+      Module::Build 0.3601
+      Perl::OSType 0
+      Scalar::Util 0
+      overload 0
+      parent 0
+      strict 0
   Path-Tiny-0.146
     pathname: D/DA/DAGOLDEN/Path-Tiny-0.146.tar.gz
     provides:
@@ -2687,27 +2792,27 @@ DISTRIBUTIONS
       List::Util 1.33
       Perl::Critic 1.126
       parent 0
-  Perl-Tidy-20250105
-    pathname: S/SH/SHANCOCK/Perl-Tidy-20250105.tar.gz
+  Perl-Tidy-20250711
+    pathname: S/SH/SHANCOCK/Perl-Tidy-20250711.tar.gz
     provides:
-      Perl::Tidy 20250105
-      Perl::Tidy::Debugger 20250105
-      Perl::Tidy::Diagnostics 20250105
-      Perl::Tidy::FileWriter 20250105
-      Perl::Tidy::Formatter 20250105
-      Perl::Tidy::HtmlWriter 20250105
-      Perl::Tidy::IOScalar 20250105
-      Perl::Tidy::IOScalarArray 20250105
-      Perl::Tidy::IndentationItem 20250105
-      Perl::Tidy::Logger 20250105
-      Perl::Tidy::Tokenizer 20250105
-      Perl::Tidy::VerticalAligner 20250105
-      Perl::Tidy::VerticalAligner::Alignment 20250105
-      Perl::Tidy::VerticalAligner::Line 20250105
+      Perl::Tidy 20250711
+      Perl::Tidy::Debugger 20250711
+      Perl::Tidy::Diagnostics 20250711
+      Perl::Tidy::FileWriter 20250711
+      Perl::Tidy::Formatter 20250711
+      Perl::Tidy::HtmlWriter 20250711
+      Perl::Tidy::IOScalar 20250711
+      Perl::Tidy::IOScalarArray 20250711
+      Perl::Tidy::IndentationItem 20250711
+      Perl::Tidy::Logger 20250711
+      Perl::Tidy::Tokenizer 20250711
+      Perl::Tidy::VerticalAligner 20250711
+      Perl::Tidy::VerticalAligner::Alignment 20250711
+      Perl::Tidy::VerticalAligner::Line 20250711
     requirements:
       ExtUtils::MakeMaker 0
-      perl 5.008
-  Plack-1.0053
+      perl 5.008001
+  Plack-1.0053-TRIAL
     pathname: C/CR/CRABAPP/Plack-1.0053-TRIAL.tar.gz
     provides:
       HTTP::Message::PSGI undef
@@ -2944,6 +3049,26 @@ DISTRIBUTIONS
     requirements:
       Module::Build::Tiny 0.035
       perl 5.005
+  Ref-Util-0.204
+    pathname: A/AR/ARC/Ref-Util-0.204.tar.gz
+    provides:
+      Ref::Util 0.204
+      Ref::Util::PP 0.204
+    requirements:
+      Exporter 5.57
+      ExtUtils::MakeMaker 0
+      Ref::Util::XS 0
+      Text::ParseWords 0
+      perl 5.006
+  Ref-Util-XS-0.117
+    pathname: X/XS/XSAWYERX/Ref-Util-XS-0.117.tar.gz
+    provides:
+      Ref::Util::XS 0.117
+    requirements:
+      Exporter 5.57
+      ExtUtils::MakeMaker 0
+      XSLoader 0
+      perl 5.006
   Role-Tiny-2.002004
     pathname: H/HA/HAARG/Role-Tiny-2.002004.tar.gz
     provides:
@@ -2987,17 +3112,6 @@ DISTRIBUTIONS
       Exporter 5.57
       ExtUtils::MakeMaker 0
       Scalar::Util 0
-      perl 5.006
-  Scalar-List-Utils-1.68
-    pathname: P/PE/PEVANS/Scalar-List-Utils-1.68.tar.gz
-    provides:
-      List::Util 1.68
-      List::Util::XS 1.68
-      Scalar::List::Utils 1.68
-      Scalar::Util 1.68
-      Sub::Util 1.68
-    requirements:
-      ExtUtils::MakeMaker 0
       perl 5.006
   Scope-Guard-0.21
     pathname: C/CH/CHOCOLATE/Scope-Guard-0.21.tar.gz
@@ -3079,11 +3193,11 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  Sub-Quote-2.006008
-    pathname: H/HA/HAARG/Sub-Quote-2.006008.tar.gz
+  Sub-Quote-2.006009
+    pathname: H/HA/HAARG/Sub-Quote-2.006009.tar.gz
     provides:
-      Sub::Defer 2.006008
-      Sub::Quote 2.006008
+      Sub::Defer 2.006009
+      Sub::Quote 2.006009
     requirements:
       ExtUtils::MakeMaker 0
       Scalar::Util 0
@@ -3098,6 +3212,27 @@ DISTRIBUTIONS
       Module::Build 0.4004
       XS::Parse::Keyword 0.13
       XS::Parse::Keyword::Builder 0.13
+      perl 5.014
+  Syntax-Keyword-MultiSub-0.04
+    pathname: P/PE/PEVANS/Syntax-Keyword-MultiSub-0.04.tar.gz
+    provides:
+      Syntax::Keyword::MultiSub 0.04
+    requirements:
+      ExtUtils::CBuilder 0
+      Module::Build 0.4004
+      XS::Parse::Sublike 0.15
+      XS::Parse::Sublike::Builder 0.15
+      perl 5.026
+  Syntax-Keyword-Try-0.30
+    pathname: P/PE/PEVANS/Syntax-Keyword-Try-0.30.tar.gz
+    provides:
+      Syntax::Keyword::Try 0.30
+      Syntax::Keyword::Try::Deparse 0.30
+    requirements:
+      ExtUtils::CBuilder 0
+      Module::Build 0.4004
+      XS::Parse::Keyword 0.35
+      XS::Parse::Keyword::Builder 0.35
       perl 5.014
   TOML-0.97
     pathname: K/KA/KARUPA/TOML-0.97.tar.gz
@@ -3122,6 +3257,23 @@ DISTRIBUTIONS
       Types::Serialiser 0
       parent 0
       perl 5.010000
+  TOML-Tiny-0.20
+    pathname: O/OA/OALDERS/TOML-Tiny-0.20.tar.gz
+    provides:
+      TOML::Tiny 0.20
+      TOML::Tiny::Grammar 0.20
+      TOML::Tiny::Parser 0.20
+      TOML::Tiny::Tokenizer 0.20
+      TOML::Tiny::Util 0.20
+      TOML::Tiny::Writer 0.20
+    requirements:
+      Carp 0
+      Data::Dumper 0
+      Encode 0
+      Exporter 0
+      ExtUtils::MakeMaker 0
+      Math::BigInt 1.999718
+      perl 5.018
   Task-Weaken-1.06
     pathname: E/ET/ETHER/Task-Weaken-1.06.tar.gz
     provides:
@@ -3133,60 +3285,60 @@ DISTRIBUTIONS
       Scalar::Util 1.14
       perl 5.006
       strict 0
-  Test-Deep-1.204
-    pathname: R/RJ/RJBS/Test-Deep-1.204.tar.gz
+  Test-Deep-1.205
+    pathname: R/RJ/RJBS/Test-Deep-1.205.tar.gz
     provides:
-      Test::Deep 1.204
-      Test::Deep::All 1.204
-      Test::Deep::Any 1.204
-      Test::Deep::Array 1.204
-      Test::Deep::ArrayEach 1.204
-      Test::Deep::ArrayElementsOnly 1.204
-      Test::Deep::ArrayLength 1.204
-      Test::Deep::ArrayLengthOnly 1.204
-      Test::Deep::Blessed 1.204
-      Test::Deep::Boolean 1.204
-      Test::Deep::Cache 1.204
-      Test::Deep::Cache::Simple 1.204
-      Test::Deep::Class 1.204
-      Test::Deep::Cmp 1.204
-      Test::Deep::Code 1.204
-      Test::Deep::Hash 1.204
-      Test::Deep::HashEach 1.204
-      Test::Deep::HashElements 1.204
-      Test::Deep::HashKeys 1.204
-      Test::Deep::HashKeysOnly 1.204
-      Test::Deep::Ignore 1.204
-      Test::Deep::Isa 1.204
-      Test::Deep::ListMethods 1.204
-      Test::Deep::MM 1.204
-      Test::Deep::Methods 1.204
-      Test::Deep::NoTest 1.204
-      Test::Deep::None 1.204
-      Test::Deep::Number 1.204
-      Test::Deep::Obj 1.204
-      Test::Deep::Ref 1.204
-      Test::Deep::RefType 1.204
-      Test::Deep::Regexp 1.204
-      Test::Deep::RegexpMatches 1.204
-      Test::Deep::RegexpOnly 1.204
-      Test::Deep::RegexpRef 1.204
-      Test::Deep::RegexpRefOnly 1.204
-      Test::Deep::RegexpVersion 1.204
-      Test::Deep::ScalarRef 1.204
-      Test::Deep::ScalarRefOnly 1.204
-      Test::Deep::Set 1.204
-      Test::Deep::Shallow 1.204
-      Test::Deep::Stack 1.204
-      Test::Deep::String 1.204
-      Test::Deep::SubHash 1.204
-      Test::Deep::SubHashElements 1.204
-      Test::Deep::SubHashKeys 1.204
-      Test::Deep::SubHashKeysOnly 1.204
-      Test::Deep::SuperHash 1.204
-      Test::Deep::SuperHashElements 1.204
-      Test::Deep::SuperHashKeys 1.204
-      Test::Deep::SuperHashKeysOnly 1.204
+      Test::Deep 1.205
+      Test::Deep::All 1.205
+      Test::Deep::Any 1.205
+      Test::Deep::Array 1.205
+      Test::Deep::ArrayEach 1.205
+      Test::Deep::ArrayElementsOnly 1.205
+      Test::Deep::ArrayLength 1.205
+      Test::Deep::ArrayLengthOnly 1.205
+      Test::Deep::Blessed 1.205
+      Test::Deep::Boolean 1.205
+      Test::Deep::Cache 1.205
+      Test::Deep::Cache::Simple 1.205
+      Test::Deep::Class 1.205
+      Test::Deep::Cmp 1.205
+      Test::Deep::Code 1.205
+      Test::Deep::Hash 1.205
+      Test::Deep::HashEach 1.205
+      Test::Deep::HashElements 1.205
+      Test::Deep::HashKeys 1.205
+      Test::Deep::HashKeysOnly 1.205
+      Test::Deep::Ignore 1.205
+      Test::Deep::Isa 1.205
+      Test::Deep::ListMethods 1.205
+      Test::Deep::MM 1.205
+      Test::Deep::Methods 1.205
+      Test::Deep::NoTest 1.205
+      Test::Deep::None 1.205
+      Test::Deep::Number 1.205
+      Test::Deep::Obj 1.205
+      Test::Deep::Ref 1.205
+      Test::Deep::RefType 1.205
+      Test::Deep::Regexp 1.205
+      Test::Deep::RegexpMatches 1.205
+      Test::Deep::RegexpOnly 1.205
+      Test::Deep::RegexpRef 1.205
+      Test::Deep::RegexpRefOnly 1.205
+      Test::Deep::RegexpVersion 1.205
+      Test::Deep::ScalarRef 1.205
+      Test::Deep::ScalarRefOnly 1.205
+      Test::Deep::Set 1.205
+      Test::Deep::Shallow 1.205
+      Test::Deep::Stack 1.205
+      Test::Deep::String 1.205
+      Test::Deep::SubHash 1.205
+      Test::Deep::SubHashElements 1.205
+      Test::Deep::SubHashKeys 1.205
+      Test::Deep::SubHashKeysOnly 1.205
+      Test::Deep::SuperHash 1.205
+      Test::Deep::SuperHashElements 1.205
+      Test::Deep::SuperHashKeys 1.205
+      Test::Deep::SuperHashKeysOnly 1.205
     requirements:
       ExtUtils::MakeMaker 6.78
       List::Util 1.09
@@ -3194,6 +3346,42 @@ DISTRIBUTIONS
       Test::Builder 0
       Test::More 0.96
       perl 5.012
+  Test-Fatal-0.017
+    pathname: R/RJ/RJBS/Test-Fatal-0.017.tar.gz
+    provides:
+      Test::Fatal 0.017
+    requirements:
+      Carp 0
+      Exporter 5.57
+      ExtUtils::MakeMaker 6.78
+      Test::Builder 0
+      Try::Tiny 0.07
+      strict 0
+      warnings 0
+  Test-Number-Delta-1.06
+    pathname: D/DA/DAGOLDEN/Test-Number-Delta-1.06.tar.gz
+    provides:
+      Test::Number::Delta 1.06
+    requirements:
+      Carp 0
+      Exporter 0
+      ExtUtils::MakeMaker 6.17
+      Test::Builder 0
+      perl 5.006
+      strict 0
+      vars 0
+      warnings 0
+  Test-Pod-1.52
+    pathname: E/ET/ETHER/Test-Pod-1.52.tar.gz
+    provides:
+      Test::Pod 1.52
+    requirements:
+      ExtUtils::MakeMaker 0
+      File::Find 0
+      Pod::Simple 3.05
+      Test::Builder::Tester 1.02
+      Test::More 0.62
+      perl 5.008
   Test-Requires-0.11
     pathname: T/TO/TOKUHIROM/Test-Requires-0.11.tar.gz
     provides:
@@ -3217,206 +3405,206 @@ DISTRIBUTIONS
       Test::Builder::Module 0
       Test::More 0.88
       perl 5.008_001
-  Test-Simple-1.302209
-    pathname: E/EX/EXODIST/Test-Simple-1.302209.tar.gz
+  Test-Simple-1.302214
+    pathname: E/EX/EXODIST/Test-Simple-1.302214.tar.gz
     provides:
-      Test2 1.302209
-      Test2::API 1.302209
-      Test2::API::Breakage 1.302209
-      Test2::API::Context 1.302209
-      Test2::API::Instance 1.302209
-      Test2::API::InterceptResult 1.302209
-      Test2::API::InterceptResult::Event 1.302209
-      Test2::API::InterceptResult::Facet 1.302209
-      Test2::API::InterceptResult::Hub 1.302209
-      Test2::API::InterceptResult::Squasher 1.302209
-      Test2::API::Stack 1.302209
-      Test2::AsyncSubtest 1.302209
-      Test2::AsyncSubtest::Event::Attach 1.302209
-      Test2::AsyncSubtest::Event::Detach 1.302209
-      Test2::AsyncSubtest::Formatter 1.302209
-      Test2::AsyncSubtest::Hub 1.302209
-      Test2::Bundle 1.302209
-      Test2::Bundle::Extended 1.302209
-      Test2::Bundle::More 1.302209
-      Test2::Bundle::Simple 1.302209
-      Test2::Compare 1.302209
-      Test2::Compare::Array 1.302209
-      Test2::Compare::Bag 1.302209
-      Test2::Compare::Base 1.302209
-      Test2::Compare::Bool 1.302209
-      Test2::Compare::Custom 1.302209
-      Test2::Compare::DeepRef 1.302209
-      Test2::Compare::Delta 1.302209
-      Test2::Compare::Event 1.302209
-      Test2::Compare::EventMeta 1.302209
-      Test2::Compare::Float 1.302209
-      Test2::Compare::Hash 1.302209
-      Test2::Compare::Isa 1.302209
-      Test2::Compare::Meta 1.302209
-      Test2::Compare::Negatable 1.302209
-      Test2::Compare::Number 1.302209
-      Test2::Compare::Object 1.302209
-      Test2::Compare::OrderedSubset 1.302209
-      Test2::Compare::Pattern 1.302209
-      Test2::Compare::Ref 1.302209
-      Test2::Compare::Regex 1.302209
-      Test2::Compare::Scalar 1.302209
-      Test2::Compare::Set 1.302209
-      Test2::Compare::String 1.302209
-      Test2::Compare::Undef 1.302209
-      Test2::Compare::Wildcard 1.302209
-      Test2::Env 1.302209
-      Test2::Event 1.302209
-      Test2::Event::Bail 1.302209
-      Test2::Event::Diag 1.302209
-      Test2::Event::Encoding 1.302209
-      Test2::Event::Exception 1.302209
-      Test2::Event::Fail 1.302209
-      Test2::Event::Generic 1.302209
-      Test2::Event::Note 1.302209
-      Test2::Event::Ok 1.302209
-      Test2::Event::Pass 1.302209
-      Test2::Event::Plan 1.302209
-      Test2::Event::Skip 1.302209
-      Test2::Event::Subtest 1.302209
-      Test2::Event::TAP::Version 1.302209
-      Test2::Event::V2 1.302209
-      Test2::Event::Waiting 1.302209
-      Test2::EventFacet 1.302209
-      Test2::EventFacet::About 1.302209
-      Test2::EventFacet::Amnesty 1.302209
-      Test2::EventFacet::Assert 1.302209
-      Test2::EventFacet::Control 1.302209
-      Test2::EventFacet::Error 1.302209
-      Test2::EventFacet::Hub 1.302209
-      Test2::EventFacet::Info 1.302209
-      Test2::EventFacet::Info::Table 1.302209
-      Test2::EventFacet::Meta 1.302209
-      Test2::EventFacet::Parent 1.302209
-      Test2::EventFacet::Plan 1.302209
-      Test2::EventFacet::Render 1.302209
-      Test2::EventFacet::Trace 1.302209
-      Test2::Formatter 1.302209
-      Test2::Formatter::TAP 1.302209
-      Test2::Hub 1.302209
-      Test2::Hub::Interceptor 1.302209
-      Test2::Hub::Interceptor::Terminator 1.302209
-      Test2::Hub::Subtest 1.302209
-      Test2::IPC 1.302209
-      Test2::IPC::Driver 1.302209
-      Test2::IPC::Driver::Files 1.302209
-      Test2::Manual 1.302209
-      Test2::Manual::Anatomy 1.302209
-      Test2::Manual::Anatomy::API 1.302209
-      Test2::Manual::Anatomy::Context 1.302209
-      Test2::Manual::Anatomy::EndToEnd 1.302209
-      Test2::Manual::Anatomy::Event 1.302209
-      Test2::Manual::Anatomy::Hubs 1.302209
-      Test2::Manual::Anatomy::IPC 1.302209
-      Test2::Manual::Anatomy::Utilities 1.302209
-      Test2::Manual::Concurrency 1.302209
-      Test2::Manual::Contributing 1.302209
-      Test2::Manual::Testing 1.302209
-      Test2::Manual::Testing::Introduction 1.302209
-      Test2::Manual::Testing::Migrating 1.302209
-      Test2::Manual::Testing::Planning 1.302209
-      Test2::Manual::Testing::Todo 1.302209
-      Test2::Manual::Tooling 1.302209
-      Test2::Manual::Tooling::FirstTool 1.302209
-      Test2::Manual::Tooling::Formatter 1.302209
-      Test2::Manual::Tooling::Nesting 1.302209
-      Test2::Manual::Tooling::Plugin::TestExit 1.302209
-      Test2::Manual::Tooling::Plugin::TestingDone 1.302209
-      Test2::Manual::Tooling::Plugin::ToolCompletes 1.302209
-      Test2::Manual::Tooling::Plugin::ToolStarts 1.302209
-      Test2::Manual::Tooling::Subtest 1.302209
-      Test2::Manual::Tooling::TestBuilder 1.302209
-      Test2::Manual::Tooling::Testing 1.302209
-      Test2::Mock 1.302209
-      Test2::Plugin 1.302209
-      Test2::Plugin::BailOnFail 1.302209
-      Test2::Plugin::DieOnFail 1.302209
-      Test2::Plugin::ExitSummary 1.302209
-      Test2::Plugin::SRand 1.302209
-      Test2::Plugin::Times 1.302209
-      Test2::Plugin::UTF8 1.302209
-      Test2::Require 1.302209
-      Test2::Require::AuthorTesting 1.302209
-      Test2::Require::AutomatedTesting 1.302209
-      Test2::Require::EnvVar 1.302209
-      Test2::Require::ExtendedTesting 1.302209
-      Test2::Require::Fork 1.302209
-      Test2::Require::Module 1.302209
-      Test2::Require::NonInteractiveTesting 1.302209
-      Test2::Require::Perl 1.302209
-      Test2::Require::RealFork 1.302209
-      Test2::Require::ReleaseTesting 1.302209
-      Test2::Require::Threads 1.302209
-      Test2::Suite 1.302209
-      Test2::Todo 1.302209
-      Test2::Tools 1.302209
-      Test2::Tools::AsyncSubtest 1.302209
-      Test2::Tools::Basic 1.302209
-      Test2::Tools::Class 1.302209
-      Test2::Tools::ClassicCompare 1.302209
-      Test2::Tools::Compare 1.302209
-      Test2::Tools::Defer 1.302209
-      Test2::Tools::Encoding 1.302209
-      Test2::Tools::Event 1.302209
-      Test2::Tools::Exception 1.302209
-      Test2::Tools::Exports 1.302209
-      Test2::Tools::GenTemp 1.302209
-      Test2::Tools::Grab 1.302209
-      Test2::Tools::Mock 1.302209
-      Test2::Tools::Ref 1.302209
-      Test2::Tools::Refcount 1.302209
-      Test2::Tools::Spec 1.302209
-      Test2::Tools::Subtest 1.302209
-      Test2::Tools::Target 1.302209
-      Test2::Tools::Tester 1.302209
-      Test2::Tools::Tiny 1.302209
-      Test2::Tools::Warnings 1.302209
-      Test2::Util 1.302209
-      Test2::Util::ExternalMeta 1.302209
-      Test2::Util::Facets2Legacy 1.302209
-      Test2::Util::Grabber 1.302209
-      Test2::Util::Guard 1.302209
-      Test2::Util::HashBase 1.302209
-      Test2::Util::Importer 1.302209
-      Test2::Util::Ref 1.302209
-      Test2::Util::Sig 1.302209
-      Test2::Util::Stash 1.302209
-      Test2::Util::Sub 1.302209
-      Test2::Util::Table 1.302209
-      Test2::Util::Table::Cell 1.302209
-      Test2::Util::Table::LineBreak 1.302209
-      Test2::Util::Term 1.302209
-      Test2::Util::Times 1.302209
-      Test2::Util::Trace 1.302209
-      Test2::V0 1.302209
-      Test2::Workflow 1.302209
-      Test2::Workflow::BlockBase 1.302209
-      Test2::Workflow::Build 1.302209
-      Test2::Workflow::Runner 1.302209
-      Test2::Workflow::Task 1.302209
-      Test2::Workflow::Task::Action 1.302209
-      Test2::Workflow::Task::Group 1.302209
-      Test::Builder 1.302209
-      Test::Builder::Formatter 1.302209
-      Test::Builder::Module 1.302209
-      Test::Builder::Tester 1.302209
-      Test::Builder::Tester::Color 1.302209
-      Test::Builder::Tester::Tie 1.302209
-      Test::Builder::TodoDiag 1.302209
-      Test::More 1.302209
-      Test::Simple 1.302209
-      Test::Tester 1.302209
-      Test::Tester::Capture 1.302209
-      Test::Tester::CaptureRunner 1.302209
-      Test::Tester::Delegate 1.302209
-      Test::use::ok 1.302209
-      ok 1.302209
+      Test2 1.302214
+      Test2::API 1.302214
+      Test2::API::Breakage 1.302214
+      Test2::API::Context 1.302214
+      Test2::API::Instance 1.302214
+      Test2::API::InterceptResult 1.302214
+      Test2::API::InterceptResult::Event 1.302214
+      Test2::API::InterceptResult::Facet 1.302214
+      Test2::API::InterceptResult::Hub 1.302214
+      Test2::API::InterceptResult::Squasher 1.302214
+      Test2::API::Stack 1.302214
+      Test2::AsyncSubtest 1.302214
+      Test2::AsyncSubtest::Event::Attach 1.302214
+      Test2::AsyncSubtest::Event::Detach 1.302214
+      Test2::AsyncSubtest::Formatter 1.302214
+      Test2::AsyncSubtest::Hub 1.302214
+      Test2::Bundle 1.302214
+      Test2::Bundle::Extended 1.302214
+      Test2::Bundle::More 1.302214
+      Test2::Bundle::Simple 1.302214
+      Test2::Compare 1.302214
+      Test2::Compare::Array 1.302214
+      Test2::Compare::Bag 1.302214
+      Test2::Compare::Base 1.302214
+      Test2::Compare::Bool 1.302214
+      Test2::Compare::Custom 1.302214
+      Test2::Compare::DeepRef 1.302214
+      Test2::Compare::Delta 1.302214
+      Test2::Compare::Event 1.302214
+      Test2::Compare::EventMeta 1.302214
+      Test2::Compare::Float 1.302214
+      Test2::Compare::Hash 1.302214
+      Test2::Compare::Isa 1.302214
+      Test2::Compare::Meta 1.302214
+      Test2::Compare::Negatable 1.302214
+      Test2::Compare::Number 1.302214
+      Test2::Compare::Object 1.302214
+      Test2::Compare::OrderedSubset 1.302214
+      Test2::Compare::Pattern 1.302214
+      Test2::Compare::Ref 1.302214
+      Test2::Compare::Regex 1.302214
+      Test2::Compare::Scalar 1.302214
+      Test2::Compare::Set 1.302214
+      Test2::Compare::String 1.302214
+      Test2::Compare::Undef 1.302214
+      Test2::Compare::Wildcard 1.302214
+      Test2::Env 1.302214
+      Test2::Event 1.302214
+      Test2::Event::Bail 1.302214
+      Test2::Event::Diag 1.302214
+      Test2::Event::Encoding 1.302214
+      Test2::Event::Exception 1.302214
+      Test2::Event::Fail 1.302214
+      Test2::Event::Generic 1.302214
+      Test2::Event::Note 1.302214
+      Test2::Event::Ok 1.302214
+      Test2::Event::Pass 1.302214
+      Test2::Event::Plan 1.302214
+      Test2::Event::Skip 1.302214
+      Test2::Event::Subtest 1.302214
+      Test2::Event::TAP::Version 1.302214
+      Test2::Event::V2 1.302214
+      Test2::Event::Waiting 1.302214
+      Test2::EventFacet 1.302214
+      Test2::EventFacet::About 1.302214
+      Test2::EventFacet::Amnesty 1.302214
+      Test2::EventFacet::Assert 1.302214
+      Test2::EventFacet::Control 1.302214
+      Test2::EventFacet::Error 1.302214
+      Test2::EventFacet::Hub 1.302214
+      Test2::EventFacet::Info 1.302214
+      Test2::EventFacet::Info::Table 1.302214
+      Test2::EventFacet::Meta 1.302214
+      Test2::EventFacet::Parent 1.302214
+      Test2::EventFacet::Plan 1.302214
+      Test2::EventFacet::Render 1.302214
+      Test2::EventFacet::Trace 1.302214
+      Test2::Formatter 1.302214
+      Test2::Formatter::TAP 1.302214
+      Test2::Hub 1.302214
+      Test2::Hub::Interceptor 1.302214
+      Test2::Hub::Interceptor::Terminator 1.302214
+      Test2::Hub::Subtest 1.302214
+      Test2::IPC 1.302214
+      Test2::IPC::Driver 1.302214
+      Test2::IPC::Driver::Files 1.302214
+      Test2::Manual 1.302214
+      Test2::Manual::Anatomy 1.302214
+      Test2::Manual::Anatomy::API 1.302214
+      Test2::Manual::Anatomy::Context 1.302214
+      Test2::Manual::Anatomy::EndToEnd 1.302214
+      Test2::Manual::Anatomy::Event 1.302214
+      Test2::Manual::Anatomy::Hubs 1.302214
+      Test2::Manual::Anatomy::IPC 1.302214
+      Test2::Manual::Anatomy::Utilities 1.302214
+      Test2::Manual::Concurrency 1.302214
+      Test2::Manual::Contributing 1.302214
+      Test2::Manual::Testing 1.302214
+      Test2::Manual::Testing::Introduction 1.302214
+      Test2::Manual::Testing::Migrating 1.302214
+      Test2::Manual::Testing::Planning 1.302214
+      Test2::Manual::Testing::Todo 1.302214
+      Test2::Manual::Tooling 1.302214
+      Test2::Manual::Tooling::FirstTool 1.302214
+      Test2::Manual::Tooling::Formatter 1.302214
+      Test2::Manual::Tooling::Nesting 1.302214
+      Test2::Manual::Tooling::Plugin::TestExit 1.302214
+      Test2::Manual::Tooling::Plugin::TestingDone 1.302214
+      Test2::Manual::Tooling::Plugin::ToolCompletes 1.302214
+      Test2::Manual::Tooling::Plugin::ToolStarts 1.302214
+      Test2::Manual::Tooling::Subtest 1.302214
+      Test2::Manual::Tooling::TestBuilder 1.302214
+      Test2::Manual::Tooling::Testing 1.302214
+      Test2::Mock 1.302214
+      Test2::Plugin 1.302214
+      Test2::Plugin::BailOnFail 1.302214
+      Test2::Plugin::DieOnFail 1.302214
+      Test2::Plugin::ExitSummary 1.302214
+      Test2::Plugin::SRand 1.302214
+      Test2::Plugin::Times 1.302214
+      Test2::Plugin::UTF8 1.302214
+      Test2::Require 1.302214
+      Test2::Require::AuthorTesting 1.302214
+      Test2::Require::AutomatedTesting 1.302214
+      Test2::Require::EnvVar 1.302214
+      Test2::Require::ExtendedTesting 1.302214
+      Test2::Require::Fork 1.302214
+      Test2::Require::Module 1.302214
+      Test2::Require::NonInteractiveTesting 1.302214
+      Test2::Require::Perl 1.302214
+      Test2::Require::RealFork 1.302214
+      Test2::Require::ReleaseTesting 1.302214
+      Test2::Require::Threads 1.302214
+      Test2::Suite 1.302214
+      Test2::Todo 1.302214
+      Test2::Tools 1.302214
+      Test2::Tools::AsyncSubtest 1.302214
+      Test2::Tools::Basic 1.302214
+      Test2::Tools::Class 1.302214
+      Test2::Tools::ClassicCompare 1.302214
+      Test2::Tools::Compare 1.302214
+      Test2::Tools::Defer 1.302214
+      Test2::Tools::Encoding 1.302214
+      Test2::Tools::Event 1.302214
+      Test2::Tools::Exception 1.302214
+      Test2::Tools::Exports 1.302214
+      Test2::Tools::GenTemp 1.302214
+      Test2::Tools::Grab 1.302214
+      Test2::Tools::Mock 1.302214
+      Test2::Tools::Ref 1.302214
+      Test2::Tools::Refcount 1.302214
+      Test2::Tools::Spec 1.302214
+      Test2::Tools::Subtest 1.302214
+      Test2::Tools::Target 1.302214
+      Test2::Tools::Tester 1.302214
+      Test2::Tools::Tiny 1.302214
+      Test2::Tools::Warnings 1.302214
+      Test2::Util 1.302214
+      Test2::Util::ExternalMeta 1.302214
+      Test2::Util::Facets2Legacy 1.302214
+      Test2::Util::Grabber 1.302214
+      Test2::Util::Guard 1.302214
+      Test2::Util::HashBase 1.302214
+      Test2::Util::Importer 1.302214
+      Test2::Util::Ref 1.302214
+      Test2::Util::Sig 1.302214
+      Test2::Util::Stash 1.302214
+      Test2::Util::Sub 1.302214
+      Test2::Util::Table 1.302214
+      Test2::Util::Table::Cell 1.302214
+      Test2::Util::Table::LineBreak 1.302214
+      Test2::Util::Term 1.302214
+      Test2::Util::Times 1.302214
+      Test2::Util::Trace 1.302214
+      Test2::V0 1.302214
+      Test2::Workflow 1.302214
+      Test2::Workflow::BlockBase 1.302214
+      Test2::Workflow::Build 1.302214
+      Test2::Workflow::Runner 1.302214
+      Test2::Workflow::Task 1.302214
+      Test2::Workflow::Task::Action 1.302214
+      Test2::Workflow::Task::Group 1.302214
+      Test::Builder 1.302214
+      Test::Builder::Formatter 1.302214
+      Test::Builder::Module 1.302214
+      Test::Builder::Tester 1.302214
+      Test::Builder::Tester::Color 1.302214
+      Test::Builder::Tester::Tie 1.302214
+      Test::Builder::TodoDiag 1.302214
+      Test::More 1.302214
+      Test::Simple 1.302214
+      Test::Tester 1.302214
+      Test::Tester::Capture 1.302214
+      Test::Tester::CaptureRunner 1.302214
+      Test::Tester::Delegate 1.302214
+      Test::use::ok 1.302214
+      ok 1.302214
     requirements:
       B 0
       Data::Dumper 0
@@ -3501,6 +3689,22 @@ DISTRIBUTIONS
       Storable 2.15
       parent 0.221
       perl 5.008001
+  Time-Moment-0.44
+    pathname: C/CH/CHANSEN/Time-Moment-0.44.tar.gz
+    provides:
+      Time::Moment 0.44
+      Time::Moment::Adjusters 0.44
+    requirements:
+      Carp 0
+      ExtUtils::MakeMaker 6.59
+      ExtUtils::ParseXS 3.18
+      Test::Fatal 0.006
+      Test::More 0.88
+      Test::Number::Delta 1.06
+      Test::Requires 0
+      Time::HiRes 0
+      XSLoader 0.02
+      perl 5.008001
   TimeDate-2.33
     pathname: A/AT/ATOOMIC/TimeDate-2.33.tar.gz
     provides:
@@ -3568,62 +3772,63 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       common::sense 0
-  URI-5.31
-    pathname: O/OA/OALDERS/URI-5.31.tar.gz
+  URI-5.32
+    pathname: O/OA/OALDERS/URI-5.32.tar.gz
     provides:
-      URI 5.31
-      URI::Escape 5.31
-      URI::Heuristic 5.31
-      URI::IRI 5.31
-      URI::QueryParam 5.31
-      URI::Split 5.31
-      URI::URL 5.31
-      URI::WithBase 5.31
-      URI::data 5.31
-      URI::file 5.31
-      URI::file::Base 5.31
-      URI::file::FAT 5.31
-      URI::file::Mac 5.31
-      URI::file::OS2 5.31
-      URI::file::QNX 5.31
-      URI::file::Unix 5.31
-      URI::file::Win32 5.31
-      URI::ftp 5.31
-      URI::ftpes 5.31
-      URI::ftps 5.31
-      URI::geo 5.31
-      URI::gopher 5.31
-      URI::http 5.31
-      URI::https 5.31
-      URI::icap 5.31
-      URI::icaps 5.31
-      URI::irc 5.31
-      URI::ircs 5.31
-      URI::ldap 5.31
-      URI::ldapi 5.31
-      URI::ldaps 5.31
-      URI::mailto 5.31
-      URI::mms 5.31
-      URI::news 5.31
-      URI::nntp 5.31
-      URI::nntps 5.31
-      URI::otpauth 5.31
-      URI::pop 5.31
-      URI::rlogin 5.31
-      URI::rsync 5.31
-      URI::rtsp 5.31
-      URI::rtspu 5.31
-      URI::scp 5.31
-      URI::sftp 5.31
-      URI::sip 5.31
-      URI::sips 5.31
-      URI::snews 5.31
-      URI::ssh 5.31
-      URI::telnet 5.31
-      URI::tn3270 5.31
-      URI::urn 5.31
-      URI::urn::isbn 5.31
-      URI::urn::oid 5.31
+      URI 5.32
+      URI::Escape 5.32
+      URI::Heuristic 5.32
+      URI::IRI 5.32
+      URI::QueryParam 5.32
+      URI::Split 5.32
+      URI::URL 5.32
+      URI::WithBase 5.32
+      URI::data 5.32
+      URI::file 5.32
+      URI::file::Base 5.32
+      URI::file::FAT 5.32
+      URI::file::Mac 5.32
+      URI::file::OS2 5.32
+      URI::file::QNX 5.32
+      URI::file::Unix 5.32
+      URI::file::Win32 5.32
+      URI::ftp 5.32
+      URI::ftpes 5.32
+      URI::ftps 5.32
+      URI::geo 5.32
+      URI::gopher 5.32
+      URI::http 5.32
+      URI::https 5.32
+      URI::icap 5.32
+      URI::icaps 5.32
+      URI::irc 5.32
+      URI::ircs 5.32
+      URI::ldap 5.32
+      URI::ldapi 5.32
+      URI::ldaps 5.32
+      URI::mailto 5.32
+      URI::mms 5.32
+      URI::news 5.32
+      URI::nntp 5.32
+      URI::nntps 5.32
+      URI::otpauth 5.32
+      URI::pop 5.32
+      URI::rlogin 5.32
+      URI::rsync 5.32
+      URI::rtsp 5.32
+      URI::rtspu 5.32
+      URI::scp 5.32
+      URI::sftp 5.32
+      URI::sip 5.32
+      URI::sips 5.32
+      URI::smb 5.32
+      URI::snews 5.32
+      URI::ssh 5.32
+      URI::telnet 5.32
+      URI::tn3270 5.32
+      URI::urn 5.32
+      URI::urn::isbn 5.32
+      URI::urn::oid 5.32
     requirements:
       Carp 0
       Cwd 0
@@ -3861,10 +4066,10 @@ DISTRIBUTIONS
       perl 5.008001
       strict 0
       warnings 0
-  meta-0.012
-    pathname: P/PE/PEVANS/meta-0.012.tar.gz
+  meta-0.013
+    pathname: P/PE/PEVANS/meta-0.013.tar.gz
     provides:
-      meta 0.012
+      meta 0.013
     requirements:
       ExtUtils::CBuilder 0
       Module::Build 0.4004
