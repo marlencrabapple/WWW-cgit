@@ -1,7 +1,7 @@
 requires 'perl', 'v5.40';
 
 requires 'Frame', '0.01.5',
-    mirror => 'https://pi5i-i.lan:8080'
+    mirror => 'http://pi5i-i.lan:9002'
   , dist => 'CRABAPP/Frame-0.01.5-TRIAL.tar.gz';
 
 requires 'Inline::C';

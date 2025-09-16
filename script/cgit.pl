@@ -4,8 +4,7 @@ use Object::Pad ':experimental(:all)';
 
 package cgit;
 
-class cgit : does(Frame::App::cgit::Base) : strict(params);
-
+class cgit : does(Frame::App::cgit::Base);
 use utf8;
 use v5.40;
 
@@ -39,21 +38,19 @@ field $cliopts : param(dest) : reader = {
 };
 
 ADJUSTPARAMS($params) {
+
     GetOptionsFromArray(
         $argv, $cliopts,
 
-        'ssl|tls|x509',
+        #    'ssl|tls|x509',
         'username=s',
-        'password=s',
+
+        #'password=s',
         'verbose',
         'debug', 'help',
         'version',
         'config-file|config-path=s',
-        '<>' => sub ($barearg) {
-            state $_set //= 0;
-            die "\$ARGV[0] has already been set to '$srvpath'" if $_set != 0;
-            $_set = 1 && $srvpath = path($barearg);
-        }
+
     );
 
     $app = Plack::App::WrapCGI->new(
@@ -72,7 +69,7 @@ ADJUSTPARAMS($params) {
         "Plack::Middleware::ReverseProxy"
     );
 
-    if ( $ENV{PLACK_ENV} eq 'development' ) {
+    if ( $ENV{PLACK_ENV} && ( $ENV{PLACK_ENV} ne 'development' ) ) {
         $builder->add_middleware('Debug');
         $builder->add_middleware('StackTrace');
     }
@@ -103,21 +100,39 @@ method init : common ( $argv = \@ARGV, %opts) {
 
 package main;
 
-class main : does(Frame::Base);
+class main;
 
 use utf8;
 use v5.40;
 
-use Frame::Base;
+use Frame::App::cgit::Base;
 
 our $cgit    = cgit->init( \@ARGV );
 our $cliopts = $cgit->cliopts;
 our $app     = $cgit->to_app;
 
+dmsg(
+    {
+
+        app     => $app,
+        cgit    => $cgit,
+        cliopts => $cgit->cliopts
+    }
+);
+
 unless (caller) {
     require Plack::Runner;
     my $runner = Plack::Runner->new;
-    $runner->parse_options( $cliopts->{ssl}->%*, @ARGV );
+    $runner->parse_options(@ARGV);
+
+    dmsg(
+        {
+            runner  => $runner,
+            app     => $app,
+            cgit    => $cgit,
+            cliopts => $cgit->cliopts
+        }
+    );
 
     if ( $$cliopts{pass} isa 'HASH' && $cliopts->{pass}{crypt} ) {
         ...;

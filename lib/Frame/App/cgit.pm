@@ -1,43 +1,51 @@
 use Object::Pad;
 
 package Frame::App::cgit;
-class Frame::App::cgit :does(Frame::App::cgit::Db);
+
+class Frame::App::cgit : does(Frame) : does(Frame::App::cgit::Base) :
+  does(Frame::App::cgit::Db);
 
 use utf8;
 use v5.40;
 
 our $VERSION = "0.01";
 
-ADJUST {
-  $self->init_db
-}
+# ADJUST {
+#   $self->init_db
+# }
 
 method startup {
-  my $r = $self->routes;
-  my $config = $self->config;
-  
-  my $section = $r->under('/:section', sub {
-    $r->get('/', 'section#repo_list');
-    $r->get('/:landing_uri', 'section#render_landing');
-  });
+    my $r      = $self->routes;
+    my $config = $self->config;
 
-  my $repo = $section->under('/:repo', sub ($r) {
-    $r->get('/', 'repo#readme_landing');
-    $r->get('/log', 'repo#commit_log_paged');
-    $r->get('/issues', 'issue#index');
-  });
+    my $section = $r->under(
+        '/:section',
+        sub {
+            $r->get( '/',             'section#repo_list' );
+            $r->get( '/:landing_uri', 'section#render_landing' );
+        }
+    );
 
-  $r->get('/repo/new', 'repo#add_repo_form');
-  $r->post('/repo/new', 'repo#add_repo');
+    my $repo = $section->under(
+        '/:repo',
+        sub ($r) {
+            $r->get( '/',       'repo#readme_landing' );
+            $r->get( '/log',    'repo#commit_log_paged' );
+            $r->get( '/issues', 'issue#index' );
+        }
+    );
 
-  $r->get('/:repo/edit', 'repo#update_repo_form');
-  $r->post('/:repo/edit', 'repo#update_repo');
-  
-  $r->get('/:repo/render/:file', 'repo#render_file');
+    $r->get( '/repo/new', 'repo#add_repo_form' );
+    $r->post( '/repo/new', 'repo#add_repo' );
 
-  $r->get('/:user', 'user#view_user_profile');
-  $r->get('/user/new', 'user#new_user_form');
-  $r->post('/user/new', 'user#add_user')
+    $r->get( '/:repo/edit', 'repo#update_repo_form' );
+    $r->post( '/:repo/edit', 'repo#update_repo' );
+
+    $r->get( '/:repo/render/:file', 'repo#render_file' );
+
+    $r->get( '/:user',    'user#view_user_profile' );
+    $r->get( '/user/new', 'user#new_user_form' );
+    $r->post( '/user/new', 'user#add_user' );
 }
 
 __END__
