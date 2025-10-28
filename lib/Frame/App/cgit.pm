@@ -2,8 +2,7 @@ use Object::Pad;
 
 package Frame::App::cgit;
 
-class Frame::App::cgit : does(Frame) : does(Frame::App::cgit::Base) :
-  does(Frame::App::cgit::Db);
+class Frame::App::cgit : does(Frame) : does(Frame::App::cgit::Db);
 
 use utf8;
 use v5.40;

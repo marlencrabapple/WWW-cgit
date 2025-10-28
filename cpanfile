@@ -1,8 +1,8 @@
-requires 'perl', 'v5.40';
+requires 'perl', 'v5.42';
 
 requires 'Frame', '0.01.5',
-    mirror => 'http://pi5i-i.lan:9002'
-  , dist => 'CRABAPP/Frame-0.01.5-TRIAL.tar.gz';
+  mirror => 'http://pi5i-i.lan:9002',
+  dist   => 'CRABAPP/Frame-0.01.5-TRIAL.tar.gz';
 
 requires 'Inline::C';
 requires 'Inline::CPP';
@@ -22,7 +22,7 @@ on 'test' => sub {
 
 on 'develop' => sub {
     requires 'Minilla';
-    requires 'Perl::Tidy', '20220613';
+    requires 'Perl::Tidy',   '20220613';
     requires 'Perl::Critic', '1.140';
     requires 'Perl::Critic::Community';
     requires 'Plack::Middleware::Static';
@@ -31,5 +31,5 @@ on 'develop' => sub {
 };
 
 on 'build' => sub {
-    requires 'Minilla'
+    requires 'Minilla';
 }

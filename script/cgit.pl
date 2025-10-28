@@ -4,46 +4,51 @@ use Object::Pad ':experimental(:all)';
 
 package cgit;
 
-class cgit : does(Frame::App::cgit::Base);
+class cgit : does(Frame::Base);
+
 use utf8;
 use v5.40;
 
 use lib 'lib';
 
-use Const::Fast;
-use Path::Tiny;
-use Getopt::Long qw'GetOptionsFromArray :config bundling auto_abbrev';
-use Plack::Runner;
-use Plack::Builder;
-use Plack::App::WrapCGI;
-use Cwd qw(getcwd abs_path);
+use Data::Dumper;
+use Const::Fast         qw( const );
+use Path::Tiny          qw( path );
+use Getopt::Long        qw( GetOptionsFromArray );
+use Plack::Runner       ();
+use Plack::Builder      ();
+use Plack::App::WrapCGI ();
+use Cwd                 qw( abs_path getcwd );
 
-use Frame::App::cgit;
-use Frame::App::cgit::Instance;
+use Frame::App::cgit           ();
+use Frame::App::cgit::Instance ();
 
 const our $www => abs_path(getcwd);
 
 field $argv : param;
 field $app;
+field @instance;
 field $builder { Plack::Builder->new }
 field $srvpath = path(abs_path);
 field $config_file;
+field $config : reader = { instance => ['frameapp'] };
 
 field $cliopts : param(dest) : reader = {
     ssl => {
         'ssl'        => 1,
         'ssl-server' => 1
-    },
-
+    }
 };
 
 ADJUSTPARAMS($params) {
+    $self->setup_cgit;
 
     GetOptionsFromArray(
         $argv, $cliopts,
 
         #    'ssl|tls|x509',
         'username=s',
+        "password=s%",
 
         #'password=s',
         'verbose',
@@ -52,17 +57,6 @@ ADJUSTPARAMS($params) {
         'config-file|config-path=s',
 
     );
-
-    $app = Plack::App::WrapCGI->new(
-        script  => "/usr/share/webapps/cgit/cgit.cgi",
-        execute => 1
-    )->to_app;
-
-    my $section = 'frameapp';
-
-    $app = Frame::App::cgit::Instance->wrap( $app,
-        config => $ENV{ uc($section) . "_CGITRC" }
-          // "./etc/${section}-cgitrc" );
 
     $builder->add_middleware_if(
         sub ($env) { !$env->{REMOTE_ADDR} },
@@ -86,7 +80,30 @@ ADJUSTPARAMS($params) {
         root => $www
     );
 
-    $builder->mount( '/' => $app );
+    $builder->mount( '/' => shift @instance );
+}
+
+method $mount_middleware {
+
+}
+
+method setup_cgit () {
+    $app = Plack::App::WrapCGI->new(
+        script  => "/usr/share/webapps/cgit/cgit.cgi",
+        execute => 1
+    )->to_app;
+
+    foreach my $instance ( $self->config->{instance}->@* ) {
+
+        push @instance,
+          Frame::App::cgit::Instance->wrap( $app,
+            config => $ENV{ uc($instance) . "_CGITRC" }
+              // "./etc/${instance}-cgitrc" );
+
+        say STDERR Dumper( instance => \@instance, app => $app );
+    }
+
+    { baseapp => $app, instances => \@instance };
 }
 
 method to_app {
@@ -105,45 +122,27 @@ class main;
 use utf8;
 use v5.40;
 
-use Frame::App::cgit::Base;
+use Data::Dumper;
+use Frame::Base;
 
-our $cgit    = cgit->init( \@ARGV );
-our $cliopts = $cgit->cliopts;
-our $app     = $cgit->to_app;
-
-dmsg(
-    {
-
-        app     => $app,
-        cgit    => $cgit,
-        cliopts => $cgit->cliopts
-    }
-);
+our $cgitsrv = cgit->init( \@ARGV );
+our $cliopts = $cgitsrv->cliopts;
+our $app     = $cgitsrv->to_app;
 
 unless (caller) {
     require Plack::Runner;
     my $runner = Plack::Runner->new;
     $runner->parse_options(@ARGV);
 
-    dmsg(
-        {
-            runner  => $runner,
-            app     => $app,
-            cgit    => $cgit,
-            cliopts => $cgit->cliopts
-        }
-    );
-
     if ( $$cliopts{pass} isa 'HASH' && $cliopts->{pass}{crypt} ) {
         ...;
     }
 
     $runner->run($app);
-
-    dmsg( { runner => $runner, app => $app } );
+    warn Dumper( { runner => $runner, app => $app } );
 
     warn "$! ($?)" if $? != 0;
     exit $?;
 }
 
-return $app;
+$app;

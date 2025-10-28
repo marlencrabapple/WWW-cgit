@@ -7,12 +7,12 @@ use Path::Tiny;
 use Plack::Builder;
 use Plack::App::WrapCGI;
 use Plack::Middleware::Static;
-
+use Frame::App::cgit::Config;
 use Object::Pad;
 use Frame::App::cgit;
 use Frame::App::cgit::Instance;
 
-our %cgimap = ( "frame-app" => '/' );
+our %cgimap = ( "frameapp" => '/' );
 
 our $builder = Plack::Builder->new;
 
@@ -38,7 +38,7 @@ foreach my ( $section, $path ) (%cgimap) {
 
     $instance = Frame::App::cgit::config->wrap( $instance,
         config => $ENV{ uc($section) . "_CGITRC" }
-          // "./etc/${section}-cgitrc" );
+          // uc "./etc/${section}-cgitrc" );
 
     $builder->mount( $path => $instance );
 }
