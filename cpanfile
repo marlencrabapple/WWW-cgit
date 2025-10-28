@@ -4,6 +4,8 @@ requires 'Frame', '0.01.5',
     mirror => 'http://pi5i-i.lan:9002'
   , dist => 'CRABAPP/Frame-0.01.5-TRIAL.tar.gz';
 
+requires 'Net::SSLeay';
+requires 'Starlet';
 requires 'Inline::C';
 requires 'Inline::CPP';
 requires 'Inline::Module';

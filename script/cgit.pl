@@ -25,6 +25,7 @@ const our $www => abs_path(getcwd);
 
 field $argv : param;
 field $app;
+field @instance;
 field $builder { Plack::Builder->new }
 field $srvpath = path(abs_path);
 field $config_file;
@@ -44,6 +45,7 @@ ADJUSTPARAMS($params) {
 
         #    'ssl|tls|x509',
         'username=s',
+        "password=s%",
 
         #'password=s',
         'verbose',
@@ -52,17 +54,6 @@ ADJUSTPARAMS($params) {
         'config-file|config-path=s',
 
     );
-
-    $app = Plack::App::WrapCGI->new(
-        script  => "/usr/share/webapps/cgit/cgit.cgi",
-        execute => 1
-    )->to_app;
-
-    my $section = 'frameapp';
-
-    $app = Frame::App::cgit::Instance->wrap( $app,
-        config => $ENV{ uc($section) . "_CGITRC" }
-          // "./etc/${section}-cgitrc" );
 
     $builder->add_middleware_if(
         sub ($env) { !$env->{REMOTE_ADDR} },
@@ -89,6 +80,26 @@ ADJUSTPARAMS($params) {
     $builder->mount( '/' => $app );
 }
 
+method $mount_middleware {
+
+}
+
+method setup_cgit () {
+    $app = Plack::App::WrapCGI->new(
+        script  => "/usr/share/webapps/cgit/cgit.cgi",
+        execute => 1
+    )->to_app;
+
+    foreach my $instance ( $self->config->{instance}->@* ) {
+        push @instance,
+          Frame::App::cgit::Instance->wrap( $app,
+            config => $ENV{ uc($instance) . "_CGITRC" }
+              // "./etc/${instance}-cgitrc" );
+    }
+
+    { baseapp => $app, instances => \@instance };
+}
+
 method to_app {
     $builder->to_app;
 }
@@ -100,23 +111,22 @@ method init : common ( $argv = \@ARGV, %opts) {
 
 package main;
 
-class main;
+class main;    #: isa(Frame::Runner::PSGI);
 
 use utf8;
 use v5.40;
 
 use Frame::App::cgit::Base;
 
-our $cgit    = cgit->init( \@ARGV );
-our $cliopts = $cgit->cliopts;
-our $app     = $cgit->to_app;
+our $cgitsrv = cgit->init( \@ARGV );
+our $cliopts = $cgitsrv->cliopts;
+our $app     = $cgitsrv->to_app;
 
 dmsg(
     {
-
         app     => $app,
-        cgit    => $cgit,
-        cliopts => $cgit->cliopts
+        cgit    => $cgitsrv,
+        cliopts => $cliopts
     }
 );
 
@@ -129,8 +139,8 @@ unless (caller) {
         {
             runner  => $runner,
             app     => $app,
-            cgit    => $cgit,
-            cliopts => $cgit->cliopts
+            cgit    => $cgitsrv,
+            cliopts => $cliopts
         }
     );
 
@@ -139,11 +149,10 @@ unless (caller) {
     }
 
     $runner->run($app);
-
     dmsg( { runner => $runner, app => $app } );
 
     warn "$! ($?)" if $? != 0;
     exit $?;
 }
 
-return $app;
+$app;

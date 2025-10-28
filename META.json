@@ -63,8 +63,10 @@
             "Inline::C" : "0",
             "Inline::CPP" : "0",
             "Inline::Module" : "0",
+            "Net::SSLeay" : "0",
             "Plack::Builder" : "0",
             "Plack::Middleware::Auth::Basic" : "0",
+            "Starlet" : "0",
             "Text::Markdown::Hoedown" : "0",
             "perl" : "v5.40.0"
          }
