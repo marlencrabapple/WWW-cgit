@@ -3,6 +3,7 @@
 use Object::Pad ':experimental(:all)';
 
 package cgit;
+use lib 'lib';
 
 class cgit : does(Frame::Base);
 
@@ -58,6 +59,14 @@ ADJUSTPARAMS($params) {
 
     );
 
+    $self->mount_middleware;
+    $builder->mount( '/' => shift @instance );
+
+    my $frameapp;
+    $builder->mount( '/new' => $frameapp )
+}
+
+method mount_middleware {
     $builder->add_middleware_if(
         sub ($env) { !$env->{REMOTE_ADDR} },
         "Plack::Middleware::ReverseProxy"
@@ -67,6 +76,13 @@ ADJUSTPARAMS($params) {
         $builder->add_middleware('Debug');
         $builder->add_middleware('StackTrace');
     }
+
+    # $builder->add_middleware(
+    #     "Plack::Middleware::Rewrite",
+    #     request => sub {
+    #         s^(.+?)\.git(\/)?$^$1/.git^i;
+    #     }
+    # );
 
     $builder->add_middleware(
         "Plack::Middleware::Static",
@@ -79,11 +95,6 @@ ADJUSTPARAMS($params) {
         path => sub { s!^/s/!! },
         root => $www
     );
-
-    $builder->mount( '/' => shift @instance );
-}
-
-method $mount_middleware {
 
 }
 
@@ -118,6 +129,7 @@ method init : common ( $argv = \@ARGV, %opts) {
 package main;
 
 class main;
+use lib 'lib';
 
 use utf8;
 use v5.40;
@@ -139,10 +151,9 @@ unless (caller) {
     }
 
     $runner->run($app);
-    warn Dumper( { runner => $runner, app => $app } );
 
     warn "$! ($?)" if $? != 0;
     exit $?;
 }
 
-$app;
+return $app;
