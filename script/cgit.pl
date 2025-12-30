@@ -24,7 +24,7 @@ use Cwd                 qw( abs_path getcwd );
 use Frame::App::cgit           ();
 use Frame::App::cgit::Instance ();
 
-const our $www => abs_path(getcwd);
+const our $www => abs_path(getcwd) . '/www';
 
 field $argv : param;
 field $app;

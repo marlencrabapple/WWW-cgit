@@ -73,23 +73,6 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       HTTP::Response 0
       perl 5.008001
-  CPAN-Requirements-Dynamic-0.002
-    pathname: L/LE/LEONT/CPAN-Requirements-Dynamic-0.002.tar.gz
-    provides:
-      CPAN::Requirements::Dynamic 0.002
-    requirements:
-      CPAN::Meta::Prereqs 0
-      CPAN::Meta::Requirements::Range 0
-      Carp 0
-      ExtUtils::Config 0
-      ExtUtils::HasCompiler 0
-      ExtUtils::MakeMaker 0
-      IPC::Cmd 0
-      Parse::CPAN::Meta 0
-      Perl::OSType 0
-      perl 5.006
-      strict 0
-      warnings 0
   Capture-Tiny-0.50
     pathname: D/DA/DAGOLDEN/Capture-Tiny-0.50.tar.gz
     provides:
@@ -500,24 +483,23 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 6.59
       PadWalker 1.98
       perl 5.008001
-  Dist-Build-0.020
-    pathname: L/LE/LEONT/Dist-Build-0.020.tar.gz
+  Dist-Build-0.022
+    pathname: L/LE/LEONT/Dist-Build-0.022.tar.gz
     provides:
-      Dist::Build 0.020
-      Dist::Build::Core 0.020
-      Dist::Build::DynamicPrereqs 0.020
-      Dist::Build::Serializer 0.020
-      Dist::Build::ShareDir 0.020
-      Dist::Build::XS 0.020
-      Dist::Build::XS::Alien 0.020
-      Dist::Build::XS::Conf 0.020
-      Dist::Build::XS::Export 0.020
-      Dist::Build::XS::Import 0.020
-      Dist::Build::XS::WriteConstants 0.020
+      Dist::Build 0.022
+      Dist::Build::Core 0.022
+      Dist::Build::Serializer 0.022
+      Dist::Build::ShareDir 0.022
+      Dist::Build::Util 0.022
+      Dist::Build::XS 0.022
+      Dist::Build::XS::Alien 0.022
+      Dist::Build::XS::Conf 0.022
+      Dist::Build::XS::Export 0.022
+      Dist::Build::XS::Import 0.022
+      Dist::Build::XS::WriteConstants 0.022
     requirements:
       CPAN::Meta 0
       CPAN::Meta::Merge 0
-      CPAN::Requirements::Dynamic 0.002
       Carp 0
       Exporter 5.57
       ExtUtils::Builder::Action::Function 0
@@ -527,7 +509,7 @@ DISTRIBUTIONS
       ExtUtils::Builder::Planner 0.016
       ExtUtils::Builder::Planner::Extension 0
       ExtUtils::Builder::Serializer 0
-      ExtUtils::Builder::Util 0
+      ExtUtils::Builder::Util 0.018
       ExtUtils::Config 0
       ExtUtils::Helpers 0.028
       ExtUtils::Install 0
@@ -537,7 +519,6 @@ DISTRIBUTIONS
       File::Copy 0
       File::Find 0
       File::Path 0
-      File::ShareDir::Tiny 0
       File::Spec::Functions 0
       Getopt::Long 2.36
       List::Util 1.33
@@ -576,42 +557,43 @@ DISTRIBUTIONS
       perl 5.008001
       strict 0
       warnings 0
-  Exporter-Tiny-1.006002
-    pathname: T/TO/TOBYINK/Exporter-Tiny-1.006002.tar.gz
+  Exporter-Tiny-1.006003
+    pathname: T/TO/TOBYINK/Exporter-Tiny-1.006003.tar.gz
     provides:
-      Exporter::Shiny 1.006002
-      Exporter::Tiny 1.006002
+      Exporter::Shiny 1.006003
+      Exporter::Tiny 1.006003
     requirements:
       ExtUtils::MakeMaker 6.17
       perl 5.006001
-  ExtUtils-Builder-0.017
-    pathname: L/LE/LEONT/ExtUtils-Builder-0.017.tar.gz
+  ExtUtils-Builder-0.018
+    pathname: L/LE/LEONT/ExtUtils-Builder-0.018.tar.gz
     provides:
-      ExtUtils::Builder 0.017
-      ExtUtils::Builder::Action 0.017
-      ExtUtils::Builder::Action::Code 0.017
-      ExtUtils::Builder::Action::Command 0.017
-      ExtUtils::Builder::Action::Composite 0.017
-      ExtUtils::Builder::Action::Function 0.017
-      ExtUtils::Builder::Action::Perl 0.017
-      ExtUtils::Builder::Action::Primitive 0.017
-      ExtUtils::Builder::FileSet 0.017
-      ExtUtils::Builder::FileSet::Filter 0.017
-      ExtUtils::Builder::FileSet::Free 0.017
-      ExtUtils::Builder::FileSet::Subst 0.017
-      ExtUtils::Builder::MakeMaker 0.017
-      ExtUtils::Builder::Node 0.017
-      ExtUtils::Builder::Plan 0.017
-      ExtUtils::Builder::Planner 0.017
-      ExtUtils::Builder::Planner::Extension 0.017
-      ExtUtils::Builder::Serializer 0.017
-      ExtUtils::Builder::Util 0.017
+      ExtUtils::Builder 0.018
+      ExtUtils::Builder::Action 0.018
+      ExtUtils::Builder::Action::Code 0.018
+      ExtUtils::Builder::Action::Command 0.018
+      ExtUtils::Builder::Action::Composite 0.018
+      ExtUtils::Builder::Action::Function 0.018
+      ExtUtils::Builder::Action::Perl 0.018
+      ExtUtils::Builder::Action::Primitive 0.018
+      ExtUtils::Builder::FileSet 0.018
+      ExtUtils::Builder::FileSet::Filter 0.018
+      ExtUtils::Builder::FileSet::Free 0.018
+      ExtUtils::Builder::FileSet::Subst 0.018
+      ExtUtils::Builder::MakeMaker 0.018
+      ExtUtils::Builder::Node 0.018
+      ExtUtils::Builder::Plan 0.018
+      ExtUtils::Builder::Planner 0.018
+      ExtUtils::Builder::Planner::Extension 0.018
+      ExtUtils::Builder::Serializer 0.018
+      ExtUtils::Builder::Util 0.018
     requirements:
       Carp 0
       Data::Dumper 0
       Exporter 5.57
       ExtUtils::Config 0
       ExtUtils::Config::MakeMaker 0
+      ExtUtils::Helpers 0.027
       ExtUtils::MakeMaker 6.68
       ExtUtils::Manifest 0
       File::Basename 0
@@ -626,31 +608,31 @@ DISTRIBUTIONS
       strict 0
       version 0
       warnings 0
-  ExtUtils-Builder-Compiler-0.032
-    pathname: L/LE/LEONT/ExtUtils-Builder-Compiler-0.032.tar.gz
+  ExtUtils-Builder-Compiler-0.033
+    pathname: L/LE/LEONT/ExtUtils-Builder-Compiler-0.033.tar.gz
     provides:
-      ExtUtils::Builder::ArgumentCollector 0.032
-      ExtUtils::Builder::AutoDetect::C 0.032
-      ExtUtils::Builder::AutoDetect::Cpp 0.032
-      ExtUtils::Builder::Binary 0.032
-      ExtUtils::Builder::Compiler 0.032
-      ExtUtils::Builder::Compiler::MSVC 0.032
-      ExtUtils::Builder::Compiler::Unixy 0.032
-      ExtUtils::Builder::Compiler::VMS 0.032
-      ExtUtils::Builder::Conf 0.032
-      ExtUtils::Builder::Linker 0.032
-      ExtUtils::Builder::Linker::Ar 0.032
-      ExtUtils::Builder::Linker::COFF 0.032
-      ExtUtils::Builder::Linker::ELF::Any 0.032
-      ExtUtils::Builder::Linker::ELF::GCC 0.032
-      ExtUtils::Builder::Linker::Mach::GCC 0.032
-      ExtUtils::Builder::Linker::PE::GCC 0.032
-      ExtUtils::Builder::Linker::PE::MSVC 0.032
-      ExtUtils::Builder::Linker::Unixy 0.032
-      ExtUtils::Builder::Linker::XCOFF 0.032
-      ExtUtils::Builder::MultiLingual 0.032
-      ExtUtils::Builder::ParseXS 0.032
-      ExtUtils::Builder::Profile::Perl 0.032
+      ExtUtils::Builder::ArgumentCollector 0.033
+      ExtUtils::Builder::AutoDetect::C 0.033
+      ExtUtils::Builder::AutoDetect::Cpp 0.033
+      ExtUtils::Builder::Binary 0.033
+      ExtUtils::Builder::Compiler 0.033
+      ExtUtils::Builder::Compiler::MSVC 0.033
+      ExtUtils::Builder::Compiler::Unixy 0.033
+      ExtUtils::Builder::Compiler::VMS 0.033
+      ExtUtils::Builder::Conf 0.033
+      ExtUtils::Builder::Linker 0.033
+      ExtUtils::Builder::Linker::Ar 0.033
+      ExtUtils::Builder::Linker::COFF 0.033
+      ExtUtils::Builder::Linker::ELF::Any 0.033
+      ExtUtils::Builder::Linker::ELF::GCC 0.033
+      ExtUtils::Builder::Linker::Mach::GCC 0.033
+      ExtUtils::Builder::Linker::PE::GCC 0.033
+      ExtUtils::Builder::Linker::PE::MSVC 0.033
+      ExtUtils::Builder::Linker::Unixy 0.033
+      ExtUtils::Builder::Linker::XCOFF 0.033
+      ExtUtils::Builder::MultiLingual 0.033
+      ExtUtils::Builder::ParseXS 0.033
+      ExtUtils::Builder::Profile::Perl 0.033
     requirements:
       Carp 0
       DynaLoader 0
@@ -659,9 +641,8 @@ DISTRIBUTIONS
       ExtUtils::Builder::Node 0
       ExtUtils::Builder::Planner 0.007
       ExtUtils::Builder::Planner::Extension 0
-      ExtUtils::Builder::Util 0
+      ExtUtils::Builder::Util 0.018
       ExtUtils::Config 0.007
-      ExtUtils::Helpers 0.027
       ExtUtils::MakeMaker 0
       File::Basename 0
       File::Spec::Functions 0
@@ -703,23 +684,6 @@ DISTRIBUTIONS
       File::Basename 0
       File::Spec 0
       File::Temp 0
-  ExtUtils-HasCompiler-0.025
-    pathname: L/LE/LEONT/ExtUtils-HasCompiler-0.025.tar.gz
-    provides:
-      ExtUtils::HasCompiler 0.025
-    requirements:
-      Carp 0
-      DynaLoader 0
-      Exporter 0
-      ExtUtils::MakeMaker 0
-      ExtUtils::Mksymlists 0
-      File::Basename 0
-      File::Spec::Functions 0
-      File::Temp 0
-      base 0
-      perl 5.006
-      strict 0
-      warnings 0
   ExtUtils-Helpers-0.028
     pathname: L/LE/LEONT/ExtUtils-Helpers-0.028.tar.gz
     provides:
@@ -824,6 +788,20 @@ DISTRIBUTIONS
       constant 1.32
       parent 0
       perl 5.008004
+  File-Listing-6.16
+    pathname: P/PL/PLICEASE/File-Listing-6.16.tar.gz
+    provides:
+      File::Listing 6.16
+      File::Listing::apache 6.16
+      File::Listing::dosftp 6.16
+      File::Listing::netware 6.16
+      File::Listing::unix 6.16
+      File::Listing::vms 6.16
+    requirements:
+      Exporter 5.57
+      ExtUtils::MakeMaker 0
+      HTTP::Date 0
+      perl 5.006
   File-Share-0.27
     pathname: I/IN/INGY/File-Share-0.27.tar.gz
     provides:
@@ -855,18 +833,6 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       File::Spec 0
       IO::Dir 0
-      perl 5.006
-      strict 0
-      warnings 0
-  File-ShareDir-Tiny-0.001
-    pathname: L/LE/LEONT/File-ShareDir-Tiny-0.001.tar.gz
-    provides:
-      File::ShareDir::Tiny 0.001
-    requirements:
-      Carp 0
-      Exporter 5.57
-      ExtUtils::MakeMaker 0
-      File::Spec::Functions 0
       perl 5.006
       strict 0
       warnings 0
@@ -926,91 +892,6 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       perl 5.008001
-  Frame-0.01.5-TRIAL
-    pathname: C/CR/CRABAPP/Frame-0.01.5-TRIAL.tar.gz
-    provides:
-      Frame 0.001005
-      Frame::App undef
-      Frame::App::Media::Stream undef
-      Frame::App::Paste undef
-      Frame::App::Static::Index undef
-      Frame::Auth undef
-      Frame::Auth::Config undef
-      Frame::Base undef
-      Frame::Component undef
-      Frame::Config undef
-      Frame::Controller undef
-      Frame::Controller::Default undef
-      Frame::Db undef
-      Frame::Db::Model undef
-      Frame::Db::Pg undef
-      Frame::Db::SQLite undef
-      Frame::Example undef
-      Frame::Example::Controller::Default undef
-      Frame::Middleware undef
-      Frame::Middleware::Auth::Basic undef
-      Frame::Middleware::Debug::Frame undef
-      Frame::Request undef
-      Frame::Request::Placeholder undef
-      Frame::Request::Placeholder::Dummy undef
-      Frame::Routes undef
-      Frame::Routes::Common undef
-      Frame::Routes::Pattern undef
-      Frame::Routes::Route undef
-      Frame::Routes::Route::Factory undef
-      Frame::Server undef
-      Frame::Server::Protocol undef
-      Frame::Server::Protocol::HTTP undef
-      Frame::Server::Protocol::WebSocket undef
-      Frame::Server::Request undef
-      Frame::Tx undef
-      Frame::Util undef
-      Plack::Handler::Frame::Server undef
-      srv undef
-    requirements:
-      Const::Fast 0
-      Const::Fast::Exporter 0
-      Cpanel::JSON::XS 4.32
-      Crypt::Argon2 0.029
-      Cwd 0
-      DBD::SQLite 1.72
-      DBI 1.643
-      Devel::StackTrace::WithLexicals 2.01
-      File::XDG 0
-      Future 0.50
-      Future::AsyncAwait 0.62
-      HTML::Escape 1.11
-      HTTP::Parser::XS 0.17
-      HTTP::Tinyish 0.18
-      Hash::Ordered 0
-      IO::Async 0.802
-      IO::Async::SSL 0.23
-      IO::Socket::SSL 2.075
-      JSON::MaybeXS 1.004004
-      List::AllUtils 0.19
-      MIME::Types 0
-      Module::Build::Tiny 0.034
-      Module::Refresh 0
-      Mozilla::CA 20211001
-      Net::Async::HTTP 0.50
-      Net::Async::HTTP::Server 0.14
-      Net::Async::WebSocket 0.13
-      Net::SSLeay 1.92
-      Object::Pad 0.808
-      PadWalker 0
-      Parallel::Prefork 0.18
-      Path::Tiny 0.144
-      Plack 1.0051
-      SQL::Abstract 2.000001
-      Server::Starter 0.35
-      Syntax::Keyword::Dynamically 0.11
-      Syntax::Keyword::Try 0
-      TOML::Tiny 0
-      Text::Xslate v3.5.9
-      Time::HiRes 0
-      Time::Moment 0
-      meta 0.013
-      perl v5.40.0
   Future-0.52
     pathname: P/PE/PEVANS/Future-0.52.tar.gz
     provides:
@@ -1089,6 +970,21 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 6.46
       perl 5.010001
+  HTTP-Cookies-6.11
+    pathname: O/OA/OALDERS/HTTP-Cookies-6.11.tar.gz
+    provides:
+      HTTP::Cookies 6.11
+      HTTP::Cookies::Microsoft 6.11
+      HTTP::Cookies::Netscape 6.11
+    requirements:
+      Carp 0
+      ExtUtils::MakeMaker 0
+      HTTP::Date 6
+      HTTP::Headers::Util 6
+      HTTP::Request 0
+      locale 0
+      perl 5.008001
+      strict 0
   HTTP-Date-6.06
     pathname: O/OA/OALDERS/HTTP-Date-6.06.tar.gz
     provides:
@@ -1175,6 +1071,14 @@ DISTRIBUTIONS
       Scalar::Util 0
       Test::Deep 0
       Test::More 0.88
+      perl 5.008001
+  HTTP-Negotiate-6.01
+    pathname: G/GA/GAAS/HTTP-Negotiate-6.01.tar.gz
+    provides:
+      HTTP::Negotiate 6.01
+    requirements:
+      ExtUtils::MakeMaker 0
+      HTTP::Headers 6
       perl 5.008001
   HTTP-Parser-XS-0.17
     pathname: K/KA/KAZUHO/HTTP-Parser-XS-0.17.tar.gz
@@ -1498,18 +1402,17 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       perl 5.008001
       utf8 0
-  MIME-Types-2.29
-    pathname: M/MA/MARKOV/MIME-Types-2.29.tar.gz
+  MIME-Types-2.30
+    pathname: M/MA/MARKOV/MIME-Types-2.30.tar.gz
     provides:
-      MIME::Type 2.29
-      MIME::Types 2.29
-      MojoX::MIME::Types 2.29
+      MIME::Type 2.30
+      MIME::Types 2.30
+      MojoX::MIME::Types 2.30
     requirements:
       ExtUtils::MakeMaker 0
       File::Basename 0
       File::Spec 0
       List::Util 0
-      Test::More 0.47
   MRO-Compat-0.15
     pathname: H/HA/HAARG/MRO-Compat-0.15.tar.gz
     provides:
@@ -1816,10 +1719,10 @@ DISTRIBUTIONS
       Sub::Defer 2.006006
       Sub::Quote 2.006006
       perl 5.006
-  Mouse-v2.5.11
-    pathname: S/SK/SKAJI/Mouse-v2.5.11.tar.gz
+  Mouse-v2.6.0
+    pathname: S/SY/SYOHEX/Mouse-v2.6.0.tar.gz
     provides:
-      Mouse v2.5.11
+      Mouse v2.6.0
       Mouse::Exporter undef
       Mouse::Meta::Attribute undef
       Mouse::Meta::Class undef
@@ -1837,10 +1740,11 @@ DISTRIBUTIONS
       Mouse::Meta::TypeConstraint undef
       Mouse::Object undef
       Mouse::PurePerl undef
-      Mouse::Role v2.5.11
-      Mouse::Spec v2.5.11
+      Mouse::Role v2.6.0
+      Mouse::Spec v2.6.0
+      Mouse::Tiny v2.5.12
       Mouse::TypeRegistry undef
-      Mouse::Util v2.5.11
+      Mouse::Util v2.6.0
       Mouse::Util::MetaRole undef
       Mouse::Util::TypeConstraints undef
       Squirrel undef
@@ -1853,7 +1757,7 @@ DISTRIBUTIONS
       Module::Build::XSUtil 0.19
       Scalar::Util 1.14
       XSLoader 0.02
-      perl 5.008005
+      perl 5.010001
   Mozilla-CA-20250602
     pathname: L/LW/LWP/Mozilla-CA-20250602.tar.gz
     provides:
@@ -1918,6 +1822,24 @@ DISTRIBUTIONS
       URI::wss 0
       meta 0.008
       perl 5.014
+  Net-HTTP-6.24
+    pathname: O/OA/OALDERS/Net-HTTP-6.24.tar.gz
+    provides:
+      Net::HTTP 6.24
+      Net::HTTP::Methods 6.24
+      Net::HTTP::NB 6.24
+      Net::HTTPS 6.24
+    requirements:
+      Carp 0
+      Compress::Raw::Zlib 0
+      ExtUtils::MakeMaker 0
+      IO::Socket::INET 0
+      IO::Uncompress::Gunzip 0
+      URI 0
+      base 0
+      perl 5.006002
+      strict 0
+      warnings 0
   Net-SSLeay-1.94
     pathname: C/CH/CHRISN/Net-SSLeay-1.94.tar.gz
     provides:
@@ -1931,16 +1853,16 @@ DISTRIBUTIONS
       Text::Wrap 0
       constant 0
       perl 5.008001
-  Object-Pad-0.821
-    pathname: P/PE/PEVANS/Object-Pad-0.821.tar.gz
+  Object-Pad-0.823
+    pathname: P/PE/PEVANS/Object-Pad-0.823.tar.gz
     provides:
-      Object::Pad 0.821
-      Object::Pad::ExtensionBuilder 0.821
-      Object::Pad::MOP::Class 0.821
-      Object::Pad::MOP::Field 0.821
-      Object::Pad::MOP::FieldAttr 0.821
-      Object::Pad::MOP::Method 0.821
-      Object::Pad::MetaFunctions 0.821
+      Object::Pad 0.823
+      Object::Pad::ExtensionBuilder 0.823
+      Object::Pad::MOP::Class 0.823
+      Object::Pad::MOP::Field 0.823
+      Object::Pad::MOP::FieldAttr 0.823
+      Object::Pad::MOP::Method 0.823
+      Object::Pad::MetaFunctions 0.823
     requirements:
       ExtUtils::CBuilder 0
       File::ShareDir 1.00
@@ -2830,6 +2752,18 @@ DISTRIBUTIONS
       Test::More 0
       parent 0
       perl 5.008001
+  Plack-Middleware-Rewrite-2.102
+    pathname: A/AR/ARISTOTLE/Plack-Middleware-Rewrite-2.102.tar.gz
+    provides:
+      Plack::Middleware::Rewrite 2.102
+    requirements:
+      Plack 0.9942
+      Plack::Middleware 0
+      Plack::Request 0
+      Plack::Util 0
+      Plack::Util::Accessor 0
+      overload 0
+      perl 5.006
   Pod-Markdown-3.400
     pathname: R/RW/RWSTAUNER/Pod-Markdown-3.400.tar.gz
     provides:
@@ -3020,6 +2954,21 @@ DISTRIBUTIONS
       POSIX 0
       strict 0
       warnings 0
+  Starlet-0.31
+    pathname: K/KA/KAZUHO/Starlet-0.31.tar.gz
+    provides:
+      Plack::Handler::Starlet undef
+      Starlet 0.31
+      Starlet::Server undef
+    requirements:
+      ExtUtils::MakeMaker 6.59
+      LWP::UserAgent 5.8
+      Parallel::Prefork 0.17
+      Plack 0.992
+      Server::Starter 0.06
+      Test::More 0.88
+      Test::TCP 2.1
+      perl 5.008001
   Stream-Buffered-0.03
     pathname: D/DO/DOY/Stream-Buffered-0.03.tar.gz
     provides:
@@ -3216,17 +3165,17 @@ DISTRIBUTIONS
       Test::Builder 0
       Test::More 0.96
       perl 5.012
-  Test-Fatal-0.017
-    pathname: R/RJ/RJBS/Test-Fatal-0.017.tar.gz
+  Test-Fatal-0.018
+    pathname: R/RJ/RJBS/Test-Fatal-0.018.tar.gz
     provides:
-      Test::Fatal 0.017
+      Test::Fatal 0.018
     requirements:
       Carp 0
       Exporter 5.57
       ExtUtils::MakeMaker 6.78
       Test::Builder 0
       Try::Tiny 0.07
-      strict 0
+      perl 5.012
       warnings 0
   Test-Number-Delta-1.06
     pathname: D/DA/DAGOLDEN/Test-Number-Delta-1.06.tar.gz
@@ -3241,6 +3190,17 @@ DISTRIBUTIONS
       strict 0
       vars 0
       warnings 0
+  Test-Pod-1.52
+    pathname: E/ET/ETHER/Test-Pod-1.52.tar.gz
+    provides:
+      Test::Pod 1.52
+    requirements:
+      ExtUtils::MakeMaker 0
+      File::Find 0
+      Pod::Simple 3.05
+      Test::Builder::Tester 1.02
+      Test::More 0.62
+      perl 5.008
   Test-Requires-0.11
     pathname: T/TO/TOKUHIROM/Test-Requires-0.11.tar.gz
     provides:
@@ -3334,11 +3294,11 @@ DISTRIBUTIONS
       Storable 2.15
       parent 0.221
       perl 5.008001
-  Time-Moment-0.44
-    pathname: C/CH/CHANSEN/Time-Moment-0.44.tar.gz
+  Time-Moment-0.46
+    pathname: C/CH/CHANSEN/Time-Moment-0.46.tar.gz
     provides:
-      Time::Moment 0.44
-      Time::Moment::Adjusters 0.44
+      Time::Moment 0.46
+      Time::Moment::Adjusters 0.46
     requirements:
       Carp 0
       ExtUtils::MakeMaker 6.59
@@ -3505,6 +3465,18 @@ DISTRIBUTIONS
       Exporter 0
       Module::Build 0.4005
       perl 5.008001
+  WWW-RobotRules-6.02
+    pathname: G/GA/GAAS/WWW-RobotRules-6.02.tar.gz
+    provides:
+      WWW::RobotRules 6.02
+      WWW::RobotRules::AnyDBM_File 6.00
+      WWW::RobotRules::InCore 6.02
+    requirements:
+      AnyDBM_File 0
+      ExtUtils::MakeMaker 0
+      Fcntl 0
+      URI 1.10
+      perl 5.008001
   XS-Parse-Keyword-0.49
     pathname: P/PE/PEVANS/XS-Parse-Keyword-0.49.tar.gz
     provides:
@@ -3519,12 +3491,12 @@ DISTRIBUTIONS
       File::ShareDir 1.00
       Module::Build 0.4004
       perl 5.014
-  XS-Parse-Sublike-0.39
-    pathname: P/PE/PEVANS/XS-Parse-Sublike-0.39.tar.gz
+  XS-Parse-Sublike-0.41
+    pathname: P/PE/PEVANS/XS-Parse-Sublike-0.41.tar.gz
     provides:
-      Sublike::Extended 0.39
-      XS::Parse::Sublike 0.39
-      XS::Parse::Sublike::Builder 0.39
+      Sublike::Extended 0.41
+      XS::Parse::Sublike 0.41
+      XS::Parse::Sublike::Builder 0.41
     requirements:
       ExtUtils::CBuilder 0
       File::ShareDir 1.00
@@ -3601,10 +3573,72 @@ DISTRIBUTIONS
       common::sense 3.75
     requirements:
       ExtUtils::MakeMaker 0
-  meta-0.014
-    pathname: P/PE/PEVANS/meta-0.014.tar.gz
+  libwww-perl-6.81
+    pathname: O/OA/OALDERS/libwww-perl-6.81.tar.gz
     provides:
-      meta 0.014
+      LWP 6.81
+      LWP::Authen::Basic 6.81
+      LWP::Authen::Digest 6.81
+      LWP::Authen::Ntlm 6.81
+      LWP::ConnCache 6.81
+      LWP::Debug 6.81
+      LWP::Debug::TraceHTTP 6.81
+      LWP::DebugFile 6.81
+      LWP::MemberMixin 6.81
+      LWP::Protocol 6.81
+      LWP::Protocol::cpan 6.81
+      LWP::Protocol::data 6.81
+      LWP::Protocol::file 6.81
+      LWP::Protocol::ftp 6.81
+      LWP::Protocol::gopher 6.81
+      LWP::Protocol::http 6.81
+      LWP::Protocol::loopback 6.81
+      LWP::Protocol::mailto 6.81
+      LWP::Protocol::nntp 6.81
+      LWP::Protocol::nogo 6.81
+      LWP::RobotUA 6.81
+      LWP::Simple 6.81
+      LWP::UserAgent 6.81
+      libwww::perl undef
+    requirements:
+      Digest::MD5 0
+      Encode 2.12
+      Encode::Locale 0
+      ExtUtils::MakeMaker 0
+      File::Copy 0
+      File::Listing 6
+      File::Temp 0
+      Getopt::Long 0
+      HTML::Entities 0
+      HTML::HeadParser 3.71
+      HTTP::Cookies 6
+      HTTP::Date 6
+      HTTP::Message 7.01
+      HTTP::Negotiate 6
+      HTTP::Request 7.01
+      HTTP::Request::Common 6.18
+      HTTP::Response 7.01
+      HTTP::Status 6.18
+      IO::Select 0
+      IO::Socket 0
+      LWP::MediaTypes 6
+      MIME::Base64 2.1
+      Module::Load 0
+      Net::FTP 2.58
+      Net::HTTP 6.18
+      Scalar::Util 0
+      Try::Tiny 0
+      URI 1.10
+      URI::Escape 0
+      WWW::RobotRules 6
+      parent 0.217
+      perl 5.008001
+      strict 0
+      warnings 0
+  meta-0.015
+    pathname: P/PE/PEVANS/meta-0.015.tar.gz
+    provides:
+      meta 0.015
     requirements:
       ExtUtils::CBuilder 0
       Module::Build 0.4004

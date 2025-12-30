@@ -1,7 +1,6 @@
 requires 'perl', 'v5.42';
 
 requires 'Frame', '0.01.5',
-  mirror => 'http://pi5i-i.lan:9002',
   dist   => 'CRABAPP/Frame-0.01.5-TRIAL.tar.gz';
 
 requires 'Net::SSLeay';
@@ -15,6 +14,7 @@ requires 'CGI::Compile';
 requires 'CGI::Emulate::PSGI';
 requires 'Plack::Builder';
 requires 'Plack::Middleware::Auth::Basic';
+requires 'Plack::Middleware::Rewrite';
 requires 'File::chdir';
 requires 'Text::Markdown::Hoedown';
 
