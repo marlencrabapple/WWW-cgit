@@ -11,5 +11,5 @@ PERL5LIB="$HOME/Frame/lib:./local/lib/perl5" \
  DEBUG=1 \
  PLACK_ENV=development \
  CGIT_CONFIG=./etc/frame-app-cgitrc \
- sudo script/cgit.pl -- -s Starlet -p 80
+ sudo script/cgit.pl -- -s Starlet -p 1526
 

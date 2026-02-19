@@ -12,7 +12,6 @@ use v5.40;
 
 use lib 'lib';
 
-use Data::Dumper;
 use Const::Fast         qw( const );
 use Path::Tiny          qw( path );
 use Getopt::Long        qw( GetOptionsFromArray );
@@ -20,50 +19,69 @@ use Plack::Runner       ();
 use Plack::Builder      ();
 use Plack::App::WrapCGI ();
 use Cwd                 qw( abs_path getcwd );
-
-use Frame::App::cgit           ();
-use Frame::App::cgit::Instance ();
-
-const our $www => abs_path(getcwd) . '/www';
+use IPC::Nosh;
+use IPC::Nosh::IO;
 
 field $argv : param;
 field $app;
-field @instance;
+field $instance = {};
 field $builder { Plack::Builder->new }
-field $srvpath = path(abs_path);
+field $execdir = path(abs_path);
+field $cgitrc : reader = [];
 field $config_file;
-field $config : reader = { instance => ['frameapp'] };
+field $sockchown;
+field $listen : reader = [':5000'];
 
 field $cliopts : param(dest) : reader = {
-    ssl => {
-        'ssl'        => 1,
-        'ssl-server' => 1
-    }
+    mount   => '/',
+    cgitrc  => $cgitrc,
+    execdir => $execdir,
+    assets  => "$execdir/www",
+    listen  => $listen           # [':5000'],        #["$execdir/cgitsrv.sock"]
 };
 
 ADJUSTPARAMS($params) {
-    $self->setup_cgit;
-
-    GetOptionsFromArray(
-        $argv, $cliopts,
-
-        #    'ssl|tls|x509',
-        'username=s',
-        "password=s%",
-
-        #'password=s',
-        'verbose',
-        'debug', 'help',
-        'version',
-        'config-file|config-path=s',
-
+    const my @instance_optspec => (
+        'basicauth|auth|http-basic-auth=s', 'config-file|config-path=s',
+        'ssl-cert-file=s',                  'ssl-key-file=s',
+        'cgit|cgi|script=s',
     );
 
-    $self->mount_middleware;
-    $builder->mount( '/' => shift @instance );
+    GetOptionsFromArray(
+        $argv,          $cliopts,
+        'cgitrc=s{,}',  'verbose+',
+        'debug+',       'verion',
+        'help|usage|?', 'mount=s',
+        'listen=s{1,}', 'sockchown|socket-chown=s',
+        @instance_optspec
+    );
 
-    my $frameapp;
-    $builder->mount( '/new' => $frameapp )
+    if ( $$cliopts{sockchown} ) {
+        my ( $uname, $group ) = split /:/, $$cliopts{sockchown}, 1;
+        $group //= $uname;
+
+        $sockchown =
+          { uid => getpwnam($uname), gid => getgrnam($group) };
+    }
+
+    foreach my $cgitrc (@$cgitrc) {
+        my ( $rcfile, $mount, %opt ) = split /:/, $cgitrc, 1;
+        $mount //= '/';
+
+        $$instance{$cgitrc} =
+          { %$cliopts, cgit => "/usr/share/webapps/cgit/cgit.cgi", };
+
+        if ( scalar keys %opt ) {
+            GetOptionsFromArray( \%opt, $$instance{$cgitrc},
+                @instance_optspec );
+        }
+
+        $$instance{$cgitrc}{app} = $self->init_instance( $$instance{$cgitrc} );
+
+        $builder->mount( $mount, $$instance{$cgitrc}{app} );
+    }
+
+    $self->mount_middleware;
 }
 
 method mount_middleware {
@@ -77,53 +95,39 @@ method mount_middleware {
         $builder->add_middleware('StackTrace');
     }
 
-    # $builder->add_middleware(
-    #     "Plack::Middleware::Rewrite",
-    #     request => sub {
-    #         s^(.+?)\.git(\/)?$^$1/.git^i;
-    #     }
-    # );
-
-    $builder->add_middleware(
-        "Plack::Middleware::Static",
-        path => sub { s!^/s/cgit/!! },
-        root => "/usr/share/webapps/cgit/"
-    );
-
-    $builder->add_middleware(
-        "Plack::Middleware::Static",
-        path => sub { s!^/s/!! },
-        root => $www
-    );
-
-}
-
-method setup_cgit () {
-    $app = Plack::App::WrapCGI->new(
-        script  => "/usr/share/webapps/cgit/cgit.cgi",
-        execute => 1
-    )->to_app;
-
-    foreach my $instance ( $self->config->{instance}->@* ) {
-
-        push @instance,
-          Frame::App::cgit::Instance->wrap( $app,
-            config => $ENV{ uc($instance) . "_CGITRC" }
-              // "./etc/${instance}-cgitrc" );
-
-        say STDERR Dumper( instance => \@instance, app => $app );
+    if ( $$cliopts{rewrite} ) {
+        $builder->add_middleware(
+            "Plack::Middleware::Rewrite",
+            request => sub {
+                s^(.+?)\.git(\/)?$^$1/.git^i;
+            }
+        );
     }
 
-    { baseapp => $app, instances => \@instance };
+    if ( $$cliopts{serve_assets} ) {
+        $builder->add_middleware(
+            "Plack::Middleware::Static",
+            path => sub { s!^/s/cgit/!! },
+            root => "/usr/share/webapps/cgit/"
+        );
+
+        $builder->add_middleware(
+            "Plack::Middleware::Static",
+            path => sub { s!^/s/!! },
+            root => $$cliopts{assets}
+        );
+    }
+}
+
+method init_instance ($opt) {
+    my $app = Plack::App::WrapCGI->new(
+        script  => $$opt{cgit},
+        execute => 1
+    )->to_app;
 }
 
 method to_app {
     $builder->to_app;
-}
-
-method init : common ( $argv = \@ARGV, %opts) {
-    my $self = $class->new( argv => $argv );
-    $self;
 }
 
 package main;
@@ -134,22 +138,29 @@ use lib 'lib';
 use utf8;
 use v5.40;
 
-use Data::Dumper;
-use Frame::Base;
+use IPC::Nosh;
+use IPC::Nosh::IO;
+use Const::Fast;
 
-our $cgitsrv = cgit->init( \@ARGV );
-our $cliopts = $cgitsrv->cliopts;
+our $cgitsrv = cgit->new( argv => \@ARGV );
 our $app     = $cgitsrv->to_app;
+
+const our $sockscheme_re => qr'^unix://';
 
 unless (caller) {
     require Plack::Runner;
     my $runner = Plack::Runner->new;
-    $runner->parse_options(@ARGV);
 
-    if ( $$cliopts{pass} isa 'HASH' && $cliopts->{pass}{crypt} ) {
-        ...;
+    foreach my $listen ( $cgitsrv->listen->@* ) {
+        if ( $listen =~ $sockscheme_re ) {
+            my $sock = path( $listen =~ s/$sockscheme_re//r );
+            $sock->unlink if $sock->exists && !$sock->is_dir;
+            chown( $cgitsrv->sockchown->@*->(qw(uid gid)), $sock )
+              if $cgitsrv->sockchown;
+        }
     }
 
+    $runner->parse_options(@ARGV);
     $runner->run($app);
 
     warn "$! ($?)" if $? != 0;
