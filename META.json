@@ -63,6 +63,7 @@
             "Inline::C" : "0",
             "Inline::CPP" : "0",
             "Inline::Module" : "0",
+            "Net::Async::HTTP::Server" : "0",
             "Net::SSLeay" : "0",
             "Plack::Builder" : "0",
             "Plack::Middleware::Auth::Basic" : "0",

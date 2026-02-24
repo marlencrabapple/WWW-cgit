@@ -1,7 +1,8 @@
 requires 'perl', 'v5.42';
 
-requires 'Frame', '0.01.5',
-  dist   => 'CRABAPP/Frame-0.01.5-TRIAL.tar.gz';
+requires 'Frame', '0.01.5', dist => 'CRABAPP/Frame-0.01.5-TRIAL.tar.gz';
+
+requires 'Net::Async::HTTP::Server';
 
 requires 'Net::SSLeay';
 requires 'Starlet';
@@ -17,6 +18,7 @@ requires 'Plack::Middleware::Auth::Basic';
 requires 'Plack::Middleware::Rewrite';
 requires 'File::chdir';
 requires 'Text::Markdown::Hoedown';
+requires 'IPC::Nosh';
 
 on 'test' => sub {
     requires 'Test::More', '0.98';

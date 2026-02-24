@@ -100,6 +100,12 @@ DISTRIBUTIONS
       Class::Data::Inheritable 0.10
     requirements:
       ExtUtils::MakeMaker 0
+  Class-Exporter-0.03
+    pathname: S/SP/SPLICE/Class-Exporter-0.03.tar.gz
+    provides:
+      Class::Exporter 0.03
+    requirements:
+      ExtUtils::MakeMaker 0
   Class-Inspector-1.36
     pathname: P/PL/PLICEASE/Class-Inspector-1.36.tar.gz
     provides:
@@ -369,6 +375,14 @@ DISTRIBUTIONS
       Exporter 0
       ExtUtils::MakeMaker 0
       perl 5.006
+  Data-Dumper-Names-0.03
+    pathname: O/OV/OVID/Data-Dumper-Names-0.03.tar.gz
+    provides:
+      Data::Dumper::Names 0.03
+    requirements:
+      PadWalker 0.13
+      Scalar::Util 0
+      Test::More 0
   Data-MessagePack-1.02
     pathname: S/SY/SYOHEX/Data-MessagePack-1.02.tar.gz
     provides:
@@ -788,6 +802,13 @@ DISTRIBUTIONS
       constant 1.32
       parent 0
       perl 5.008004
+  Feature-Compat-Try-0.05
+    pathname: P/PE/PEVANS/Feature-Compat-Try-0.05.tar.gz
+    provides:
+      Feature::Compat::Try 0.05
+    requirements:
+      Module::Build 0.4004
+      perl 5.014
   File-Listing-6.16
     pathname: P/PL/PLICEASE/File-Listing-6.16.tar.gz
     provides:
@@ -1316,6 +1337,20 @@ DISTRIBUTIONS
       File::Basename 0
       Scalar::Util 0
       perl 5.006002
+      strict 0
+  LWP-Protocol-https-6.14
+    pathname: O/OA/OALDERS/LWP-Protocol-https-6.14.tar.gz
+    provides:
+      LWP::Protocol::https 6.14
+      LWP::Protocol::https::Socket 6.14
+    requirements:
+      ExtUtils::MakeMaker 0
+      IO::Socket::SSL 1.970
+      LWP::Protocol::http 0
+      LWP::UserAgent 6.06
+      Net::HTTPS 6
+      base 0
+      perl 5.008001
       strict 0
   Lingua-EN-Inflect-1.905
     pathname: D/DC/DCONWAY/Lingua-EN-Inflect-1.905.tar.gz
@@ -2882,6 +2917,50 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       XSLoader 0
       perl 5.006
+  Regexp-Common-2024080801
+    pathname: A/AB/ABIGAIL/Regexp-Common-2024080801.tar.gz
+    provides:
+      Regexp::Common 2024080801
+      Regexp::Common::CC 2024080801
+      Regexp::Common::Entry 2024080801
+      Regexp::Common::SEN 2024080801
+      Regexp::Common::URI 2024080801
+      Regexp::Common::URI::RFC1035 2024080801
+      Regexp::Common::URI::RFC1738 2024080801
+      Regexp::Common::URI::RFC1808 2024080801
+      Regexp::Common::URI::RFC2384 2024080801
+      Regexp::Common::URI::RFC2396 2024080801
+      Regexp::Common::URI::RFC2806 2024080801
+      Regexp::Common::URI::fax 2024080801
+      Regexp::Common::URI::file 2024080801
+      Regexp::Common::URI::ftp 2024080801
+      Regexp::Common::URI::gopher 2024080801
+      Regexp::Common::URI::http 2024080801
+      Regexp::Common::URI::news 2024080801
+      Regexp::Common::URI::pop 2024080801
+      Regexp::Common::URI::prospero 2024080801
+      Regexp::Common::URI::tel 2024080801
+      Regexp::Common::URI::telnet 2024080801
+      Regexp::Common::URI::tv 2024080801
+      Regexp::Common::URI::wais 2024080801
+      Regexp::Common::_support 2024080801
+      Regexp::Common::balanced 2024080801
+      Regexp::Common::comment 2024080801
+      Regexp::Common::delimited 2024080801
+      Regexp::Common::lingua 2024080801
+      Regexp::Common::list 2024080801
+      Regexp::Common::net 2024080801
+      Regexp::Common::number 2024080801
+      Regexp::Common::profanity 2024080801
+      Regexp::Common::whitespace 2024080801
+      Regexp::Common::zip 2024080801
+    requirements:
+      Config 0
+      ExtUtils::MakeMaker 0
+      perl 5.010
+      strict 0
+      vars 0
+      warnings 0
   Role-Tiny-2.002004
     pathname: H/HA/HAARG/Role-Tiny-2.002004.tar.gz
     provides:
@@ -3031,6 +3110,16 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Scalar::Util 0
       perl 5.006
+  Syntax-Keyword-Defer-0.11
+    pathname: P/PE/PEVANS/Syntax-Keyword-Defer-0.11.tar.gz
+    provides:
+      Syntax::Keyword::Defer 0.11
+    requirements:
+      ExtUtils::CBuilder 0
+      Module::Build 0.4004
+      XS::Parse::Keyword 0.13
+      XS::Parse::Keyword::Builder 0.13
+      perl 5.014
   Syntax-Keyword-Dynamically-0.14
     pathname: P/PE/PEVANS/Syntax-Keyword-Dynamically-0.14.tar.gz
     provides:
@@ -3042,6 +3131,16 @@ DISTRIBUTIONS
       XS::Parse::Keyword 0.13
       XS::Parse::Keyword::Builder 0.13
       perl 5.014
+  Syntax-Keyword-MultiSub-0.05
+    pathname: P/PE/PEVANS/Syntax-Keyword-MultiSub-0.05.tar.gz
+    provides:
+      Syntax::Keyword::MultiSub 0.05
+    requirements:
+      ExtUtils::CBuilder 0
+      Module::Build 0.4004
+      XS::Parse::Sublike 0.15
+      XS::Parse::Sublike::Builder 0.15
+      perl 5.026
   Syntax-Keyword-Try-0.31
     pathname: P/PE/PEVANS/Syntax-Keyword-Try-0.31.tar.gz
     provides:
@@ -3104,6 +3203,18 @@ DISTRIBUTIONS
       Scalar::Util 1.14
       perl 5.006
       strict 0
+  Test-CPAN-Meta-0.25
+    pathname: B/BA/BARBIE/Test-CPAN-Meta-0.25.tar.gz
+    provides:
+      Test::CPAN::Meta 0.25
+      Test::CPAN::Meta::Version 0.25
+    requirements:
+      ExtUtils::MakeMaker 0
+      IO::File 0
+      Parse::CPAN::Meta 0.02
+      Test::Builder 0
+      Test::Builder::Tester 0
+      Test::More 0.70
   Test-Deep-1.205
     pathname: R/RJ/RJBS/Test-Deep-1.205.tar.gz
     provides:
@@ -3599,7 +3710,6 @@ DISTRIBUTIONS
       LWP::RobotUA 6.81
       LWP::Simple 6.81
       LWP::UserAgent 6.81
-      libwww::perl undef
     requirements:
       Digest::MD5 0
       Encode 2.12
