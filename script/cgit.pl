@@ -14,16 +14,18 @@ use lib 'lib';
 
 use Const::Fast         qw( const );
 use Path::Tiny          qw( path );
-use Getopt::Long        qw( GetOptionsFromArray );
+use Getopt::Long        qw(GetOptionsFromArray :config no_ignore_case);
 use Plack::Runner       ();
 use Plack::Builder      ();
 use Plack::App::WrapCGI ();
 use Cwd                 qw( abs_path getcwd );
-use File::Basename;
-use IPC::Nosh;
+
+use IPC::Run3;
 use IPC::Nosh::IO;
 
 use Frame::App::cgit::Instance;
+
+const our $sockscheme_re => qr'^unix://';
 
 field $argv : param;
 field $app;
@@ -34,7 +36,10 @@ field $cgit_sharedir : accessor = "/usr/share/webapps/cgit";
 field $cgitrc        : reader   = [];
 field $config_file;
 field $sockchown : reader;
-field $listen : reader = [];
+field $sockchgrp : reader;
+field $sockchmod : reader;
+field $listen    : reader = [];
+field $sock;
 
 field $cliopts : param(dest) : reader {
     {
@@ -58,27 +63,50 @@ ADJUSTPARAMS($params) {
     );
 
     GetOptionsFromArray(
-        $argv,                $cliopts,
-        'cgitrc=s{,}',        'verbose+',
-        'debug+',             'verion',
-        'help|usage|?',       'mount=s',
-        'listen=s{1,}',       'sockchown|socket-chown=s',
-        'static|assets=s{,}', 'serve-static|serve-assets',
-        'rewrite',            'cgit-sharedir=s',
-        'server|s=s',         @instance_optspec
+        $argv,                      $cliopts,
+        'cgitrc=s{,}',              'verbose+',
+        'debug+',                   'verion',
+        'help|usage|?',             'mount=s',
+        'listen=s{1,}',             'sockchown|socket-chown=s',
+        'sockchgrp|socket-chgrp=s', 'sockchmod|socket-chmod=s',
+        'static|assets=s{,}',       'serve-static|serve-assets',
+        'rewrite',                  'cgit-sharedir=s',
+        'server|s=s',               @instance_optspec
     );
 
-    $cliopts->{listen}[0] = ':5000' unless scalar $cliopts->{listen}->@*;
+    if ( scalar @$listen ) {
+        foreach my $listen (@$listen) {
+            if ( $listen =~ $sockscheme_re ) {
+                my $sock = path( $listen =~ s/$sockscheme_re//r );
+                $sock->remove if $sock->exists;
+
+                $listen = $sock;
+                push @$sock, $sock;
+            }
+        }
+    }
+    else {
+        push @$listen, ':5000';
+    }
 
     if ( $$cliopts{sockchown} ) {
         my ( $uname, $group ) = split /\:/, $$cliopts{sockchown};
         $group //= $uname;
+
+        if ( $uname == -1 ) {
+            $sockchgrp = $$cliopts{sockchgrp} = $group;
+        }
 
         dmsg $uname, $group, $$cliopts{sockchown};
 
         $sockchown =
           { uid => ( 0 + getpwnam($uname) ), gid => ( 0 + getgrnam($group) ) };
     }
+    elsif ( $$cliopts{sockchgrp} ) {
+        $sockchgrp = $$cliopts{sockchgrp};
+    }
+
+    $sockchmod = $$cliopts{sockchmod};
 
     foreach my $cgitrc (@$cgitrc) {
         my ( $rcfile, $mount, %opt ) = split /:/, $cgitrc, 1;
@@ -102,6 +130,23 @@ ADJUSTPARAMS($params) {
     }
 
     $self->mount_middleware;
+    $app = $self->to_app
+}
+
+method cmd : common ($cmd) {
+    my %res = ( cmd => $cmd, out => [], err => [], exit => [] );
+
+    $res{piperr} = run3( $cmd, \undef, @res{qw(out err)} );
+    $res{exit}   = [ $?, $! ];
+
+    foreach my $lines ( @res{qw(out err)} ) {
+        @$lines = map { chomp $_; $_ } @$lines;
+    }
+
+    err $res{err} if $res{exit}->[0] > 0;
+
+    dmsg \%res;
+    \%res;
 }
 
 method mount_middleware {
@@ -165,6 +210,48 @@ method runnerargs {
     @args;
 }
 
+method socketperms {
+    my $sockchown = $self->sockchown;
+    foreach my $sock (@$sock) {
+        my $modified = 0;
+
+        $modified = chown( $$sockchown{uid}, $$sockchown{gid}, $sock )
+          if $sockchown;
+
+        err "$! ($?)" unless $modified;
+
+        if ($sockchgrp) {
+            my $chgrp_res =
+              cgit->cmd( [ 'chgrp', $sockchgrp, "" . $sock->absolute ] );
+        }
+
+        if ($sockchmod) {
+            try {
+                $sockchmod = sprintf "%01d", $sockchmod
+                  if ( $sockchmod =~ /[0-9]{3}/ );
+                $sock->chmod($sockchmod);
+            }
+            catch ($e) {
+                err $e;
+
+                my $chgrp_res =
+                  cgit->cmd( [ 'chmod', $sockchmod, "" . $sock->absolute ] );
+            }
+        }
+    }
+}
+
+method run {
+    require Plack::Runner;
+    my $runner = Plack::Runner->new;
+
+    $runner->parse_options( @ARGV, $self->runnerargs );
+    $runner->run($app);
+
+    $self->socketperms($sock);
+    $self;
+}
+
 package main;
 
 class main;
@@ -173,40 +260,14 @@ use lib 'lib';
 use utf8;
 use v5.40;
 
-use IPC::Nosh;
 use IPC::Nosh::IO;
-use Const::Fast;
-use Path::Tiny;
-
-# use Plack::Runner;
 
 our $cgitsrv = cgit->new( argv => \@ARGV );
-our $app     = $cgitsrv->to_app;
-
-const our $sockscheme_re => qr'^unix:(?://)?';
 
 unless (caller) {
-    require Plack::Runner;
-    my $runner = Plack::Runner->new;
-
-    foreach my $listen ( $cgitsrv->listen->@* ) {
-        if ( $listen =~ $sockscheme_re ) {
-            my $sock = path( $listen =~ s/$sockscheme_re//r );
-            $sock->remove if $sock->exists;
-
-            my $sockchown = $cgitsrv->sockchown;
-
-            chown( $$sockchown{uid}, $$sockchown{gid}, $sock )
-              if $cgitsrv->sockchown;
-
-            $listen = $sock;
-        }
-    }
-
-    $runner->parse_options( @ARGV, $cgitsrv->runnerargs );
-    $runner->run($app);
-
-    warn "$! ($?)" if $? != 0;
+    $cgitsrv->run;
+    err "$! ($?)" if $? != 0;
     exit $?;
 }
-return $app;
+
+$cgitsrv->app;

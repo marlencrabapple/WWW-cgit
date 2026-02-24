@@ -19,6 +19,7 @@ requires 'Plack::Middleware::Rewrite';
 requires 'File::chdir';
 requires 'Text::Markdown::Hoedown';
 requires 'IPC::Nosh';
+requires 'App::md2html';
 
 on 'test' => sub {
     requires 'Test::More', '0.98';

@@ -17,6 +17,18 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       perl 5.008001
+  App-md2html-0.01-TRIAL
+    pathname: C/CR/CRABAPP/App-md2html-0.01-TRIAL.tar.gz
+    provides:
+      App::md2html undef
+      md2html 0.01
+    requirements:
+      Const::Fast 0
+      IPC::Nosh 0
+      Module::Build::Tiny 0.034
+      Path::Tiny 0
+      Syntax::Keyword::Defer 0
+      perl v5.40.0
   B-Keywords-1.29
     pathname: R/RU/RURBAN/B-Keywords-1.29.tar.gz
     provides:
@@ -1247,6 +1259,26 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Net::SSLeay 1.46
       Scalar::Util 0
+  IPC-Nosh-0.01-TRIAL
+    pathname: C/CR/CRABAPP/IPC-Nosh-0.01-TRIAL.tar.gz
+    provides:
+      IPC::Nosh 0.01
+      IPC::Nosh::IO undef
+      IPC::Nosh::IO::Mux undef
+    requirements:
+      Class::Exporter 0
+      Const::Fast 0
+      Data::Dumper::Names 0
+      Devel::StackTrace::WithLexicals 0
+      IO::Handle 0
+      IPC::Run3 0
+      Module::Build::Tiny 0.034
+      Object::Pad 0
+      Path::Tiny 0
+      Regexp::Common 0
+      Syntax::Keyword::Defer 0
+      Syntax::Keyword::Dynamically 0
+      perl v5.40.0
   IPC-Run3-0.049
     pathname: R/RJ/RJBS/IPC-Run3-0.049.tar.gz
     provides:
