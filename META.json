@@ -54,12 +54,14 @@
       },
       "runtime" : {
          "requires" : {
+            "App::md2html" : "0",
             "CGI::Compile" : "0",
             "CGI::Emulate::PSGI" : "0",
             "Data::Printer" : "0",
             "FFI::Platypus" : "0",
             "File::chdir" : "0",
             "Frame" : "v0.1.5",
+            "IPC::Nosh" : "0",
             "Inline::C" : "0",
             "Inline::CPP" : "0",
             "Inline::Module" : "0",
