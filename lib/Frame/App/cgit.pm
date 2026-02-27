@@ -2,16 +2,12 @@ use Object::Pad;
 
 package Frame::App::cgit;
 
-class Frame::App::cgit : does(Frame) : does(Frame::App::cgit::Db);
+class Frame::App::cgit : does(Frame);    #: does(Frame::App::cgit::Db);
 
 use utf8;
 use v5.40;
 
 our $VERSION = "0.01";
-
-# ADJUST {
-#   $self->init_db
-# }
 
 method startup {
     my $r      = $self->routes;
