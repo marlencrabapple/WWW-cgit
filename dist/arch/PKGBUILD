@@ -1,0 +1,74 @@
+# Maintainer: Ian Bradley <crabapp@softsrv.net>
+
+_pkgname=perl-www-cgit
+pkgname="$_pkgname-git"
+_package=WWW-BS
+pkgver=0.0.1.r22.g728bb88
+_dist="${_package,,*}-${pkgver/%.r*/}"
+pkgrel=1
+pkgdesc="Build system for PKGBUILD based Linux distributions"
+arch=(any)
+license=('Artistic-1.0-Perl' 'GPL-1.0-or-later')
+depends=('perl' 'expac' 'pacutils' 'archlinux-contrib' 'pacman-contrib'
+    'archiso' 'pacman-mirrorlist' 'shiny-mirrors-git' 'perl-net-ssleay'
+    'perl-devel-checkbin' 'arch-rebuild-order' 'perl-object-pad')
+makedepends=('perl-syntax-keyword-try' 'perl-cpanel-json-xs'
+    'perl-www-fatpacker' 'perl-module-build' 'perl-dbi' 'cpanminus'
+    'perl-inline-c' 'perl-path-tiny' 'perl-net-ssleay' 'perl-module-build-xsutil')
+options=('!emptydirs' 'staticlibs')
+replaces=(perl-www-cgit perl-www-cgit-git)
+provides=(perl-www-cgit-git www-bs)
+conflicts=(www-bs)
+url="http://_pan.softsrv.net/~CRABAPP/"
+_commit=728bb88eae04329d3731120b65f829cbecbedff9
+source=("git+$url#commit=$_commit")
+sha512sums=('0ed1b5630bf52d5b61cc66f0cf9e4a4d749db21de03303e85ebd435a7de9bae006c5de3a0094b77a9402660d9d4711f5ce89de8697dd24a6cc3541018d9e6bf9')
+b2sums=('703a685a04564389960521e594d440c3c4db92402afc6354633e3faf9f433659b94e32b714ca4a4e721e0194999376bb39df9abece023d1103764b80a2f65efb')
+
+pkgver() {
+    cd "$srcdir/$_dist"
+    (
+        set -o pipefail
+        git describe --long --abbrev=7 2>/dev/null | sed 's/\([^-]*-g\)/r\1/;s/-/./g' ||
+            printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short=7 HEAD)"
+    )
+}
+
+prepare() {
+    cd "$srcdir/$_pkgname"
+
+    unset PERL5LIB PERL_MM_OPT PERL_MB_OPT PERL_LOCAL_LIB_ROOT
+
+    export PERL5LIB="$(pwd)/local/lib/perl5"
+    export PERL_CPANM_OPT="-L$(pwd)/local \
+   --with-develop \
+   --with-configure"
+}
+
+build() {
+    cd "$srcdir/$_pkgname"
+    cpanm --installdeps .
+    perl Build.PL
+    ./Build build
+
+    mkdir fat
+
+    for pl in $(perl -Mv5.40 -e 'grep { open my $fh q{<}, $_; my $txt = do { local $/; $fh; }; close $fh;  $txt =~ qr$#!/usr/bin/.+perl$ } (@_)' script/*); do
+        basename="$(basename "$pl")"
+        fatpack pack "$pl" >"fat/$basename-fat.pl"
+    done
+}
+
+check() {
+    cd "$srcdir/$_pkgname"
+    ./Build testall
+}
+
+package() {
+    cd "$srcdir/$_pkgname"
+    ./Build install \
+        --destdir="$pkgdir" \
+        --install_base=/usr \
+        --prefix=/usr \
+        --verbose
+}
