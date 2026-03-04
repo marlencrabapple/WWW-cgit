@@ -84,5 +84,5 @@
    "release_status" : "unstable",
    "version" : "0.01",
    "x_serialization_backend" : "JSON::PP version 4.16",
-   "x_static_install" : 1
+   "x_static_install" : 0
 }

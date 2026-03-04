@@ -1,0 +1,31 @@
+[Unit]
+Description=Multi-instance cgit application server
+Documentation=https://cgit.softsrv.net/meta/WWW-cgit
+Wants=network-online.target nss-lookup.target
+#Before=nginx.service
+
+[Service]
+CacheDirectory=www-cgit
+DynamicUser=yes
+ExecStart=/usr/bin/cgit.pl  --sockchmod 775 --sockchgrphttp --cgitrc "/etc/www-cgitrc" --listen "unix:///var/run/www-cgit/www-cgit.sock"
+LockPersonality=yes
+LogsDirectory=www-cgit
+MemoryDenyWriteExecute=true
+NonBlocking=true
+NoNewPrivileges=true
+PrivateDevices=true
+ProtectControlGroups=yes
+ProtectHome=yes
+ProtectHostname=yes
+ProtectKernelLogs=yes
+ProtectKernelModules=yes
+ProtectKernelTunables=yes
+ProtectSystem=strict
+RestrictAddressFamilies=AF_INET AF_INET6
+RestrictNamespaces=true
+RestrictRealtime=true
+RuntimeDirectory=www-cgit
+StateDirectory=www-cgit
+
+[Install]
+WantedBy=multi-user.target

@@ -27,9 +27,9 @@ cover_db/
 *.obj
 
 !LICENSE
-
+b
 /_build_params
-
+/fatlib
 MYMETA.*
 
 /Frame-App-cgit-*
@@ -37,8 +37,11 @@ MYMETA.*
 *.crt
 *.pem
 *.key
-
+*ec_params
 /etc
+/bin
+/run
 #!/etc/
 
+*.sock
 ._*

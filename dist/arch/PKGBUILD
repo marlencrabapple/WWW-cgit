@@ -1,24 +1,17 @@
 # Maintainer: Ian Bradley <crabapp@softsrv.net>
-
-_pkgname=perl-www-cgit
-pkgname="$_pkgname-git"
-_package=WWW-BS
+_package="WWW::cgit"
+pkgname="perl-${_package//:./-}"
+pkgname="${pkgname,,*}"
 pkgver=0.0.1.r22.g728bb88
-_dist="${_package,,*}-${pkgver/%.r*/}"
+_dist="${pkgname#perl-}-${pkgver/%.r*/}"
 pkgrel=1
-pkgdesc="Build system for PKGBUILD based Linux distributions"
+pkgdesc="Launcher and instance manager for cgit."
 arch=(any)
 license=('Artistic-1.0-Perl' 'GPL-1.0-or-later')
-depends=('perl' 'expac' 'pacutils' 'archlinux-contrib' 'pacman-contrib'
-    'archiso' 'pacman-mirrorlist' 'shiny-mirrors-git' 'perl-net-ssleay'
-    'perl-devel-checkbin' 'arch-rebuild-order' 'perl-object-pad')
-makedepends=('perl-syntax-keyword-try' 'perl-cpanel-json-xs'
-    'perl-www-fatpacker' 'perl-module-build' 'perl-dbi' 'cpanminus'
-    'perl-inline-c' 'perl-path-tiny' 'perl-net-ssleay' 'perl-module-build-xsutil')
+depends=('perl' 'perl-frame' 'perl-ipc-nosh'
+    'perl-devel-checkbin' 'perl-object-pad')
+makedepends=('perl-module-build-tiny' 'perl-app-fatpack' 'cpanminus')
 options=('!emptydirs' 'staticlibs')
-replaces=(perl-www-cgit perl-www-cgit-git)
-provides=(perl-www-cgit-git www-bs)
-conflicts=(www-bs)
 url="http://_pan.softsrv.net/~CRABAPP/"
 _commit=728bb88eae04329d3731120b65f829cbecbedff9
 source=("git+$url#commit=$_commit")
