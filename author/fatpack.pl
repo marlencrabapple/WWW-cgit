@@ -45,10 +45,8 @@ our $patharg = sub ( $arg, %opt ) {
 };
 
 our %clidest = (
-    modroot => \$modroot,
-    input   => sub {
-        $patharg->( shift, assert => sub { shift->exists } );
-    },
+    modroot  => \$modroot,
+    input    => [],
     outdir   => \$outdir,
     outfn    => \$outfn,
     locallib => \$locallib,
@@ -59,23 +57,27 @@ our %clidest = (
 GetOptions(
     \%clidest,
     'input|file|infile|infname|script=s{,}',
+    => sub {
+        $patharg->( shift, dest => \@input );
+    },
     'outdir|fatpack-out=s',
     'outfn|outfname|out-filename|fnfmt|fmtfn|fmt-filename|fmt-outputfn=s',
     'modroot|module-root|module-dir=s',
     'locallib=s{,}',
     'verbose+',
     'debug',
-    '<>' => sub ($in) { push @input, $patharg->($in) }
+    '<>' => sub ($in) { $patharg->( $in, dest => \@input ) }
 );
 
-my $_cliopt = {
+my $cliopt_deref = {
     map {
         my $ref = ref $clidest{$_};
         ( $_ => ( $ref eq 'SCALAR' ? $clidest{$_}->$* : $clidest{$_} ) )
     } ( keys %clidest )
 };
 
-dmsg($_cliopt);
+# dmsg($_cliopt);
+dmsg $cliopt_deref, \%clidest, \@input;
 
 sub fatpack {
     $CWD = $modroot;

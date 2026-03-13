@@ -3,7 +3,6 @@
 use Object::Pad ':experimental(:all)';
 
 package cgitpl;
-use lib 'lib';
 
 class cgitpl;
 
@@ -12,6 +11,7 @@ use v5.40;
 
 use lib 'lib';
 
+use List::Util          qw(none all mesh);
 use Const::Fast         qw( const );
 use Path::Tiny          qw( path );
 use Getopt::Long        qw(GetOptionsFromArray :config no_ignore_case);
@@ -20,7 +20,6 @@ use Plack::Builder      ();
 use Plack::App::WrapCGI ();
 use Cwd                 qw( abs_path getcwd );
 
-# use IPC::Run3;
 use IPC::Nosh;
 use IPC::Nosh::IO;
 
@@ -49,7 +48,7 @@ field $cliopts : param(dest) : reader {
         mount           => '/',
         cgitrc          => $cgitrc,
         execdir         => $execdir,
-        'cgit-sharedir' => sub { $self->cgit_sharedir(@_) },
+        'cgit-sharedir' => $cgit_sharedir,
         assets          => ["$execdir/www"],
         listen          => $listen,
         'serve-static'  => $ENV{PLACK_ENV} eq 'development' ? 1 : 0,
@@ -60,29 +59,38 @@ field $cliopts : param(dest) : reader {
 
 ADJUSTPARAMS($params) {
     const my @instance_optspec => (
-        'basicauth|auth|http-basic-auth=s', 'config=s',
-        'ssl-certfile=s',                   'ssl-keyfile=s',
+        'basicauth|auth|http-basic-auth=s',
+        'config=s',
+        'ssl-certfile|certfile|sslcert|ssl-cert-file=s',
+        'ssl-keyfile|keyfile|sslkey|ssl-key-file=s',
         'cgit|cgi|script=s',
     );
 
     GetOptionsFromArray(
-        $argv,                      $cliopts,
-        'cgitrc=s{,}',              'verbose+',
-        'debug+',                   'verion',
-        'help|usage|?',             'mount=s',
-        'listen=s{1,}',             'sockchown|socket-chown=s',
-        'sockchgrp|socket-chgrp=s', 'sockchmod|socket-chmod=s',
-        'static|assets=s{,}',       'serve-static|serve-assets',
-        'rewrite',                  'cgit-sharedir=s',
-        'plenv',                    'plenvver|plenv-version=s',
-        'server|s=s',               @instance_optspec
+        $argv,          $cliopts,
+        'cgitrc=s{,}',  'verbose+',
+        'debug+',       'verion',
+        'help|usage|?', 'mount=s',
+        'listen=s{1,}',
+        'sockchown|socket-chown|sockuser|sock-user|sockown|sock-owner=s',
+        'sockchgrp|socket-chgrp|sockgrp|sock-group|sockgroup=s',
+        'sockchmod|socket-chmod|sockmode|sock-mode=s',
+
+        # TODO: fatal ver of the above
+        # 'sockowner|sock-owner=s', 'sockgroup|sock-group|sockgrp=s',
+
+        'static|assets=s{,}', 'serve-static|serve-assets',
+        'rewrite',
+        'cgit-sharedir=s' =>
+          sub ( $getopt, $val ) { $self->cgit_sharedir($val) },
+        'plenv',      'plenvver|plenv-version=s',
+        'server|s=s', @instance_optspec
     );
 
     dmsg $cliopts, $argv;
 
     if ( $$cliopts{plenv} ) {
         $self->plenvinit;
-
     }
 
     if ( scalar @$listen ) {
@@ -148,11 +156,15 @@ ADJUSTPARAMS($params) {
 }
 
 method plenvinit {
+    my $shell = $ENV{SHELL} =~ s/.*\/?([^\/]+)$/$1/rg;
     my @rcpath =
       map { path("$execdir/$_") }
-      ( '.profile', ( $ENV{SHELL} ? ".$ENV{SHELL}rc" : () ) );
+      ( '.profile', ( $shell ? '.' . $shell . 'rc' : () ) );
+
     my $plenvpath = "$plenvroot:$ENV{PATH}";
+
     $ENV{PLENV_ROOT} = $plenvroot;
+
     my $plenvinit = q'eval "$(plenv init -)';
 
     unless ( path('.plenvsetup')->is_file ) {
@@ -215,25 +227,29 @@ method mount_middleware {
         );
     }
 
-    if ( $$cliopts{serve_assets} ) {
+    if ( $$cliopts{'serve-static'} ) {
+        use Plack::App::File;
+
         $builder->add_middleware(
             "Plack::Middleware::Static",
-            path => sub { s!^/s/cgit/!! },
-            root => "/usr/share/webapps/cgit/"
+            path         => sub { s!^/s/!! },
+            root         => $$cliopts{assets},
+            pass_through => 1,
         );
 
-        foreach my $file ( glob "$cgit_sharedir/cgit.{png,js,css,cgi}" ) {
-            $file = path($file);
-            warn "Could not open '$file'" && next unless $file->exists;
+        my @cgitstatic = glob "$cgit_sharedir/cgit.{png,js,css}";
+        dmsg \@cgitstatic;
+
+        foreach my $file ( map { path($_) } @cgitstatic ) {
+            unless ( $file->exists ) {
+                err "Could not open '$file'";
+                next;
+            }
+
             $builder->mount( "/s/cgit/" . $file->basename,
-                Plack::App::File->new( file => $file ) );
+                Plack::App::File->new( file => $file )->to_app );
         }
 
-        $builder->add_middleware(
-            "Plack::Middleware::Static",
-            path => sub { s!^/s/!! },
-            root => $$cliopts{assets}
-        );
     }
 }
 
@@ -247,12 +263,22 @@ method new_instance ($opt) {
 }
 
 method to_app {
+    dmsg $builder;
     $builder->to_app;
 }
 
 method runnerargs {
     my @args = map { ( '--listen' => $_ ) } @$listen;
     push @args, '--server', $$cliopts{server};
+    if (
+        all { $_->is_file }
+        map { path($_) } ( @$cliopts{qw'ssl-certfile ssl-keyfile'} )
+      )
+    {
+        push @args, qw(--ssl --ssl-server --ssl-key-file),
+          $$cliopts{'ssl-keyfile'}, '--ssl-cert-file',
+          $$cliopts{'ssl-certfile'};
+    }
     @args;
 }
 
