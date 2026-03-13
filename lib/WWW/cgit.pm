@@ -1,8 +1,8 @@
 use Object::Pad;
 
-package Frame::App::cgit;
+package WWW::cgit;
 
-class Frame::App::cgit : does(Frame);    #: does(Frame::App::cgit::Db);
+class WWW::cgit : does(Frame);
 
 use utf8;
 use v5.40;
@@ -49,15 +49,15 @@ __END__
 
 =head1 NAME
 
-Frame::App::cgit - A Plack/PSGI wrapper around cgit with a few additional features
+WWW::cgit - A Plack/PSGI wrapper around cgit with a few additional features
 
 =head1 SYNOPSIS
 
-    use Frame::App::cgit;
+    use WWW::cgit;
 
 =head1 DESCRIPTION
 
-Frame::App::cgit is ...
+WWW::cgit is ...
 
 =head1 LICENSE
 

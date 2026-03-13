@@ -1,8 +1,8 @@
 use Object::Pad ':experimental(:all)';
 
-package Frame::App::cgit::Instance;
+package WWW::cgit::Instance;
 
-class Frame::App::cgit::Instance : isa(Plack::Middleware);
+class WWW::cgit::Instance : isa(Plack::Middleware);
 
 use utf8;
 use v5.40;

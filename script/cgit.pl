@@ -2,10 +2,10 @@
 
 use Object::Pad ':experimental(:all)';
 
-package cgit;
+package cgitpl;
 use lib 'lib';
 
-class cgit;
+class cgitpl;
 
 use utf8;
 use v5.40;
@@ -20,10 +20,11 @@ use Plack::Builder      ();
 use Plack::App::WrapCGI ();
 use Cwd                 qw( abs_path getcwd );
 
-use IPC::Run3;
+# use IPC::Run3;
+use IPC::Nosh;
 use IPC::Nosh::IO;
 
-use Frame::App::cgit::Instance;
+use WWW::cgit::Instance;
 
 const our $sockscheme_re => qr'^unix://';
 
@@ -41,6 +42,8 @@ field $sockchmod : reader;
 field $listen    : reader = [];
 field $sock;
 
+field $plenvroot : reader { path("$execdir/.plenv") }
+
 field $cliopts : param(dest) : reader {
     {
         mount           => '/',
@@ -49,9 +52,9 @@ field $cliopts : param(dest) : reader {
         'cgit-sharedir' => sub { $self->cgit_sharedir(@_) },
         assets          => ["$execdir/www"],
         listen          => $listen,
-        'serve-static'  => $ENV{PLACK_ENV} eq 'development'
-        ? 1
-        : 0    # [':5000'],        #["$execdir/cgitsrv.sock"]
+        'serve-static'  => $ENV{PLACK_ENV} eq 'development' ? 1 : 0,
+        plenv           => "",
+        plenvver        => '5.42.1'
     }
 };
 
@@ -71,13 +74,24 @@ ADJUSTPARAMS($params) {
         'sockchgrp|socket-chgrp=s', 'sockchmod|socket-chmod=s',
         'static|assets=s{,}',       'serve-static|serve-assets',
         'rewrite',                  'cgit-sharedir=s',
+        'plenv',                    'plenvver|plenv-version=s',
         'server|s=s',               @instance_optspec
     );
+
+    dmsg $cliopts, $argv;
+
+    if ( $$cliopts{plenv} ) {
+        $self->plenvinit;
+
+    }
 
     if ( scalar @$listen ) {
         foreach my $listen (@$listen) {
             if ( $listen =~ $sockscheme_re ) {
-                my $sock = path( $listen =~ s/$sockscheme_re//r );
+                my $sock   = path( $listen =~ s/$sockscheme_re//r );
+                my $rundir = $sock->parent;
+                dmsg( $rundir, $sock, $listen );
+                $rundir->mkdir unless $rundir->exists;
                 $sock->remove if $sock->exists;
 
                 $listen = $sock;
@@ -133,20 +147,52 @@ ADJUSTPARAMS($params) {
     $app = $self->to_app
 }
 
-method cmd : common ($cmd) {
-    my %res = ( cmd => $cmd, out => [], err => [], exit => [] );
+method plenvinit {
+    my @rcpath =
+      map { path("$execdir/$_") }
+      ( '.profile', ( $ENV{SHELL} ? ".$ENV{SHELL}rc" : () ) );
+    my $plenvpath = "$plenvroot:$ENV{PATH}";
+    $ENV{PLENV_ROOT} = $plenvroot;
+    my $plenvinit = q'eval "$(plenv init -)';
 
-    $res{piperr} = run3( $cmd, \undef, @res{qw(out err)} );
-    $res{exit}   = [ $?, $! ];
+    unless ( path('.plenvsetup')->is_file ) {
+        foreach my $path (@rcpath) {
+            $path->append_utf8(qq'export PATH="$plenvpath"\n');
+            $path->append_utf8("$plenvinit\n");
+        }
 
-    foreach my $lines ( @res{qw(out err)} ) {
-        @$lines = map { chomp $_; $_ } @$lines;
+        $ENV{PATH} = $plenvpath;
     }
 
-    err $res{err} if $res{exit}->[0] > 0;
+    foreach my $cmd (qw'install local shell') {
+        my $run = cgitpl->cmd( [ 'plenv', $cmd, $$cliopts{plenvver} ] );
+        dmsg $run;
+    }
 
-    dmsg \%res;
-    \%res;
+    dmsg \%ENV;
+}
+
+method cmd : common ($cmd, %opt) {
+
+    my $run = run(
+        $cmd,
+        autochomp => 1,
+        autoflush => 1,
+
+        # line      => sub { $_[0] },
+        on       => { line => sub { say shift } },
+        callback => { line => sub { say shift } }
+    );
+
+    err "'"
+      . ( join ' ', @$cmd ) . "' "
+      . "exited with "
+      . $run->status . ": "
+      . ( join "\n", $run->err->@* )
+      if $run->status != 0;
+
+    dmsg $run;
+    $run;
 }
 
 method mount_middleware {
@@ -197,7 +243,7 @@ method new_instance ($opt) {
         execute => 1
     )->to_app;
 
-    Frame::App::cgit::Instance->wrap( $app, config => $$opt{cgitrc} );
+    WWW::cgit::Instance->wrap( $app, config => $$opt{cgitrc} );
 }
 
 method to_app {
@@ -241,7 +287,7 @@ method socketperms {
     }
 }
 
-method run {
+method start {
     require Plack::Runner;
     my $runner = Plack::Runner->new;
 
@@ -252,9 +298,9 @@ method run {
     $self;
 }
 
-package main;
+package cgitpl::cli;
 
-class main;
+class cgitpl::cli;
 use lib 'lib';
 
 use utf8;
@@ -262,10 +308,10 @@ use v5.40;
 
 use IPC::Nosh::IO;
 
-our $cgitsrv = cgit->new( argv => \@ARGV );
+our $cgitsrv = cgitpl->new( argv => \@ARGV );
 
 unless (caller) {
-    $cgitsrv->run;
+    $cgitsrv->start;
     err "$! ($?)" if $? != 0;
     exit $?;
 }

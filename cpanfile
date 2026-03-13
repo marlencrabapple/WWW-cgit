@@ -1,8 +1,9 @@
-requires 'perl', 'v5.42';
+requires 'perl', 'v5.40';
 
 requires 'Frame', '0.01.5', dist => 'CRABAPP/Frame-0.01.5-TRIAL.tar.gz';
 
 requires 'Net::SSLeay';
+requires 'Plack::App::WrapCGI';
 requires 'CGI::Compile';
 requires 'CGI::Emulate::PSGI';
 requires 'Plack::Builder';
@@ -24,6 +25,7 @@ on 'develop' => sub {
     requires 'Plack::Middleware::Static';
     requires 'Plack::Middleware::Debug';
     requires 'Plack::Middleware::ReverseProxy';
+    recommends 'Plack::Middleware::REPL';
 };
 
 on 'build' => sub {
