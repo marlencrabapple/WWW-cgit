@@ -51,9 +51,10 @@ field $cliopts : param(dest) : reader {
         'cgit-sharedir' => $cgit_sharedir,
         assets          => ["$execdir/www"],
         listen          => $listen,
-        'serve-static'  => $ENV{PLACK_ENV} eq 'development' ? 1 : 0,
-        plenv           => "",
-        plenvver        => '5.42.1'
+        'serve-static'  => $ENV{PLACK_ENV}
+          && $ENV{PLACK_ENV} eq 'development' ? 1 : 0,
+        plenv    => "",
+        plenvver => '5.42.1'
     }
 };
 
@@ -156,16 +157,17 @@ ADJUSTPARAMS($params) {
 }
 
 method plenvinit {
-    my $shell = $ENV{SHELL} =~ s/.*\/?([^\/]+)$/$1/rg;
+    my ($shell) = $ENV{SHELL} =~ s/^(?:.*\/)?([^\/]+)$/$1/rg;
+
     my @rcpath =
       map { path("$execdir/$_") }
       ( '.profile', ( $shell ? '.' . $shell . 'rc' : () ) );
 
-    my $plenvpath = "$plenvroot:$ENV{PATH}";
+    my $plenvpath = "$plenvroot/bin:$ENV{PATH}";
 
     $ENV{PLENV_ROOT} = $plenvroot;
 
-    my $plenvinit = q'eval "$(plenv init -)';
+    my $plenvinit = q'eval "$(plenv init -)"';
 
     unless ( path('.plenvsetup')->is_file ) {
         foreach my $path (@rcpath) {
@@ -177,11 +179,13 @@ method plenvinit {
     }
 
     foreach my $cmd (qw'install local shell') {
+        info "Building and installing perl with plenv to '$plenvroot'."
+          . "This may take a while...";
+
         my $run = cgitpl->cmd( [ 'plenv', $cmd, $$cliopts{plenvver} ] );
+
         dmsg $run;
     }
-
-    dmsg \%ENV;
 }
 
 method cmd : common ($cmd, %opt) {
@@ -269,10 +273,12 @@ method to_app {
 
 method runnerargs {
     my @args = map { ( '--listen' => $_ ) } @$listen;
+
     push @args, '--server', $$cliopts{server};
+
     if (
         all { $_->is_file }
-        map { path($_) } ( @$cliopts{qw'ssl-certfile ssl-keyfile'} )
+        map { path($_) } grep { $_ } ( @$cliopts{qw'ssl-certfile ssl-keyfile'} )
       )
     {
         push @args, qw(--ssl --ssl-server --ssl-key-file),
