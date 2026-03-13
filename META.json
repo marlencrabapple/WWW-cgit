@@ -12,7 +12,7 @@
       "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
       "version" : 2
    },
-   "name" : "Frame-App-cgit",
+   "name" : "WWW-cgit",
    "no_index" : {
       "directory" : [
          "t",
@@ -28,7 +28,7 @@
    "prereqs" : {
       "build" : {
          "requires" : {
-            "Minilla" : "0"
+            "Module::Build::Tiny" : "0"
          }
       },
       "configure" : {
@@ -37,6 +37,9 @@
          }
       },
       "develop" : {
+         "recommends" : {
+            "Plack::Middleware::REPL" : "0"
+         },
          "requires" : {
             "Minilla" : "0",
             "Perl::Critic" : "1.140",
@@ -57,22 +60,15 @@
             "App::md2html" : "0",
             "CGI::Compile" : "0",
             "CGI::Emulate::PSGI" : "0",
-            "Data::Printer" : "0",
-            "FFI::Platypus" : "0",
             "File::chdir" : "0",
             "Frame" : "v0.1.5",
             "IPC::Nosh" : "0",
-            "Inline::C" : "0",
-            "Inline::CPP" : "0",
-            "Inline::Module" : "0",
-            "Net::Async::HTTP::Server" : "0",
             "Net::SSLeay" : "0",
+            "Plack::App::WrapCGI" : "0",
             "Plack::Builder" : "0",
             "Plack::Middleware::Auth::Basic" : "0",
             "Plack::Middleware::Rewrite" : "0",
-            "Starlet" : "0",
-            "Text::Markdown::Hoedown" : "0",
-            "perl" : "v5.42.0"
+            "perl" : "v5.40.0"
          }
       },
       "test" : {
@@ -84,5 +80,5 @@
    "release_status" : "unstable",
    "version" : "0.01",
    "x_serialization_backend" : "JSON::PP version 4.16",
-   "x_static_install" : 0
+   "x_static_install" : 1
 }

@@ -1,15 +1,15 @@
 
 # NAME
 
-Frame::App::cgit - A Plack/PSGI wrapper around cgit with a few additional features
+WWW::cgit - A Plack/PSGI wrapper around cgit with a few additional features
 
 # SYNOPSIS
 
-    use Frame::App::cgit;
+    use WWW::cgit;
 
 # DESCRIPTION
 
-Frame::App::cgit is ...
+WWW::cgit is ...
 
 # LICENSE
 
