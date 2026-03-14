@@ -76,15 +76,11 @@ my $cliopt_deref = {
     } ( keys %clidest )
 };
 
-# dmsg($_cliopt);
 dmsg $cliopt_deref, \%clidest, \@input;
 
 sub fatpack {
     $CWD = $modroot;
-    run( [qw(carton install)], out => [] );
-
-    #run( [qw(carton vendor)] );
-    #run( [qw(carmel)] );
+    run( [qw(carton install)] );
 
     $ENV{PERL5LIB} = "$locallib:$modroot/lib";
 
@@ -93,16 +89,16 @@ sub fatpack {
     foreach my $in ( map { $_->is_dir ? ( $_->children ) : $_ } @input ) {
 
         #fatpack($in->children) if $in->is_dir;
-        my @fatlines;
-        my $fatstr = "";
-        my @cmd    = ( qw(fatpack pack), $in );
+        my $fatline = [];
+        my $fatstr  = "";
+        my @cmd     = ( qw(fatpack pack), $in );
 
         binmode STDERR, ":encoding(UTF-8)";
         info( "Running " . join " ", @cmd );
 
-        run( \@cmd, out => \@fatlines, autoflush => 1, autochomp => 1 );
+        run( \@cmd, out => $fatline, autoflush => 1, autochomp => 1 );
 
-        $fatstr = join "\n", @fatlines;
+        $fatstr = join "\n", @$fatline;
 
         my $fatout = sprintf(
             ( $outfn || '%s.fat' ),
@@ -115,7 +111,7 @@ sub fatpack {
 
         path("$outdir/$fatout")->spew_utf8($fatstr);
 
-        success("Written to $fatout");
+        success("Written to: $fatout");
     }
 }
 
