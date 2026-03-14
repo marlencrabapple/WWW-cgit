@@ -179,7 +179,7 @@ method plenvinit {
     }
 
     foreach my $cmd (qw'install local shell') {
-        info "Building and installing perl with plenv to '$plenvroot'."
+        info "Building and installing perl with plenv to '$plenvroot'. "
           . "This may take a while...";
 
         my $run = cgitpl->cmd( [ 'plenv', $cmd, $$cliopts{plenvver} ] );
