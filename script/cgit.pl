@@ -116,7 +116,7 @@ ADJUSTPARAMS($params) {
         my ( $uname, $group ) = split /\:/, $$cliopts{sockchown};
         $group //= $uname;
 
-        if ( $uname == -1 ) {
+        if ( $uname eq '-1' ) {
             $sockchgrp = $$cliopts{sockchgrp} = $group;
         }
 
@@ -194,10 +194,7 @@ method cmd : common ($cmd, %opt) {
         $cmd,
         autochomp => 1,
         autoflush => 1,
-
-        # line      => sub { $_[0] },
-        on       => { line => sub { say shift } },
-        callback => { line => sub { say shift } }
+        on        => { line => sub { say shift } },
     );
 
     err "'"
@@ -288,6 +285,18 @@ method runnerargs {
     @args;
 }
 
+method chmod : common ($mode, $path) {
+    try {
+        $mode = sprintf "%01d", $mode
+          if ( $mode =~ /[0-9]{3}/ );
+        $path->chmod($mode);
+    }
+    catch ($e) {
+        err $e;
+        cgit->cmd( [ 'chmod', $mode, "" . $path->absolute ] );
+    }
+}
+
 method socketperms {
     my $sockchown = $self->sockchown;
     foreach my $sock (@$sock) {
@@ -304,17 +313,7 @@ method socketperms {
         }
 
         if ($sockchmod) {
-            try {
-                $sockchmod = sprintf "%01d", $sockchmod
-                  if ( $sockchmod =~ /[0-9]{3}/ );
-                $sock->chmod($sockchmod);
-            }
-            catch ($e) {
-                err $e;
 
-                my $chgrp_res =
-                  cgit->cmd( [ 'chmod', $sockchmod, "" . $sock->absolute ] );
-            }
         }
     }
 }

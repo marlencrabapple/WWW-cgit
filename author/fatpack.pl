@@ -5,16 +5,18 @@ use v5.40;
 
 use lib 'lib';
 
+use Fcntl qw'S_IXUSR S_IXGRP S_IXOTH S_IRUSR S_IRGRP S_IROTH';
 use Cwd 'abs_path';
 use File::chdir;
 use Path::Tiny;
+use List::Util 'none';
 use Getopt::Long qw(GetOptionsFromArray :config no_ignore_case auto_abbrev);
 
 use IPC::Nosh;
-use IPC::Nosh::IO;
+use IPC::Nosh::Common;
 
 our $modroot  = path(abs_path);
-our @input    = ( path("$modroot/script") );
+our @input    = ( path("$modroot/script")->children );
 our $outdir   = path('./bin');
 our $outfn    = '%s';
 our $locallib = path("$modroot/local");
@@ -29,9 +31,11 @@ our $patharg = sub ( $arg, %opt ) {
     ) unless $arg isa Path::Tiny;
 
     if ( my $dest = $opt{dest} ) {
+
         if ( my $type = ref $dest ) {
             if ( $type eq 'ARRAY' ) {
-                push @$dest, $arg;
+                push @$dest, $arg
+                  if none { $arg->absolute eq $_->absolute } @input;
             }
             elsif ( $type eq 'SCALAR' ) {
                 $$dest = $arg;
@@ -76,8 +80,6 @@ my $cliopt_deref = {
     } ( keys %clidest )
 };
 
-dmsg $cliopt_deref, \%clidest, \@input;
-
 sub fatpack {
     $CWD = $modroot;
     run( [qw(carton install)] );
@@ -85,7 +87,7 @@ sub fatpack {
     $ENV{PERL5LIB} = "$locallib:$modroot/lib";
 
     $outdir->mkdir unless -d $outdir;
-
+    dmsg(@input);
     foreach my $in ( map { $_->is_dir ? ( $_->children ) : $_ } @input ) {
 
         #fatpack($in->children) if $in->is_dir;
@@ -96,20 +98,18 @@ sub fatpack {
         binmode STDERR, ":encoding(UTF-8)";
         info( "Running " . join " ", @cmd );
 
-        run( \@cmd, out => $fatline, autoflush => 1, autochomp => 1 );
+        my $run = run( \@cmd, out => $fatline, autochomp => 1 );
 
-        $fatstr = join "\n", @$fatline;
+        #dmsg($run);
 
-        my $fatout = sprintf(
-            ( $outfn || '%s.fat' ),
-            ( s/^(.+)(?:\.pl)?$/$1/rg =~ $in->basename )
-        );
+        $fatstr = join "\n", $run->out->lines_utf8;
 
-        if ( my ($ext) = $in->basename =~ /\.(pl)$/i ) {
-            $fatout .= ".$ext";
-        }
+        my $fatout = $in->basename;
+        $fatout = path("$outdir/$fatout")->spew_utf8($fatstr);
 
-        path("$outdir/$fatout")->spew_utf8($fatstr);
+        # S_IXOTH  (00001)  execute/search by others
+        $fatout->chmod(
+            S_IRUSR | S_IRGRP | S_IROTH | S_IXUSR | S_IXGRP | S_IXOTH );
 
         success("Written to: $fatout");
     }
