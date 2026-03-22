@@ -260,7 +260,7 @@ method new_instance ($opt) {
         execute => 1
     )->to_app;
 
-    WWW::cgit::Instance->wrap( $app, config => $$opt{cgitrc} );
+    WWW::cgit::Instance->wrap( $app, config_file => $$opt{cgitrc} );
 }
 
 method to_app {

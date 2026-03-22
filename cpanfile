@@ -11,7 +11,10 @@ requires 'Plack::Middleware::Auth::Basic';
 requires 'Plack::Middleware::Rewrite';
 requires 'File::chdir';
 requires 'IPC::Nosh',    dist => 'CRABAPP/IPC-Nosh-0.01-TRIAL.tar.gz';
-requires 'App::md2html', dist => 'CRABAPP/IPC-Nosh-0.01-TRIAL.tar.gz';
+requires 'App::md2html', dist => 'CRABAPP/App-md2html-0.01-TRIAL.tar.gz';
+requires 'DBIx::Connector';
+requires 'SQL::Abstract';
+requires 'DBD::SQLite';
 
 on 'test' => sub {
     requires 'Test::More', '0.98';
