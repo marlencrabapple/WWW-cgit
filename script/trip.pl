@@ -6,68 +6,129 @@ package WWW::cgit::Crypt::Tripcode;
 
 class WWW::cgit::Crypt::Tripcode;
 
+use utf8;
 use v5.40;
 
+use Path::Tiny;
+use TOML::Tiny;
 use MIME::Base64 qw'encode_base64 decode_base64';
 use Encode       qw'encode decode';
+use IPC::Nosh::Common;
+use Digest::MD5 'md5';
 
 use constant MAX_UNICODE => 1114111;
+use constant CHARSET     => 'UTF-8';
 
-sub dot_to_dec : prototype($) ($dot) {
-    unpack( 'N', pack( 'C4', split( /\./, $dot ) ) );    # wow, magic.
-}
+our $config =
+  from_toml( path( $ENV{WWWCGIT_CONFIG} // 'config.toml' )->slurp_utf8 );
 
-sub dec_to_dot : prototype($) ($dec) {
-    join( '.', unpack( 'C4', pack( 'N', $dec ) ) );
-}
+our %charmap = (
+    a => [4],
+    b => [8],
+    c => [qw'('],
+    d => [],
+    e => [3],
+    f => [qw'㏗'],
+    g => [qw'6 9'],
+    h => [],
+    i => [1],
+    j => [],
+    k => [],
+    l => [],
+    m => [],
+    n => [],
+    o => [0],
+    p => [],
+    q => [],
+    r => [],
+    s => [5],
+    t => [qw'+ 7'],
+    u => [],
+    v => [],
+    w => [],
+    x => [],
+    y => [],
+    z => [],
+);
 
-sub mask_ip : prototype($$;$) ( $ip, $key, $algorithm ) {
+sub process_tripcode : prototype($;$$$$) (
+    $name,
+    $tripkey        = $config->{id}{secret},
+    $secret         = $config->{id}{secret},
+    $charset        = CHARSET,
+    $nonamedecoding = 1
+  )
+{
+    $tripkey = "!" unless ($tripkey);
 
-    $ip = dot_to_dec($ip) if $ip =~ /\./;
+    if ( $name =~ /^(.*?)((?<!&)#|\Q$tripkey\E)(.*)$/ ) {
+        my ( $namepart, $marker, $trippart ) = ( $1, $2, $3 );
+        my $trip;
 
-    my ( $block, $stir ) = setup_masking( $key, $algorithm );
-    my $mask = 0x80000000;
+        $namepart = decode_string( $namepart, $charset ) unless $nonamedecoding;
+        $namepart = clean_string($namepart);
 
-    for ( 1 .. 32 ) {
-        my $bit = $ip & $mask ? "1" : "0";
-        $block = $stir->($block);
-        $ip ^= $mask if ( ord($block) & 0x80 );
-        $block = $bit . $block;
-        $mask >>= 1;
+        if (    $secret
+            and $trippart =~ s/(?:\Q$marker\E)(?<!&#)(?:\Q$marker\E)*(.*)$//
+          )    # do we want secure trips, and is there one?
+        {
+            my $str    = $1;
+            my $maxlen = 255 - length($secret);
+            $str = substr $str, 0, $maxlen if ( length($str) > $maxlen );
+
+#			$trip=$tripkey.$tripkey.encode_base64(rc4(null_string(6),"t".$str.$secret),"");
+            $trip =
+              $tripkey . $tripkey . hide_data( $1, 6, "trip", $secret, 1 );
+            return ( $namepart, $trip )
+              unless ($trippart)
+              ;    # return directly if there's no normal tripcode
+        }
+
+        $trippart = decode_string( $trippart, $charset );
+        $trippart = encode( "Shift_JIS", $trippart, 0x0200 );
+
+        $trippart = clean_string($trippart);
+        my $salt = substr $trippart . "H..", 1, 2;
+        $salt =~ s/[^\.-z]/./g;
+        $salt =~ tr/:;<=>?@[\\]^_`/ABCDEFGabcdef/;
+        $trip = $tripkey . ( substr crypt( $trippart, $salt ), -10 ) . $trip;
+
+        return ( $namepart, $trip );
     }
 
-    return sprintf "%08x", $ip;
+    return clean_string($name) if $nonamedecoding;
+    return ( clean_string( decode_string( $name, $charset ) ), "" );
 }
 
-sub unmask_ip : prototype($$;$) ( $id, $key, $algorithm ) {
+sub rc4 : prototype($$;$) ( $message, $key, $skip = undef ) {
+    my @s       = 0 .. 255;
+    my @k       = unpack 'C*', $key;
+    my @message = unpack 'C*', $message;
+    my ( $x, $y );
+    $skip = 256 unless ( defined $skip );
 
-    $id = hex($id);
-
-    my ( $block, $stir ) = setup_masking( $key, $algorithm );
-    my $mask = 0x80000000;
-
-    for ( 1 .. 32 ) {
-        $block = $stir->($block);
-        $id ^= $mask if ( ord($block) & 0x80 );
-        my $bit = $id & $mask ? "1" : "0";
-        $block = $bit . $block;
-        $mask >>= 1;
+    $y = 0;
+    for my $x ( 0 .. 255 ) {
+        $y = ( $y + $s[$x] + $k[ $x % @k ] ) % 256;
+        @s[ $x, $y ] = @s[ $y, $x ];
     }
 
-    return dec_to_dot($id);
-}
-
-sub setup_masking : prototype($$) ( $key, $algorithm = 'md5' ) {
-
-    my ( $block, $stir );
-
-    if ( $algorithm eq "md5" ) {
-        return ( md5($key), sub { md5(shift) } );
+    $x = 0;
+    $y = 0;
+    for ( 1 .. $skip ) {
+        $x = ( $x + 1 ) % 256;
+        $y = ( $y + $s[$x] ) % 256;
+        @s[ $x, $y ] = @s[ $y, $x ];
     }
-    else {
-        ...;
 
+    for (@message) {
+        $x = ( $x + 1 ) % 256;
+        $y = ( $y + $s[$x] ) % 256;
+        @s[ $x, $y ] = @s[ $y, $x ];
+        $_ ^= $s[ ( $s[$x] + $s[$y] ) % 256 ];
     }
+
+    return pack 'C*', @message;
 }
 
 sub make_random_string : prototype($) ($num) {
@@ -86,7 +147,8 @@ sub make_key : prototype($$$) ( $key, $secret, $length ) {
     rc4( null_string($length), $key . $secret );
 }
 
-sub hide_data : prototype($$$$;$) ( $data, $bytes, $key, $secret, $base64 ) {
+sub hide_data : prototype($$$$;$) ( $data, $bytes, $key, $secret, $base64 = 1 )
+{
     my $crypt =
       rc4( null_string($bytes), make_key( $key, $secret, 32 ) . $data );
 
@@ -94,7 +156,7 @@ sub hide_data : prototype($$$$;$) ( $data, $bytes, $key, $secret, $base64 ) {
     return $crypt;
 }
 
-sub forbidden_unicode : prototype($;$) ( $dec, $hex ) {
+sub forbidden_unicode : prototype($;$) ( $dec, $hex = undef ) {
     return 1 if length($dec) > 7 or length($hex) > 7;    # too long numbers
     my $ord = ( $dec or hex $hex );
 
@@ -108,7 +170,7 @@ sub forbidden_unicode : prototype($;$) ( $dec, $hex ) {
     return 0;
 }
 
-sub clean_string : prototype($;$) ( $str, $cleanentities ) {
+sub clean_string : prototype($;$) ( $str, $cleanentities = undef ) {
 
     if ($cleanentities) { $str =~ s/&/&amp;/g }          # clean up &
     else {
@@ -130,7 +192,8 @@ sub clean_string : prototype($;$) ( $str, $cleanentities ) {
     return $str;
 }
 
-sub decode_string : prototype($;$$) ( $str, $charset, $noentities ) {
+sub decode_string : prototype($;$$)
+  ( $str, $charset = CHARSET, $noentities = undef ) {
     my $use_unicode = $charset;
 
     $str = decode( $charset, $str ) if $use_unicode;
@@ -149,3 +212,12 @@ sub decode_string : prototype($;$$) ( $str, $charset, $noentities ) {
 
     return $str;
 }
+
+# our ( $name, $trip ) = map { ( split /##?/, $_ ) } @ARGV;
+
+say process_tripcode(
+    $_,
+    $config->{id}{trip_key},
+    $config->{id}{secret},
+    CHARSET, 1
+) for @ARGV;

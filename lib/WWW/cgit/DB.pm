@@ -8,3 +8,8 @@ use v5.40;
 
 use SQL::Abstract;
 use DBIx::Connector;
+
+method create_table {
+
+}
+

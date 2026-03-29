@@ -2,10 +2,13 @@ use Object::Pad;
 
 package WWW::cgit;
 
-class WWW::cgit : does(Frame);
+class WWW::cgit : does(Frame) : does(Frame::Controller);
 
 use utf8;
 use v5.40;
+
+use Text::Xslate;
+use JSON::MaybeXS;
 
 our $VERSION = "0.01";
 
@@ -13,6 +16,14 @@ method startup {
     my $r      = $self->routes;
     my $config = $self->config;
 
+    $r->get(
+        '/',
+        sub ($c) {
+            Frame::Controller->template('new-identity.html.tx');
+
+            #encode_json( { Hello => 'world!' } );
+        }
+    );
 }
 
 __END__

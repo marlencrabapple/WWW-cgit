@@ -23,6 +23,7 @@ use Cwd                 qw( abs_path getcwd );
 use IPC::Nosh;
 use IPC::Nosh::IO;
 
+#use WWW::cgit;
 use WWW::cgit::Instance;
 
 const our $sockscheme_re => qr'^unix://';
