@@ -2,7 +2,7 @@ use Object::Pad;
 
 package WWW::cgit;
 
-class WWW::cgit : does(Frame) : does(Frame::Controller);
+class WWW::cgit : does(Frame);
 
 use utf8;
 use v5.40;
@@ -12,18 +12,24 @@ use JSON::MaybeXS;
 
 our $VERSION = "0.01";
 
+field $config : reader = {};
+
 method startup {
-    my $r      = $self->routes;
-    my $config = $self->config;
+    my $r = $self->routes;
+
+    # my $config = $self->config;
 
     $r->get(
         '/',
         sub ($c) {
-            Frame::Controller->template('new-identity.html.tx');
 
-            #encode_json( { Hello => 'world!' } );
+            #template('new-identity.html.tx');
+
+            encode_json( { Hello => 'world!' } );
         }
     );
+
+    1;
 }
 
 __END__

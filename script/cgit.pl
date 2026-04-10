@@ -23,7 +23,7 @@ use Cwd                 qw( abs_path getcwd );
 use IPC::Nosh;
 use IPC::Nosh::IO;
 
-#use WWW::cgit;
+use WWW::cgit;
 use WWW::cgit::Instance;
 
 const our $sockscheme_re => qr'^unix://';
@@ -152,6 +152,8 @@ ADJUSTPARAMS($params) {
 
         $builder->mount( $mount, $$instance{$cgitrc}{app} );
     }
+
+    $builder->mount( '/test', WWW::cgit->new->to_psgi );
 
     $self->mount_middleware;
     $app = $self->to_app
