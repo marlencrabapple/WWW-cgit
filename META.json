@@ -60,6 +60,8 @@
             "App::md2html" : "0",
             "CGI::Compile" : "0",
             "CGI::Emulate::PSGI" : "0",
+            "DBD::SQLite" : "0",
+            "DBIx::Connector" : "0",
             "File::chdir" : "0",
             "Frame" : "v0.1.5",
             "IPC::Nosh" : "0",
@@ -68,6 +70,7 @@
             "Plack::Builder" : "0",
             "Plack::Middleware::Auth::Basic" : "0",
             "Plack::Middleware::Rewrite" : "0",
+            "SQL::Abstract" : "0",
             "perl" : "v5.40.0"
          }
       },

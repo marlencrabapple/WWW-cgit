@@ -2,7 +2,7 @@ use Object::Pad;
 
 package WWW::cgit;
 
-class WWW::cgit : does(Frame);
+class WWW::cgit : isa(Frame);
 
 use utf8;
 use v5.40;
