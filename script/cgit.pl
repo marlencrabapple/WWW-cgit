@@ -21,7 +21,7 @@ use Plack::App::WrapCGI ();
 use Cwd                 qw( abs_path getcwd );
 
 use IPC::Nosh;
-use IPC::Nosh::IO;
+use IPC::Nosh::Common;
 
 use WWW::cgit;
 use WWW::cgit::Instance;
@@ -200,12 +200,12 @@ method cmd : common ($cmd, %opt) {
         on        => { line => sub { say shift } },
     );
 
-    err "'"
+    error "'"
       . ( join ' ', @$cmd ) . "' "
       . "exited with "
       . $run->status . ": "
       . ( join "\n", $run->err->@* )
-      if $run->status != 0;
+        if $run->status != 0;
 
     dmsg $run;
     $run;
@@ -246,7 +246,7 @@ method mount_middleware {
 
         foreach my $file ( map { path($_) } @cgitstatic ) {
             unless ( $file->exists ) {
-                err "Could not open '$file'";
+                error "Could not open '$file'";
                 next;
             }
 
@@ -295,7 +295,7 @@ method chmod : common ($mode, $path) {
         $path->chmod($mode);
     }
     catch ($e) {
-        err $e;
+        error $e;
         cgit->cmd( [ 'chmod', $mode, "" . $path->absolute ] );
     }
 }
@@ -308,7 +308,7 @@ method socketperms {
         $modified = chown( $$sockchown{uid}, $$sockchown{gid}, $sock )
           if $sockchown;
 
-        err "$! ($?)" unless $modified;
+        error "$! ($?)" unless $modified;
 
         if ($sockchgrp) {
             my $chgrp_res =
@@ -340,13 +340,13 @@ use lib 'lib';
 use utf8;
 use v5.40;
 
-use IPC::Nosh::IO;
+use IPC::Nosh::Common;
 
 our $cgitsrv = cgitpl->new( argv => \@ARGV );
 
 unless (caller) {
     $cgitsrv->start;
-    err "$! ($?)" if $? != 0;
+    error "$! ($?)" if $? != 0;
     exit $?;
 }
 
