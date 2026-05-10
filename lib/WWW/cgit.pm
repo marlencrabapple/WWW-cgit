@@ -20,7 +20,7 @@ method startup {
     # my $config = $self->config;
 
     $r->get(
-        '/',
+        '/:path',
         sub ($c) {
 
             #template('new-identity.html.tx');

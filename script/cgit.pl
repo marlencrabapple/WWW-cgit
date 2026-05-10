@@ -11,7 +11,7 @@ use v5.40;
 
 use lib 'lib';
 
-use List::Util          qw(none all mesh);
+use List::Util          qw(any none all mesh);
 use Const::Fast         qw( const );
 use Path::Tiny          qw( path );
 use Getopt::Long        qw(GetOptionsFromArray :config no_ignore_case);
@@ -55,7 +55,7 @@ field $cliopts : param(dest) : reader {
         'serve-static'  => $ENV{PLACK_ENV}
           && $ENV{PLACK_ENV} eq 'development' ? 1 : 0,
         plenv    => "",
-        plenvver => '5.42.1'
+        plenvver => ''
     }
 };
 
@@ -191,6 +191,51 @@ method plenvinit {
     }
 }
 
+method plenvinstall :
+  common ($version = (WWW::cgit->plenvinstall_list)[0], %opt) {
+
+    run( [ qw(plenv install), $version, ] );
+}
+
+method plenvinstall_list : common (%opt) {
+
+    # TODO: Look up these version formats: 5.5.670, 5.003_13
+    const my $perlver_re => qr/^
+        5
+        \.([0-9]+?)                 # major (even is stable)
+        (?:\.([0-9]+?)              # minor (optional, defaults to latest)
+        (?:-(RC|TRIAL[0-9]+?))?)?   # ...
+    $/xx;
+
+    $opt{sortdir} //= 'desc';
+    my $filter = $opt{filter} //= 'stable';
+
+    my @avail = ();
+
+    run(
+        [qw(plenv install -l)],
+        autochomp => 1,
+        out       => sub ($line) {
+
+            my ( $major, $minor, $extra ) = $line =~ $perlver_re;
+
+            return undef unless $major && $minor;
+
+            return undef
+              if $filter eq 'stable' && any { $_ } ( ( $minor % 2 ), $extra );
+
+            push @avail, $line;
+        }
+    );
+
+    $opt{sortdir} eq 'desc'    ? @avail
+      : $opt{sortdir} eq 'arc' ? reverse @avail
+      : error
+      "Invalid sortdir '$opt{sortdir}'. Must be 'asc', 'desc', or undef.";
+}
+
+# method perlver_latest_stable
+
 method cmd : common ($cmd, %opt) {
 
     my $run = run(
@@ -205,7 +250,7 @@ method cmd : common ($cmd, %opt) {
       . "exited with "
       . $run->status . ": "
       . ( join "\n", $run->err->@* )
-        if $run->status != 0;
+      if $run->status != 0;
 
     dmsg $run;
     $run;

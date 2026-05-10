@@ -1,6 +1,14 @@
+use v5.40;
+use subs qw'requires recommends on';
 requires 'perl', 'v5.40';
 
-requires 'Frame', '0.01.5', dist => 'CRABAPP/Frame-0.01.5-TRIAL.tar.gz';
+requires 'Const::Fast';
+
+use Const::Fast;
+
+const our $frame_ver => '0.1.6.0';
+requires 'Frame',
+  $frame_ver;    #, dist => 'CRABAPP/Frame-$frame_ver-TRIAL.tar.gz';
 
 requires 'Net::SSLeay';
 requires 'Plack::App::WrapCGI';
@@ -10,8 +18,11 @@ requires 'Plack::Builder';
 requires 'Plack::Middleware::Auth::Basic';
 requires 'Plack::Middleware::Rewrite';
 requires 'File::chdir';
-requires 'IPC::Nosh',    dist => 'CRABAPP/IPC-Nosh-0.01-TRIAL.tar.gz';
-requires 'App::md2html', dist => 'CRABAPP/App-md2html-0.01-TRIAL.tar.gz';
+
+requires 'IPC::Nosh';
+
+requires 'App::md2html';
+
 requires 'DBIx::Connector';
 requires 'SQL::Abstract';
 requires 'DBD::SQLite';
