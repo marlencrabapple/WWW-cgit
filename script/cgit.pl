@@ -19,6 +19,8 @@ use Plack::Runner       ();
 use Plack::Builder      ();
 use Plack::App::WrapCGI ();
 use Cwd                 qw( abs_path getcwd );
+use File::chdir;
+use Syntax::Keyword::Dynamically;
 
 use IPC::Nosh;
 use IPC::Nosh::Common;
@@ -32,7 +34,7 @@ field $argv : param;
 field $app;
 field $instance = {};
 field $builder { Plack::Builder->new }
-field $execdir = path(abs_path);
+field $execdir : accessor //= path(abs_path);
 field $cgit_sharedir : accessor = "/usr/share/webapps/cgit";
 field $cgitrc        : reader   = [];
 field $config_file;
@@ -63,6 +65,7 @@ ADJUSTPARAMS($params) {
     const my @instance_optspec => (
         'basicauth|auth|http-basic-auth=s',
         'config=s',
+        'execdir' => sub ( $getopt, $val ) { $self->execdir( path($val) ) },
         'ssl-certfile|certfile|sslcert|ssl-cert-file=s',
         'ssl-keyfile|keyfile|sslkey|ssl-key-file=s',
         'cgit|cgi|script=s',
@@ -84,7 +87,7 @@ ADJUSTPARAMS($params) {
         'static|assets=s{,}', 'serve-static|serve-assets',
         'rewrite',
         'cgit-sharedir=s' =>
-          sub ( $getopt, $val ) { $self->cgit_sharedir($val) },
+        sub ( $getopt, $val ) { $self->cgit_sharedir( path($val) ) },
         'plenv',      'plenvver|plenv-version=s',
         'server|s=s', @instance_optspec
     );
@@ -143,7 +146,7 @@ ADJUSTPARAMS($params) {
         };
 
         if ( scalar keys %opt ) {
-            GetOptionsFromArray( \%opt, $$instance{$cgitrc},
+            GetOptionsFromArray( [%opt], $$instance{$cgitrc},
                 @instance_optspec );
         }
 
@@ -303,6 +306,10 @@ method mount_middleware {
 }
 
 method new_instance ($opt) {
+    if ( my $execdir = $$opt{execdir} // $$cliopts{execdir} ) {
+        dynamically $CWD = $execdir;
+    }
+
     my $app = Plack::App::WrapCGI->new(
         script  => $$opt{cgit},
         execute => 1
