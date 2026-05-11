@@ -56,6 +56,9 @@
          }
       },
       "runtime" : {
+         "recommends" : {
+            "Net::SSLeay::CA" : "0"
+         },
          "requires" : {
             "App::md2html" : "0",
             "CGI::Compile" : "0",

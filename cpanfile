@@ -27,6 +27,8 @@ requires 'DBIx::Connector';
 requires 'SQL::Abstract';
 requires 'DBD::SQLite';
 
+recommends 'Net::SSLeay::CA';
+
 on 'test' => sub {
     requires 'Test::More', '0.98';
 };
