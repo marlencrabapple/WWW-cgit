@@ -7,6 +7,7 @@ requires 'Const::Fast';
 use Const::Fast;
 
 const our $frame_ver => '0.1.6.0';
+
 requires 'Frame',
   $frame_ver;    #, dist => 'CRABAPP/Frame-$frame_ver-TRIAL.tar.gz';
 

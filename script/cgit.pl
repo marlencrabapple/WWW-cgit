@@ -34,7 +34,7 @@ field $argv : param;
 field $app;
 field $instance = {};
 field $builder { Plack::Builder->new }
-field $execdir : accessor //= path(abs_path);
+field $execdir       : accessor //= path(abs_path);
 field $cgit_sharedir : accessor = "/usr/share/webapps/cgit";
 field $cgitrc        : reader   = [];
 field $config_file;
@@ -87,7 +87,7 @@ ADJUSTPARAMS($params) {
         'static|assets=s{,}', 'serve-static|serve-assets',
         'rewrite',
         'cgit-sharedir=s' =>
-        sub ( $getopt, $val ) { $self->cgit_sharedir( path($val) ) },
+          sub ( $getopt, $val ) { $self->cgit_sharedir( path($val) ) },
         'plenv',      'plenvver|plenv-version=s',
         'server|s=s', @instance_optspec
     );
@@ -403,3 +403,39 @@ unless (caller) {
 }
 
 $cgitsrv->app;
+
+__END__
+
+=encoding utf-8
+
+=head1 NAME
+
+cgit.pl: a cgit launcher, server/instance mangager and Plack/PSGI interface
+
+=head1 SYNOPSIS
+
+    cgit.pl \
+     -s Frame::Server
+     -sslcert=path/to/cert.pem \
+     -sslkey=path/to/key.pem \
+     -user=cgit:http
+     -listen ':443' ':80'
+
+
+=head1 DESCRIPTION
+
+WWW::cgit is ...
+
+=head1 LICENSE
+
+Copyright (C) Ian P Bradley.
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=head1 AUTHOR
+
+Ian P Bradley E<lt>ian.bradley@studiocrabapple.comE<gt>
+
+=cut
+
