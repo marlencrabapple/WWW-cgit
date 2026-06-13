@@ -23,7 +23,7 @@ use File::chdir;
 use Syntax::Keyword::Dynamically;
 
 use IPC::Nosh;
-use IPC::Nosh::Common;
+use IO::Handle::Common;
 
 use WWW::cgit;
 use WWW::cgit::Instance;
@@ -65,7 +65,7 @@ ADJUSTPARAMS($params) {
     const my @instance_optspec => (
         'basicauth|auth|http-basic-auth=s',
         'config=s',
-        'execdir' => sub ( $getopt, $val ) { $self->execdir( path($val) ) },
+        'execdir=s' => sub ( $getopt, $val ) { $self->execdir( path($val) ) },
         'ssl-certfile|certfile|sslcert|ssl-cert-file=s',
         'ssl-keyfile|keyfile|sslkey|ssl-key-file=s',
         'cgit|cgi|script=s',
@@ -77,8 +77,8 @@ ADJUSTPARAMS($params) {
         'debug+',       'verion',
         'help|usage|?', 'mount=s',
         'listen=s{1,}',
-        'sockchown|socket-chown|sockuser|sock-user|sockown|sock-owner=s',
-        'sockchgrp|socket-chgrp|sockgrp|sock-group|sockgroup=s',
+        'sockchown|socket-chown|sockuser|sock-user|sockown|sock-owner:s',
+          'sockchgrp|socket-chgrp|sockgrp|sock-group|sockgroups',
         'sockchmod|socket-chmod|sockmode|sock-mode=s',
 
         # TODO: fatal ver of the above
@@ -392,7 +392,7 @@ use lib 'lib';
 use utf8;
 use v5.40;
 
-use IPC::Nosh::Common;
+use IO::Handle::Common;
 
 our $cgitsrv = cgitpl->new( argv => \@ARGV );
 
@@ -414,12 +414,11 @@ cgit.pl: a cgit launcher, server/instance mangager and Plack/PSGI interface
 
 =head1 SYNOPSIS
 
-    cgit.pl \
-     -s Frame::Server
-     -sslcert=path/to/cert.pem \
-     -sslkey=path/to/key.pem \
-     -user=cgit:http
-     -listen ':443' ':80'
+    cgit . pl -ssl -listen ':443' ':80'
+
+      git clone
+      -- mirror / path / to / scandir / WWW-cgit git remote add cgit ssh :
+      //git@$(hostname) : /scandir/ WWW-cgit
 
 
 =head1 DESCRIPTION

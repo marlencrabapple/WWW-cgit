@@ -21,6 +21,7 @@ requires 'Plack::Middleware::Rewrite';
 requires 'File::chdir';
 
 requires 'IPC::Nosh';
+requires 'IO::Handle::Common';
 
 requires 'App::md2html';
 

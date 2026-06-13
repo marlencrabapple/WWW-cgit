@@ -10,15 +10,23 @@ use Cwd 'abs_path';
 use File::chdir;
 use Path::Tiny;
 use List::Util 'none';
+use TOML::Tiny;
 use Getopt::Long qw(GetOptionsFromArray :config no_ignore_case auto_abbrev);
 
 use IPC::Nosh;
-use IPC::Nosh::Common;
+use IO::Handle::Common;
 
-our $modroot  = path(abs_path);
-our @input    = ( path("$modroot/script")->children );
-our $outdir   = path('./bin');
-our $outfn    = '%s';
+our $toml = TOML::Tiny->new;
+
+our %config_path = ( author => path('minil.toml') );
+our %config = ( author => $toml->decode( $config_path{author}->slurp_utf8 ) );
+
+our $modroot = path(abs_path);
+our @input   = ( path("$modroot/script")->children );
+our $outdir =
+  path( $ENV{OUTDIR} // $config{author}->{fatpack}{outdir} // './fatpack' );
+our $outfn = '%s';
+
 our $locallib = path("$modroot/local");
 our $verbose  = 1;
 our $debug    = $verbose;

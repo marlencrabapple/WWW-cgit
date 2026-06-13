@@ -13,7 +13,7 @@ use Path::Tiny;
 use TOML::Tiny;
 use MIME::Base64 qw'encode_base64 decode_base64';
 use Encode       qw'encode decode';
-use IPC::Nosh::Common;
+use IO::Handle::Common;
 use Digest::MD5 'md5';
 
 use constant MAX_UNICODE => 1114111;

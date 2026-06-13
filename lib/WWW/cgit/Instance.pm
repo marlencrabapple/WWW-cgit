@@ -9,7 +9,7 @@ use v5.40;
 
 use Path::Tiny;
 use List::Util 'any';
-use IPC::Nosh::Common;
+use IO::Handle::Common;
 
 field $app { $self->{app} };
 field $config_file : accessor { path( $self->{config_file} ) };
