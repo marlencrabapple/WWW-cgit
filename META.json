@@ -68,6 +68,7 @@
             "DBIx::Connector" : "0",
             "File::chdir" : "0",
             "Frame" : "v0.1.6.0",
+            "IO::Handle::Common" : "0",
             "IPC::Nosh" : "0",
             "Net::SSLeay" : "0",
             "Plack::App::WrapCGI" : "0",

@@ -306,16 +306,18 @@ method mount_middleware {
 }
 
 method new_instance ($opt) {
-    if ( my $execdir = $$opt{execdir} // $$cliopts{execdir} ) {
-        dynamically $CWD = $execdir;
-    }
+    # if ( my $execdir = $$opt{execdir} // $$cliopts{execdir} ) {
+    #     dynamically $CWD = $execdir;
+    # }
+
+    dynamically $CWD = $$opt{execdir} // $execdir;
 
     my $app = Plack::App::WrapCGI->new(
         script  => $$opt{cgit},
         execute => 1
     )->to_app;
 
-    WWW::cgit::Instance->wrap( $app, config_file => $$opt{cgitrc} );
+    WWW::cgit::Instance->wrap( $app, cgitrc => $$opt{cgitrc} );
 }
 
 method to_app {

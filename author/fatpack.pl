@@ -108,8 +108,6 @@ sub fatpack {
 
         my $run = run( \@cmd, out => $fatline, autochomp => 1 );
 
-        #dmsg($run);
-
         $fatstr = join "\n", $run->out->lines_utf8;
 
         my $fatout = $in->basename;

@@ -12,23 +12,20 @@ use List::Util 'any';
 use IO::Handle::Common;
 
 field $app { $self->{app} };
-field $config_file : accessor { path( $self->{config_file} ) };
+field $cgitrc : accessor { path( $self->{cgitrc} ) };
 field $config : reader;
 
-method load_config {
-
-    $self->parse_config($config_file);
+method load_cgitrc {
+    $self->parse_cgitrc($cgitrc);
     dmsg $self
 
-    # Make sure its within user's provisioned root
+    # TODO: Make sure its within user's provisioned root
     #$$config{'scan-path'};
-    # ...;
+    # ...
 }
 
-method parse_config {
-    foreach my $line ( grep { !/^#/ } $config_file->lines_utf8 ) {
-        chomp $line;
-
+method parse_cgitrc {
+    foreach my $line ( map { chomp $_; $_} grep { !/^#/ } $cgitrc->lines_utf8 ) {
         my ( $name, $strval ) = split /=/, $line;
 
         next unless $name && $strval;
@@ -49,15 +46,12 @@ method parse_config {
         else {
             $$config{$name} = $strval;
         }
-
     }
 }
 
 method call( $env, %opt ) {
-
-    $self->load_config;
-    $$env{CGIT_CONFIG} = $config_file->absolute;
-
+    $self->load_cgitrc;
+    $$env{CGIT_CONFIG} = $cgitrc->absolute;
     $self->app->($env);
 }
 
