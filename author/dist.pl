@@ -1,48 +1,113 @@
 #!/usr/bin/env perl
-use Object::Pad ':experimental(:all)';
+package dist;
 
-package WWW::cgit::dist;
-
-class WWW::cgit::dist;    #: isa(Dist::CRABAPP::Dist);
-
-use utf8;
 use v5.40;
+no warnings 'experimental::re_strict';
+use re 'strict';
 
-use lib 'lib';
-
-use Cwd 'abs_path';
-use File::chdir;
 use Path::Tiny;
-use Getopt::Long qw(GetOptionsFromArray :config no_ignore_case auto_abbrev);
-
+use TOML::Tiny qw'from_toml to_toml';
+use CPAN::Mini::Inject;
 use IPC::Nosh;
-use IPC::Nosh::IO;
+use IO::Handle::Common;
+use Getopt::Long
+  qw(GetOptionsFromArray :config no_ignore_case auto_abbrev passthrough bundling long_prefix_pattern=--?);
 
-our $modroot  = path(abs_path);
-our @input    = ( path("$modroot/script") );
-our $outdir   = path('./bin');
-our $outfn    = '%s';
-our $locallib = path("$modroot/local");
-our $verbose  = 1;
-our $debug    = $verbose;
+my $verbose            = $ENV{VERBOSE};
+my $debug              = $ENV{DEBUG};
+my $author_config_file = path("minil.toml");
+my $author_config      = from_toml( $author_config_file->slurp_utf8 );
+my $package            = ( $$author_config{name} =~ s/-/::/gr );
+my $archive;
+my $version;
 
-method build_distdir {
-    `carton exec perl Build.PL`;
-    `./Build`;
+my $trial = grep { $_ eq '--trial' } @ARGV;
+$trial //= $$author_config{release_status} ne 'stable' ? 1 : 0;
+
+my $has_suffix;
+
+my $dist_suffix;
+$dist_suffix = 'TRIAL' if $trial;
+
+dmsg $author_config, $package, $trial, $dist_suffix;
+
+sub make_dist( $dist, %opt ) {
+    my ( $archive, $version, $has_suffix );
+    my $test = 0;
+
+    my $run = run(
+        [ qw'minil dist', @ARGV ],
+        out => sub ( $line, @ ) {
+            $test++;
+            my $archive_re = qr /^Wrote (($dist)-(.+?)(?:-(TRIAL))?\.tar\.gz)$/;
+
+            dmsg $line, $dist, $archive_re, $test;    #\@arg;
+
+            if ($verbose) {
+                my $say = $debug ? __LINE__ . ": $line" : $line;
+                say $say;
+            }
+
+            # TODO: Add functionality to remove callback when no longer needed
+            ( $archive, undef, $version, $has_suffix ) =
+              ( $line =~ $archive_re )
+              unless $archive && $version;
+        },
+        err       => sub ( $line, @ ) { say STDERR $line if $verbose },
+        autochomp => 1
+    );
+
+    dmsg $archive, $version, $has_suffix, $test;
+
+    say join "\n", $run->err->lines_utf8 if $verbose;
+
+    fatal( ( join " ", $run->cmd->@* )
+        . " exited with non-zero status: "
+          . $run->status )
+      if $run->status != 0;
+
+    fatal "Could not parse archive name from '"
+      . ( join " ", $run->cmd->@* )
+      . "' output."
+      unless $archive && $version;
+
+    ( $archive, $version, $has_suffix );
 }
 
-method build_distarch {
-    my $hidedir = path('../')->tempdir;
-    my $moved   = path('./bin')->move($hidedir);
-    `minil dist --trial`;
-    $moved->move($CWD);
+sub rename_archive ( $src, $dst ) {
+    $archive->move($dst);
 }
 
-my $self = __PACKAGE__->new;
+sub upload_to_cpanm {
+    ...;
+}
 
-#package WWW::cgit::dist::CLI;
+sub dist {
 
-#class WWW::cgit::dist::CLI;
+    ( $archive, $version, $has_suffix ) =
+      make_dist( $$author_config{name}, trial => $trial );
 
-$self->build_distdir;
-$self->build_distarch;
+    dmsg( $archive, $version, $has_suffix );
+
+    $archive = path($archive);
+
+    if (
+        my $moved =
+          $has_suffix || !$dist_suffix
+        ? $archive
+        : rename_archive(
+            $archive,
+            $archive->basename(qr/\.tar\.gz$/) . "-$dist_suffix.tar.gz"
+        )
+      )
+    {
+        success "Wrote $moved";
+        exit 0;
+    }
+    else {
+        fatal "Something went wrong. ($?)";
+        dmsg $archive, $moved;
+    }
+}
+
+dist()

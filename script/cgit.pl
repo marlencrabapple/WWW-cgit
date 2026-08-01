@@ -34,7 +34,12 @@ field $argv : param;
 field $app;
 field $instance = {};
 field $builder { Plack::Builder->new }
-field $execdir       : accessor //= path(abs_path);
+
+# TODO: Condider naming to rundir or runuser_dir? The current name implies
+# solving relative path issues when its more about having write permissions
+# somewehre
+field $execdir : accessor //= path(abs_path) . '/run';
+
 field $cgit_sharedir : accessor = "/usr/share/webapps/cgit";
 field $cgitrc        : reader   = [];
 field $config_file;
@@ -78,7 +83,7 @@ ADJUSTPARAMS($params) {
         'help|usage|?', 'mount=s',
         'listen=s{1,}',
         'sockchown|socket-chown|sockuser|sock-user|sockown|sock-owner:s',
-          'sockchgrp|socket-chgrp|sockgrp|sock-group|sockgroups',
+        'sockchgrp|socket-chgrp|sockgrp|sock-group|sockgroups',
         'sockchmod|socket-chmod|sockmode|sock-mode=s',
 
         # TODO: fatal ver of the above
@@ -218,7 +223,7 @@ method plenvinstall_list : common (%opt) {
     run(
         [qw(plenv install -l)],
         autochomp => 1,
-        out       => sub ($line) {
+        out       => sub ( $line, @ ) {
 
             my ( $major, $minor, $extra ) = $line =~ $perlver_re;
 
@@ -306,6 +311,7 @@ method mount_middleware {
 }
 
 method new_instance ($opt) {
+
     # if ( my $execdir = $$opt{execdir} // $$cliopts{execdir} ) {
     #     dynamically $CWD = $execdir;
     # }
