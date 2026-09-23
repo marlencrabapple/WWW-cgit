@@ -1,0 +1,15 @@
+[global]
+ listen = "sock:///bs/www/WWW-cgit/run/cgit.sock"
+ execdir = "/bs/www/WWW-cgit/"
+
+[ssl]
+ enable_ssl = 1
+ server_auth = 1
+ certfile = ""
+ keyfile = ""
+
+[identity]
+ tripcode_secret = "Y7o7QlX1OXtWyN76Ynn7sfB5LxtimZfSex9qyWoIbYW8R1HNN94RogmVvq1VSX0tgeXpFIgZPlRRTpwVkDFyRIrAkamRs7HlIGdNmS0KO8l8zirwxtPKkhNb98Mf731yfC4hrYRxre72kk5YJs9CfcArMKqFPpst8taHHGNvkg0bQzEJLypFRikjo8TBswfZZXCEzzrjAOp7fHbg9IYYTTpimb8sExcT1mzY1AMLIadAhV4MsEHLJS6WMBWDJR2x"
+
+[[cgit-instance]]
+ cgitrc=".."

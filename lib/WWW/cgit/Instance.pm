@@ -7,12 +7,17 @@ class WWW::cgit::Instance : isa(Plack::Middleware);
 use utf8;
 use v5.40;
 
+# use Path::Try;
 use Path::Tiny;
 use List::Util 'any';
 use IO::Handle::Common;
 
 field $app { $self->{app} };
-field $cgitrc : accessor { path( $self->{cgitrc} ) };
+field $cgitrc : accessor {
+    path( $self->{cgitrc} )
+      unless blessed( $self->{cgitrc} )
+      && $self->{cgitrc} isa 'Path::Try'
+};
 field $config : reader;
 
 method load_cgitrc {
@@ -25,7 +30,8 @@ method load_cgitrc {
 }
 
 method parse_cgitrc {
-    foreach my $line ( map { chomp $_; $_} grep { !/^#/ } $cgitrc->lines_utf8 ) {
+    foreach my $line ( map { chomp $_; $_ } grep { !/^#/ } $cgitrc->lines_utf8 )
+    {
         my ( $name, $strval ) = split /=/, $line;
 
         next unless $name && $strval;

@@ -1,35 +1,38 @@
 use v5.40;
-use subs qw'requires recommends on';
+use subs qw'requires recommends on feature suggests conflicts';
+
 requires 'perl', 'v5.40';
 
-requires 'Const::Fast';
+requires 'Frame';
 
-use Const::Fast;
+requires 'IO::Handle::Common', '0.01.1',
+  dist => "CRABAPP/IPC-Handle-Common-0.01.1-TRIAL.tar.gz";
 
-const our $frame_ver => '0.1.6.0';
+requires 'IO::Socket::SSL';
 
-requires 'Frame',
-  $frame_ver;    #, dist => 'CRABAPP/Frame-$frame_ver-TRIAL.tar.gz';
+requires 'IPC::Nosh', '0.01.4', dist => "CRABAPP/IO-Nosh-0.01.4-TRIAL.tar.gz";
 
 requires 'Net::SSLeay';
+recommends 'Net::SSLeay::CA';
+
 requires 'Plack::App::WrapCGI';
 requires 'CGI::Compile';
 requires 'CGI::Emulate::PSGI';
+
 requires 'Plack::Builder';
 requires 'Plack::Middleware::Auth::Basic';
 requires 'Plack::Middleware::Rewrite';
+requires 'Plack::Middleware::ReverseProxy';
+requires 'Plack::Middleware::Static';
+
 requires 'File::chdir';
-
-requires 'IPC::Nosh';
-requires 'IO::Handle::Common';
-
+requires 'TOML::Tiny';
+requires 'JSON::MaybeXS';
 requires 'App::md2html';
 
 requires 'DBIx::Connector';
 requires 'SQL::Abstract';
 requires 'DBD::SQLite';
-
-recommends 'Net::SSLeay::CA';
 
 on 'test' => sub {
     requires 'Test::More', '0.98';
@@ -40,12 +43,22 @@ on 'develop' => sub {
     requires 'Perl::Tidy',   '20220613';
     requires 'Perl::Critic', '1.140';
     requires 'Perl::Critic::Community';
-    requires 'Plack::Middleware::Static';
     requires 'Plack::Middleware::Debug';
-    requires 'Plack::Middleware::ReverseProxy';
+
+    # requires 'Devel::Trace';
+    requires 'Plack::Middleware::StackTrace';
     recommends 'Plack::Middleware::REPL';
 };
 
 on 'build' => sub {
     requires 'Module::Build::Tiny';
-}
+};
+
+feature 'markdown',
+  "Provide markdown to HTML functionality for cgit's about-filter" => sub {
+    requires 'App::md2html';
+  };
+
+feature 'http', 'Serve content where SSL/TLS is unavailable' => sub {
+    requires 'Starlet';
+};

@@ -9,7 +9,7 @@ class WWW::cgit::Crypt::Tripcode;
 use utf8;
 use v5.40;
 
-use Path::Tiny;
+use Path::Try;
 use TOML::Tiny;
 use MIME::Base64 qw'encode_base64 decode_base64';
 use Encode       qw'encode decode';

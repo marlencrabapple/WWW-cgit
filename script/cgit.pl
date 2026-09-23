@@ -7,23 +7,25 @@ package cgitpl;
 class cgitpl;
 
 use utf8;
-use v5.40;
+use v5.44;
 
 use lib 'lib';
 
-use List::Util          qw(any none all mesh);
-use Const::Fast         qw( const );
-use Path::Tiny          qw( path );
-use Getopt::Long        qw(GetOptionsFromArray :config no_ignore_case);
-use Plack::Runner       ();
-use Plack::Builder      ();
-use Plack::App::WrapCGI ();
-use Cwd                 qw( abs_path getcwd );
+use List::Util qw(any none all mesh);
+use Const::Fast;
+use Getopt::Long
+  qw(GetOptionsFromArray :config no_ignore_case auto_abbrev bundling long_prefix_pattern=--?);
+use Plack::Runner;
+use Plack::Builder;
+use Plack::App::WrapCGI;
 use File::chdir;
+use Syntax::Keyword::Defer;
 use Syntax::Keyword::Dynamically;
-
 use IPC::Nosh;
 use IO::Handle::Common;
+
+# use Path::Try;
+use Path::Tiny;
 
 use WWW::cgit;
 use WWW::cgit::Instance;
@@ -38,7 +40,7 @@ field $builder { Plack::Builder->new }
 # TODO: Condider naming to rundir or runuser_dir? The current name implies
 # solving relative path issues when its more about having write permissions
 # somewehre
-field $execdir : accessor //= path(abs_path) . '/run';
+field $execdir : accessor //= path('./') . '/run';
 
 field $cgit_sharedir : accessor = "/usr/share/webapps/cgit";
 field $cgitrc        : reader   = [];
@@ -49,7 +51,7 @@ field $sockchmod : reader;
 field $listen    : reader = [];
 field $sock;
 
-field $plenvroot : reader { path("$execdir/.plenv") }
+field $plenvroot : reader = path("$execdir/.plenv");
 
 field $cliopts : param(dest) : reader {
     {
@@ -68,33 +70,33 @@ field $cliopts : param(dest) : reader {
 
 ADJUSTPARAMS($params) {
     const my @instance_optspec => (
-        'basicauth|auth|http-basic-auth=s',
-        'config=s',
-        'execdir=s' => sub ( $getopt, $val ) { $self->execdir( path($val) ) },
-        'ssl-certfile|certfile|sslcert|ssl-cert-file=s',
-        'ssl-keyfile|keyfile|sslkey|ssl-key-file=s',
-        'cgit|cgi|script=s',
+        'basicauth|auth|http-basic-auth:s',
+        'config:s',
+        'execdir:s' => sub ( $getopt, $val ) { $self->execdir( path($val) ) },
+        'ssl-certfile|certfile|sslcert|ssl-cert-file:s',
+        'ssl-keyfile|keyfile|sslkey|ssl-key-file:s',
+        'cgit|cgi|script:s',
     );
 
     GetOptionsFromArray(
         $argv,          $cliopts,
-        'cgitrc=s{,}',  'verbose+',
+        'cgitrc=s@',    'verbose+',
         'debug+',       'verion',
-        'help|usage|?', 'mount=s',
-        'listen=s{1,}',
+        'help|usage|?', 'mount:s',
+        'listen=s@',
         'sockchown|socket-chown|sockuser|sock-user|sockown|sock-owner:s',
-        'sockchgrp|socket-chgrp|sockgrp|sock-group|sockgroups',
-        'sockchmod|socket-chmod|sockmode|sock-mode=s',
+        'sockchgrp|socket-chgrp|sockgrp|sock-group|sockgroups:s',
+        'sockchmod|socket-chmod|sockmode|sock-mode:s',
 
         # TODO: fatal ver of the above
         # 'sockowner|sock-owner=s', 'sockgroup|sock-group|sockgrp=s',
 
-        'static|assets=s{,}', 'serve-static|serve-assets',
+        'static|assets:s@', 'serve-static|serve-assets',
         'rewrite',
-        'cgit-sharedir=s' =>
+        'cgit-sharedir:s' =>
           sub ( $getopt, $val ) { $self->cgit_sharedir( path($val) ) },
-        'plenv',      'plenvver|plenv-version=s',
-        'server|s=s', @instance_optspec
+        'plenv',      'plenvver|plenv-version:s',
+        'server|s:s', @instance_optspec
     );
 
     dmsg $cliopts, $argv;
@@ -108,7 +110,8 @@ ADJUSTPARAMS($params) {
             if ( $listen =~ $sockscheme_re ) {
                 my $sock   = path( $listen =~ s/$sockscheme_re//r );
                 my $rundir = $sock->parent;
-                dmsg( $rundir, $sock, $listen );
+
+                # dmsg( $rundir, $sock, $listen );
                 $rundir->mkdir unless $rundir->exists;
                 $sock->remove if $sock->exists;
 
@@ -126,16 +129,21 @@ ADJUSTPARAMS($params) {
         $group //= $uname;
 
         if ( $uname eq '-1' ) {
-            $sockchgrp = $$cliopts{sockchgrp} = $group;
+            $sockchgrp //= $$cliopts{sockchgrp} = $group;
         }
 
         dmsg $uname, $group, $$cliopts{sockchown};
 
-        $sockchown =
-          { uid => ( 0 + getpwnam($uname) ), gid => ( 0 + getgrnam($group) ) };
+        $sockchown = {
+            instr => $$cliopts{sockchown},
+            uname => $uname,
+            group => $group,
+            uid   => ( 0 + getpwnam($uname) ),
+            gid   => ( 0 + getgrnam($group) )
+        };
     }
     elsif ( $$cliopts{sockchgrp} ) {
-        $sockchgrp = $$cliopts{sockchgrp};
+        $sockchgrp //= $$cliopts{sockchgrp};
     }
 
     $sockchmod = $$cliopts{sockchmod};
@@ -145,9 +153,10 @@ ADJUSTPARAMS($params) {
         $mount //= '/';
 
         $$instance{$cgitrc} = {
+            cgit =>
+              "$cgit_sharedir/cgit.cgi",    #"/usr/share/webapps/cgit/cgit.cgi",
             %$cliopts,
-            cgit   => "/usr/share/webapps/cgit/cgit.cgi",
-            cgitrc => $cgitrc
+            cgitrc => $cgitrc,
         };
 
         if ( scalar keys %opt ) {
@@ -171,7 +180,7 @@ method plenvinit {
     my ($shell) = $ENV{SHELL} =~ s/^(?:.*\/)?([^\/]+)$/$1/rg;
 
     my @rcpath =
-      map { path("$execdir/$_") }
+      map { path("$plenvroot/$_") }
       ( '.profile', ( $shell ? '.' . $shell . 'rc' : () ) );
 
     my $plenvpath = "$plenvroot/bin:$ENV{PATH}";
@@ -306,7 +315,6 @@ method mount_middleware {
             $builder->mount( "/s/cgit/" . $file->basename,
                 Plack::App::File->new( file => $file )->to_app );
         }
-
     }
 }
 
@@ -360,15 +368,54 @@ method chmod : common ($mode, $path) {
     }
 }
 
+method cmd_try_sudo {
+
+}
+
 method socketperms {
     my $sockchown = $self->sockchown;
+
     foreach my $sock (@$sock) {
         my $modified = 0;
 
         $modified = chown( $$sockchown{uid}, $$sockchown{gid}, $sock )
           if $sockchown;
 
-        error "$! ($?)" unless $modified;
+        unless ($modified) {
+            error "$! ($?)";
+            dmsg $modified, $sockchown, $sock;
+
+            my @chown_cmd = (
+                'chown', join( ":", $sockchown->@[qw'uid gid'] ),
+                $sock->absolute
+            );
+
+            my $last = 0;
+
+          RUNCHOWN: while ( none { $_ } ( $last, $modified ) ) {
+                defer {
+                    $last = 1 if $chown_cmd[0] eq 'sudo';
+
+                    unshift @chown_cmd, 'sudo';
+                };
+
+                my $run = run( \@chown_cmd, autoflush => 1, autochomp => 1 );
+                if ( $run->status == 0 ) {
+                    $modified = $sock = path($sock);
+                }
+                else {
+
+                    error join( '', @chown_cmd )
+                      . 'exited ('
+                      . $run->status
+                      . ') with an error:';
+
+                    say STDERR $_
+                      for $run->err->lines_utf8( chomp => 1, prepend => '・❚' );
+                }
+            }
+
+        }
 
         if ($sockchgrp) {
             my $chgrp_res =
@@ -398,7 +445,7 @@ class cgitpl::cli;
 use lib 'lib';
 
 use utf8;
-use v5.40;
+use v5.44;
 
 use IO::Handle::Common;
 
