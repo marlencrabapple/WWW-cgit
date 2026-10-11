@@ -7,22 +7,40 @@ class WWW::cgit::Instance : isa(Plack::Middleware);
 use utf8;
 use v5.40;
 
-# use Path::Try;
 use Path::Tiny;
-use List::Util 'any';
+use List::Util qw'any none';
 use IO::Handle::Common;
 
-field $app { $self->{app} };
-field $cgitrc : accessor {
-    path( $self->{cgitrc} )
-      unless blessed( $self->{cgitrc} )
-      && $self->{cgitrc} isa 'Path::Try'
-};
+field $app : param;
+field $cgitrc;    #: param;
 field $config : reader;
+field $reload_cgitrc : param : reader //= $ENV{RELOAD_CGITRC} ? true : false;
+
+# method BUILDARGS : common (%args) {
+#     ( delete $args{env}, 1, %args )
+# }
+
+ADJUST : params (:$cgitrc) { $self->cgitrc($cgitrc) };
+
+method wrap : common ($app, @args) {
+    my $self = $class->new( app => $app, @args );
+    $self->to_app;
+}
+
+method cgitrc ( $path, %opt ) {
+    $cgitrc =
+      blessed( $self->{cgitrc} )
+      && $self->{cgitrc} isa 'Path::Tiny'
+      ? $path->realpath
+      : path( $self->{cgitrc} );
+
+    $config = $self->load_cgitrc unless $opt{noupdate};
+}
 
 method load_cgitrc {
-    $self->parse_cgitrc($cgitrc);
-    dmsg $self
+    my $config = $self->parse_cgitrc($cgitrc);
+    dmsg $self, $config;
+    $config
 
     # TODO: Make sure its within user's provisioned root
     #$$config{'scan-path'};
@@ -42,7 +60,8 @@ method parse_cgitrc {
         if ( any { $name eq $_ } @listkeys ) {
             if ( $strval =~ s/^:(.+)$/$1/ ) {
                 $$config{$name} //= [];
-                push $$config{$name}->@*, $strval;
+                push $$config{$name}->@*, $strval
+                  if none { $strval eq $_ } $$config{$name}->@*;
             }
             else {
                 my @val = split /\s/, $strval;
@@ -53,10 +72,12 @@ method parse_cgitrc {
             $$config{$name} = $strval;
         }
     }
+
+    $config;
 }
 
 method call( $env, %opt ) {
-    $self->load_cgitrc;
+    $self->load_cgitrc if $reload_cgitrc;
     $$env{CGIT_CONFIG} = $cgitrc->absolute;
     $self->app->($env);
 }

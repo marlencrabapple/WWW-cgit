@@ -2,14 +2,12 @@
 
 use Object::Pad ':experimental(:all)';
 
-package cgitpl;
+package cgit_pl;
 
-class cgitpl;
+class cgit_pl : does(WWW::cgit::Base);
 
 use utf8;
 use v5.44;
-
-use lib 'lib';
 
 use List::Util qw(any none all mesh);
 use Const::Fast;
@@ -23,11 +21,11 @@ use Syntax::Keyword::Defer;
 use Syntax::Keyword::Dynamically;
 use IPC::Nosh;
 use IO::Handle::Common;
-
-# use Path::Try;
 use Path::Tiny;
+use builtin;
 
 use WWW::cgit;
+use WWW::cgit::Base;
 use WWW::cgit::Instance;
 
 const our $sockscheme_re => qr'^unix://';
@@ -75,7 +73,8 @@ ADJUSTPARAMS($params) {
         'execdir:s' => sub ( $getopt, $val ) { $self->execdir( path($val) ) },
         'ssl-certfile|certfile|sslcert|ssl-cert-file:s',
         'ssl-keyfile|keyfile|sslkey|ssl-key-file:s',
-        'cgit|cgi|script:s',
+        'cgit|cgi|script|bin:s',
+
     );
 
     GetOptionsFromArray(
@@ -84,6 +83,7 @@ ADJUSTPARAMS($params) {
         'debug+',       'verion',
         'help|usage|?', 'mount:s',
         'listen=s@',
+        'reload-cgitrc|hotload-cgitrc!',
         'sockchown|socket-chown|sockuser|sock-user|sockown|sock-owner:s',
         'sockchgrp|socket-chgrp|sockgrp|sock-group|sockgroups:s',
         'sockchmod|socket-chmod|sockmode|sock-mode:s',
@@ -98,6 +98,16 @@ ADJUSTPARAMS($params) {
         'plenv',      'plenvver|plenv-version:s',
         'server|s:s', @instance_optspec
     );
+
+    shift @$argv
+      if refstr($argv) eq 'ARRAY'
+      && $$argv[0]
+      && $$argv[0] =~ /^--?$/;
+
+    # Should have class with accessor methods or delete original keys
+    %$cliopts =
+      map { my $v = delete $$cliopts{$_}; ( ( $_ =~ s/-/_/r ) => $v ) }
+      keys %$cliopts;
 
     dmsg $cliopts, $argv;
 
@@ -162,6 +172,11 @@ ADJUSTPARAMS($params) {
         if ( scalar keys %opt ) {
             GetOptionsFromArray( [%opt], $$instance{$cgitrc},
                 @instance_optspec );
+
+            %$cliopts =
+              map { my $v = delete $$cliopts{$_}; ( ( $_ =~ s/-/_/rg ) => $v ) }
+              keys %$cliopts;
+
         }
 
         $$instance{$cgitrc}{app} =
@@ -319,11 +334,6 @@ method mount_middleware {
 }
 
 method new_instance ($opt) {
-
-    # if ( my $execdir = $$opt{execdir} // $$cliopts{execdir} ) {
-    #     dynamically $CWD = $execdir;
-    # }
-
     dynamically $CWD = $$opt{execdir} // $execdir;
 
     my $app = Plack::App::WrapCGI->new(
@@ -331,7 +341,7 @@ method new_instance ($opt) {
         execute => 1
     )->to_app;
 
-    WWW::cgit::Instance->wrap( $app, cgitrc => $$opt{cgitrc} );
+    WWW::cgit::Instance->wrap( $app, %$opt );
 }
 
 method to_app {
@@ -439,25 +449,24 @@ method start {
     $self;
 }
 
-package cgitpl::cli;
+package cgit_pl::CLI;
 
-class cgitpl::cli;
-use lib 'lib';
+class cgit_pl::CLI;
 
 use utf8;
 use v5.44;
 
 use IO::Handle::Common;
 
-our $cgitsrv = cgitpl->new( argv => \@ARGV );
+our $cgit_pl = cgit_pl->new( argv => \@ARGV );
 
 unless (caller) {
-    $cgitsrv->start;
+    $cgit_pl->start;
     error "$! ($?)" if $? != 0;
     exit $?;
 }
 
-$cgitsrv->app;
+$cgit_pl->app;
 
 __END__
 
