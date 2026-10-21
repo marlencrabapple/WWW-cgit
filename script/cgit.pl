@@ -30,6 +30,8 @@ use WWW::cgit::Instance;
 
 const our $sockscheme_re => qr'^unix://';
 
+$ENV{PLACK_ENV} //= 'development';
+
 field $argv : param;
 field $app;
 field $instance = {};
@@ -38,7 +40,7 @@ field $builder { Plack::Builder->new }
 # TODO: Condider naming to rundir or runuser_dir? The current name implies
 # solving relative path issues when its more about having write permissions
 # somewehre
-field $execdir : accessor //= path('./') . '/run';
+field $execdir : accessor //= path('./');    # . '/run';
 
 field $cgit_sharedir : accessor = "/usr/share/webapps/cgit";
 field $cgitrc        : reader   = [];
@@ -99,6 +101,7 @@ ADJUSTPARAMS($params) {
         'server|s:s', @instance_optspec
     );
 
+    dmsg $argv;
     shift @$argv
       if refstr($argv) eq 'ARRAY'
       && $$argv[0]
@@ -225,7 +228,6 @@ method plenvinit {
 
 method plenvinstall :
   common ($version = (WWW::cgit->plenvinstall_list)[0], %opt) {
-
     run( [ qw(plenv install), $version, ] );
 }
 
@@ -308,7 +310,7 @@ method mount_middleware {
         );
     }
 
-    if ( $$cliopts{'serve-static'} ) {
+    if ( $$cliopts{serve_static} ) {
         use Plack::App::File;
 
         $builder->add_middleware(
@@ -341,7 +343,7 @@ method new_instance ($opt) {
         execute => 1
     )->to_app;
 
-    WWW::cgit::Instance->wrap( $app, %$opt );
+    WWW::cgit::Instance->wrap( $app, cgit_pl => $self, %$opt );
 }
 
 method to_app {
@@ -354,14 +356,22 @@ method runnerargs {
 
     push @args, '--server', $$cliopts{server};
 
+    dmsg $cliopts,
+      [
+        all { $_->is_file }
+        map  { path($_)->absolute }
+        grep { $_ } ( @$cliopts{qw'ssl_certfile ssl_keyfile'} )
+      ];
+
     if (
         all { $_->is_file }
-        map { path($_) } grep { $_ } ( @$cliopts{qw'ssl-certfile ssl-keyfile'} )
+        map  { path($_)->absolute }
+        grep { $_ } ( @$cliopts{qw'ssl_certfile ssl_keyfile'} )
       )
     {
         push @args, qw(--ssl --ssl-server --ssl-key-file),
-          $$cliopts{'ssl-keyfile'}, '--ssl-cert-file',
-          $$cliopts{'ssl-certfile'};
+          $$cliopts{ssl_keyfile}, '--ssl-cert-file',
+          $$cliopts{ssl_certfile};
     }
     @args;
 }
@@ -441,7 +451,7 @@ method socketperms {
 method start {
     require Plack::Runner;
     my $runner = Plack::Runner->new;
-
+    dmsg \@ARGV, $self->runnerargs;
     $runner->parse_options( @ARGV, $self->runnerargs );
     $runner->run($app);
 

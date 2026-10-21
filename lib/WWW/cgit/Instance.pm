@@ -11,7 +11,8 @@ use Path::Tiny;
 use List::Util qw'any none';
 use IO::Handle::Common;
 
-field $app : param;
+field $cgit_pl  : param;
+field $instance : param(app);
 field $cgitrc;    #: param;
 field $config : reader;
 field $reload_cgitrc : param : reader //= $ENV{RELOAD_CGITRC} ? true : false;
@@ -28,12 +29,8 @@ method wrap : common ($app, @args) {
 }
 
 method cgitrc ( $path, %opt ) {
-    $cgitrc =
-      blessed( $self->{cgitrc} )
-      && $self->{cgitrc} isa 'Path::Tiny'
-      ? $path->realpath
-      : path( $self->{cgitrc} );
-
+    $path = path($path) unless blessed($path) && $path->isa('Path::Tiny');
+    $cgitrc //= $path;
     $config = $self->load_cgitrc unless $opt{noupdate};
 }
 
@@ -79,6 +76,9 @@ method parse_cgitrc {
 method call( $env, %opt ) {
     $self->load_cgitrc if $reload_cgitrc;
     $$env{CGIT_CONFIG} = $cgitrc->absolute;
-    $self->app->($env);
+
+    dmsg $env, \%opt;
+
+    $instance->($env);
 }
 

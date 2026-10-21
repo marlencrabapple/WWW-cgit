@@ -6,25 +6,19 @@ use v5.40;
 use lib 'lib';
 
 use Fcntl qw'S_IXUSR S_IXGRP S_IXOTH S_IRUSR S_IRGRP S_IROTH';
+use Cwd 'abs_path';
 use File::chdir;
-use Path::Try;
+use Path::Tiny;
 use List::Util 'none';
-use TOML::Tiny;
 use Getopt::Long qw(GetOptionsFromArray :config no_ignore_case auto_abbrev);
+
 use IPC::Nosh;
 use IO::Handle::Common;
 
-our $toml = TOML::Tiny->new;
-
-our %config_path = ( author => path('minil.toml') );
-our %config = ( author => $toml->decode( $config_path{author}->slurp_utf8 ) );
-
-our $modroot = path('./');
-our @input   = ( path("$modroot/script")->children );
-our $outdir =
-  path( $ENV{OUTDIR} // $config{author}->{fatpack}{outdir} // './fatpack' );
-our $outfn = '%s';
-
+our $modroot  = path(abs_path);
+our @input    = ( path("$modroot/script")->children );
+our $outdir   = path('./bin');
+our $outfn    = '%s';
 our $locallib = path("$modroot/local");
 our $verbose  = 1;
 our $debug    = $verbose;
@@ -70,7 +64,9 @@ GetOptions(
     => sub {
         $patharg->( shift, dest => \@input );
     },
-    'outdir|fatpack-out=s',
+    'outdir|fatpack-out=s' => sub ( $name, $val ) {
+        $clidest{$name} = path($val);
+    },
     'outfn|outfname|out-filename|fnfmt|fmtfn|fmt-filename|fmt-outputfn=s',
     'modroot|module-root|module-dir=s',
     'locallib=s@',
@@ -92,8 +88,9 @@ sub fatpack {
 
     $ENV{PERL5LIB} = "$locallib:$modroot/lib";
 
-    $outdir->mkdir unless -d $outdir;
+    $outdir->mkdir unless $outdir->is_dir;
     dmsg(@input);
+
     foreach my $in ( map { $_->is_dir ? ( $_->children ) : $_ } @input ) {
 
         #fatpack($in->children) if $in->is_dir;
@@ -105,6 +102,8 @@ sub fatpack {
         info( "Running " . join " ", @cmd );
 
         my $run = run( \@cmd, out => $fatline, autochomp => 1 );
+
+        #dmsg($run);
 
         $fatstr = join "\n", $run->out->lines_utf8;
 

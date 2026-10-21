@@ -3,17 +3,32 @@ use subs qw'requires recommends on feature suggests conflicts';
 
 requires 'perl', 'v5.44';
 
-requires 'Frame';
+requires 'Const::Fast';
+use Const::Fast;
 
-requires 'IO::Handle::Common', '0.01_2',
-  dist => "CRABAPP/IPC-Handle-Common-0.01_2-TRIAL.tar.gz";
+sub distname ($pkgname) {
+    const my $pkg2dist => qr/::/;
+    ( $pkgname =~ s/$pkg2dist/-/rg );
+}
+
+const our %pinned => (
+    CRABAPP => {
+        'Path::Try'          => '0.01_03',
+        'IO::Handle::Common' => '0.01_3',
+        'IPC::Nosh'          => '0.01_04',
+        'Frame' => '0.01_7'
+    }
+);
+
+foreach my ( $author, $modules ) (%pinned) {
+    foreach my ( $name, $ver ) (%$modules) {
+        requires $name, $ver,
+          dist => "$author/" . distname($name) . "-$ver-TRIAL.tar.gz";
+    }
+}
 
 requires 'IO::Socket::SSL';
-
-requires 'IPC::Nosh', '0.01.4', dist => "CRABAPP/IO-Nosh-0.01.4-TRIAL.tar.gz";
-
 requires 'Net::SSLeay';
-recommends 'Net::SSLeay::CA';
 
 requires 'Plack::App::WrapCGI';
 requires 'CGI::Compile';
@@ -28,7 +43,6 @@ requires 'Plack::Middleware::Static';
 requires 'File::chdir';
 requires 'TOML::Tiny';
 requires 'JSON::MaybeXS';
-requires 'App::md2html';
 
 requires 'DBIx::Connector';
 requires 'SQL::Abstract';

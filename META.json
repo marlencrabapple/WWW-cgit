@@ -77,22 +77,20 @@
          }
       },
       "runtime" : {
-         "recommends" : {
-            "Net::SSLeay::CA" : "0"
-         },
          "requires" : {
-            "App::md2html" : "0",
             "CGI::Compile" : "0",
             "CGI::Emulate::PSGI" : "0",
+            "Const::Fast" : "0",
             "DBD::SQLite" : "0",
             "DBIx::Connector" : "0",
             "File::chdir" : "0",
-            "Frame" : "0",
-            "IO::Handle::Common" : "0.01_2",
+            "Frame" : "0.01_7",
+            "IO::Handle::Common" : "0.01_3",
             "IO::Socket::SSL" : "0",
-            "IPC::Nosh" : "v0.1.4",
+            "IPC::Nosh" : "0.01_04",
             "JSON::MaybeXS" : "0",
             "Net::SSLeay" : "0",
+            "Path::Try" : "0.01_03",
             "Plack::App::WrapCGI" : "0",
             "Plack::Builder" : "0",
             "Plack::Middleware::Auth::Basic" : "0",
