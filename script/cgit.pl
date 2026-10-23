@@ -102,6 +102,7 @@ ADJUSTPARAMS($params) {
     );
 
     dmsg $argv;
+
     shift @$argv
       if refstr($argv) eq 'ARRAY'
       && $$argv[0]
@@ -220,7 +221,7 @@ method plenvinit {
         info "Building and installing perl with plenv to '$plenvroot'. "
           . "This may take a while...";
 
-        my $run = cgitpl->cmd( [ 'plenv', $cmd, $$cliopts{plenvver} ] );
+        my $run = cgit_pl->cmd( [ 'plenv', $cmd, $$cliopts{plenvver} ] );
 
         dmsg $run;
     }
@@ -228,7 +229,7 @@ method plenvinit {
 
 method plenvinstall :
   common ($version = (WWW::cgit->plenvinstall_list)[0], %opt) {
-    run( [ qw(plenv install), $version, ] );
+    cgit_pl->cmd( [ qw(plenv install), $version, ] );
 }
 
 method plenvinstall_list : common (%opt) {
@@ -246,10 +247,9 @@ method plenvinstall_list : common (%opt) {
 
     my @avail = ();
 
-    run(
+    cgit_pl->cmd(
         [qw(plenv install -l)],
-        autochomp => 1,
-        out       => sub ( $line, @ ) {
+        out => sub ( $line, @ ) {
 
             my ( $major, $minor, $extra ) = $line =~ $perlver_re;
 
@@ -276,7 +276,9 @@ method cmd : common ($cmd, %opt) {
         $cmd,
         autochomp => 1,
         autoflush => 1,
-        on        => { line => sub { say shift } },
+        out       => sub ( $line, @ ) { info "$$cmd[0]: $line" },
+        err       => sub ( $line, @ ) { error "$$cmd[0]: $line" },
+        %opt
     );
 
     error "'"
@@ -351,28 +353,28 @@ method to_app {
     $builder->to_app;
 }
 
-method runnerargs {
+method runner_arg {
     my @args = map { ( '--listen' => $_ ) } @$listen;
-
     push @args, '--server', $$cliopts{server};
 
-    dmsg $cliopts,
-      [
-        all { $_->is_file }
-        map  { path($_)->absolute }
-        grep { $_ } ( @$cliopts{qw'ssl_certfile ssl_keyfile'} )
-      ];
+    my %deleted = ();
 
-    if (
-        all { $_->is_file }
-        map  { path($_)->absolute }
-        grep { $_ } ( @$cliopts{qw'ssl_certfile ssl_keyfile'} )
-      )
-    {
-        push @args, qw(--ssl --ssl-server --ssl-key-file),
-          $$cliopts{ssl_keyfile}, '--ssl-cert-file',
-          $$cliopts{ssl_certfile};
+    foreach my ( $k, $v ) (%$cliopts) {
+        $deleted{$k} = delete $$cliopts{$k} unless $v;
     }
+
+    dmsg \%deleted;
+
+    foreach my ( $certfile, $keyfile )
+      ( $cliopts->@{qw'ssl_certfile ssl_keyfile'} )
+    {
+        next unless $certfile && $keyfile;
+
+        push @args, qw(--ssl --ssl-server --ssl-key-file),
+          path($keyfile)->absolute, '--ssl-cert-file',
+          path($certfile)->absolute;
+    }
+
     @args;
 }
 
@@ -384,12 +386,14 @@ method chmod : common ($mode, $path) {
     }
     catch ($e) {
         error $e;
-        cgit->cmd( [ 'chmod', $mode, "" . $path->absolute ] );
+        cgit->cmd_try_sudo( [ 'chmod', $mode, "" . $path->absolute ] );
     }
 }
 
-method cmd_try_sudo {
-
+method cmd_try_sudo ( $cmd, %opt ) {
+    foreach my $cmd ( $cmd, [ 'sudo', @$cmd ] ) {
+        cgit_pl->cmd( $cmd, %opt );
+    }
 }
 
 method socketperms {
@@ -419,19 +423,9 @@ method socketperms {
                     unshift @chown_cmd, 'sudo';
                 };
 
-                my $run = run( \@chown_cmd, autoflush => 1, autochomp => 1 );
+                my $run = cgit_pl->cmd_try_sudo( \@chown_cmd );
                 if ( $run->status == 0 ) {
                     $modified = $sock = path($sock);
-                }
-                else {
-
-                    error join( '', @chown_cmd )
-                      . 'exited ('
-                      . $run->status
-                      . ') with an error:';
-
-                    say STDERR $_
-                      for $run->err->lines_utf8( chomp => 1, prepend => '・❚' );
                 }
             }
 
@@ -439,7 +433,8 @@ method socketperms {
 
         if ($sockchgrp) {
             my $chgrp_res =
-              cgit->cmd( [ 'chgrp', $sockchgrp, "" . $sock->absolute ] );
+              cgit_pl->cmd_try_sudo(
+                [ 'chgrp', $sockchgrp, "" . $sock->absolute ] );
         }
 
         if ($sockchmod) {
@@ -451,8 +446,9 @@ method socketperms {
 method start {
     require Plack::Runner;
     my $runner = Plack::Runner->new;
-    dmsg \@ARGV, $self->runnerargs;
-    $runner->parse_options( @ARGV, $self->runnerargs );
+
+    # dmsg \@ARGV, [ $self->runner_arg ];
+    $runner->parse_options( @ARGV, $self->runner_arg );
     $runner->run($app);
 
     $self->socketperms($sock);
@@ -488,12 +484,10 @@ cgit.pl: a cgit launcher, server/instance mangager and Plack/PSGI interface
 
 =head1 SYNOPSIS
 
-    cgit . pl -ssl -listen ':443' ':80'
+    cgit.pl --ssl --listen ':443,:80'
 
-      git clone
-      -- mirror / path / to / scandir / WWW-cgit git remote add cgit ssh :
-      //git@$(hostname) : /scandir/ WWW-cgit
-
+    git clone --mirror /path/to/scandir/WWW-cgit
+    git remote add cgit ssh://git@$(hostname):/scandir/WWW-cgit
 
 =head1 DESCRIPTION
 
