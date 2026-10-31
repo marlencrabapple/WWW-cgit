@@ -10,7 +10,7 @@ use v5.40;
 use Text::Xslate;
 use JSON::MaybeXS;
 
-our $VERSION = "0.01";
+our $VERSION = '0.01_01';
 
 field $config : reader = {};
 

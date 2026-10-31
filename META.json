@@ -78,6 +78,7 @@
       },
       "runtime" : {
          "requires" : {
+            "Adjust::Params" : "0.01_04",
             "CGI::Compile" : "0",
             "CGI::Emulate::PSGI" : "0",
             "Const::Fast" : "0",
@@ -85,7 +86,7 @@
             "DBIx::Connector" : "0",
             "File::chdir" : "0",
             "Frame" : "0.01_7",
-            "IO::Handle::Common" : "0.01_3",
+            "IO::Handle::Common" : "0.01_06",
             "IO::Socket::SSL" : "0",
             "IPC::Nosh" : "0.01_04",
             "JSON::MaybeXS" : "0",
@@ -109,7 +110,7 @@
       }
    },
    "release_status" : "unstable",
-   "version" : "0.01",
+   "version" : "0.01_01",
    "x_serialization_backend" : "JSON::PP version 4.16",
    "x_static_install" : 1
 }

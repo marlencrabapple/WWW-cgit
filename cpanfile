@@ -1,4 +1,4 @@
-use v5.40;
+use v5.44;
 use subs qw'requires recommends on feature suggests conflicts';
 
 requires 'perl', 'v5.44';
@@ -14,8 +14,9 @@ sub distname ($pkgname) {
 const our %pinned => (
     CRABAPP => {
         'Path::Try'          => '0.01_03',
-        'IO::Handle::Common' => '0.01_3',
+        'IO::Handle::Common' => '0.01_06',
         'IPC::Nosh'          => '0.01_04',
+             'Adjust::Params'     => '0.01_04',
         'Frame' => '0.01_7'
     }
 );

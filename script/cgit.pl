@@ -9,7 +9,7 @@ class cgit_pl : does(WWW::cgit::Base);
 use utf8;
 use v5.44;
 
-use List::Util qw(any none all mesh);
+use List::Util qw(pairmap any none all mesh);
 use Const::Fast;
 use Getopt::Long
   qw(GetOptionsFromArray :config no_ignore_case auto_abbrev bundling long_prefix_pattern=--?);
@@ -40,39 +40,42 @@ field $builder { Plack::Builder->new }
 # TODO: Condider naming to rundir or runuser_dir? The current name implies
 # solving relative path issues when its more about having write permissions
 # somewehre
-field $execdir : accessor //= path('./');    # . '/run';
+field $cgit_execdir  : accessor //= './';    # . '/run';
+field $cgit_cachedir : accessor //= undef;
 
 field $cgit_sharedir : accessor = "/usr/share/webapps/cgit";
-field $cgitrc        : reader   = [];
+field $cgitrc        : accessor = [];
 field $config_file;
-field $sockchown : reader;
-field $sockchgrp : reader;
-field $sockchmod : reader;
-field $listen    : reader = [];
+field $sockchown : accessor;
+field $sockchgrp : accessor;
+field $sockchmod : accessor;
+field $listen    : accessor = [];
 field $sock;
+field $rewrite : accessor = 0;
 
-field $plenvroot : reader = path("$execdir/.plenv");
+field $plenvver     : accessor;
+field $plenvroot    : accessor = "$cgit_execdir/.plenv";
+field $serve_static : accessor //= 1;
+field $static_assets = [];
 
-field $cliopts : param(dest) : reader {
-    {
-        mount           => '/',
-        cgitrc          => $cgitrc,
-        execdir         => $execdir,
-        'cgit-sharedir' => $cgit_sharedir,
-        assets          => ["$execdir/www"],
-        listen          => $listen,
-        'serve-static'  => $ENV{PLACK_ENV}
-          && $ENV{PLACK_ENV} eq 'development' ? 1 : 0,
-        plenv    => "",
-        plenvver => ''
-    }
-};
+field $cliopt = {};
 
-ADJUSTPARAMS($params) {
+ADJUST : params (%param) {
+    $self->adjust_params(
+        [ \$cgit_execdir, \$cgit_cachedir, \$cgit_sharedir ],
+        \%param,
+        cb => sub ($val) { path($val)->absolute if $val }
+    )
+  }
+
+  ADJUSTPARAMS($params) {
     const my @instance_optspec => (
         'basicauth|auth|http-basic-auth:s',
         'config:s',
-        'execdir:s' => sub ( $getopt, $val ) { $self->execdir( path($val) ) },
+        'cgit-execdir|execdir|exec-dir:s' =>
+          sub ( $getopt, $val ) { $self->cgit_execdir( path($val) ) },
+        'cgit-cachedir|cachedir|cache-dir:s' =>
+          sub ( $getopt, $val ) { $self->cgit_cachedir( path($val) ) },
         'ssl-certfile|certfile|sslcert|ssl-cert-file:s',
         'ssl-keyfile|keyfile|sslkey|ssl-key-file:s',
         'cgit|cgi|script|bin:s',
@@ -80,7 +83,7 @@ ADJUSTPARAMS($params) {
     );
 
     GetOptionsFromArray(
-        $argv,          $cliopts,
+        $argv,          $cliopt,
         'cgitrc=s@',    'verbose+',
         'debug+',       'verion',
         'help|usage|?', 'mount:s',
@@ -93,7 +96,7 @@ ADJUSTPARAMS($params) {
         # TODO: fatal ver of the above
         # 'sockowner|sock-owner=s', 'sockgroup|sock-group|sockgrp=s',
 
-        'static|assets:s@', 'serve-static|serve-assets',
+        'static-assets|assets:s@', 'serve-static|serve-assets',
         'rewrite',
         'cgit-sharedir:s' =>
           sub ( $getopt, $val ) { $self->cgit_sharedir( path($val) ) },
@@ -101,21 +104,21 @@ ADJUSTPARAMS($params) {
         'server|s:s', @instance_optspec
     );
 
-    dmsg $argv;
+    # dmsg $argv;
 
     shift @$argv
       if refstr($argv) eq 'ARRAY'
       && $$argv[0]
-      && $$argv[0] =~ /^--?$/;
+      && builtin::trim( $$argv[0] ) =~ /^--?$/;
 
     # Should have class with accessor methods or delete original keys
-    %$cliopts =
-      map { my $v = delete $$cliopts{$_}; ( ( $_ =~ s/-/_/r ) => $v ) }
-      keys %$cliopts;
+    %$cliopt =
+      map { my $v = delete $$cliopt{$_}; ( ( $_ =~ s/-/_/r ) => $v ) }
+      keys %$cliopt;
 
-    dmsg $cliopts, $argv;
+    dmsg $cliopt, $argv;
 
-    if ( $$cliopts{plenv} ) {
+    if ( $$cliopt{plenv} ) {
         $self->plenvinit;
     }
 
@@ -138,29 +141,29 @@ ADJUSTPARAMS($params) {
         push @$listen, ':5000';
     }
 
-    if ( $$cliopts{sockchown} ) {
-        my ( $uname, $group ) = split /\:/, $$cliopts{sockchown};
+    if ( $$cliopt{sockchown} ) {
+        my ( $uname, $group ) = split /\:/, $$cliopt{sockchown};
         $group //= $uname;
 
         if ( $uname eq '-1' ) {
-            $sockchgrp //= $$cliopts{sockchgrp} = $group;
+            $sockchgrp //= $$cliopt{sockchgrp} = $group;
         }
 
-        dmsg $uname, $group, $$cliopts{sockchown};
+        dmsg $uname, $group, $$cliopt{sockchown};
 
         $sockchown = {
-            instr => $$cliopts{sockchown},
+            instr => $$cliopt{sockchown},
             uname => $uname,
             group => $group,
             uid   => ( 0 + getpwnam($uname) ),
             gid   => ( 0 + getgrnam($group) )
         };
     }
-    elsif ( $$cliopts{sockchgrp} ) {
-        $sockchgrp //= $$cliopts{sockchgrp};
+    elsif ( $$cliopt{sockchgrp} ) {
+        $sockchgrp //= $$cliopt{sockchgrp};
     }
 
-    $sockchmod = $$cliopts{sockchmod};
+    $sockchmod = $$cliopt{sockchmod};
 
     foreach my $cgitrc (@$cgitrc) {
         my ( $rcfile, $mount, %opt ) = split /:/, $cgitrc, 1;
@@ -169,7 +172,8 @@ ADJUSTPARAMS($params) {
         $$instance{$cgitrc} = {
             cgit =>
               "$cgit_sharedir/cgit.cgi",    #"/usr/share/webapps/cgit/cgit.cgi",
-            %$cliopts,
+            $$cliopt,
+
             cgitrc => $cgitrc,
         };
 
@@ -177,10 +181,16 @@ ADJUSTPARAMS($params) {
             GetOptionsFromArray( [%opt], $$instance{$cgitrc},
                 @instance_optspec );
 
-            %$cliopts =
-              map { my $v = delete $$cliopts{$_}; ( ( $_ =~ s/-/_/rg ) => $v ) }
-              keys %$cliopts;
+            # $$cliopt =
+            #  map { my $v = delete$$cliopt{$_}; ( ( $_ =~ s/-/_/rg ) => $v ) }
+            # keys $$cliopt;
 
+            foreach my $lvl ( \$$cliopt, \%opt ) {
+                foreach my ( $k, $v ) (%$lvl) {
+                    $k =~ s/_/-/g;
+                    $$lvl{$k} = $v;
+                }
+            }
         }
 
         $$instance{$cgitrc}{app} =
@@ -188,8 +198,6 @@ ADJUSTPARAMS($params) {
 
         $builder->mount( $mount, $$instance{$cgitrc}{app} );
     }
-
-    $builder->mount( '/test', WWW::cgit->new->to_psgi );
 
     $self->mount_middleware;
     $app = $self->to_app
@@ -221,7 +229,7 @@ method plenvinit {
         info "Building and installing perl with plenv to '$plenvroot'. "
           . "This may take a while...";
 
-        my $run = cgit_pl->cmd( [ 'plenv', $cmd, $$cliopts{plenvver} ] );
+        my $run = cgit_pl->cmd( [ 'plenv', $cmd, $plenvver ] );
 
         dmsg $run;
     }
@@ -299,31 +307,34 @@ method mount_middleware {
     );
 
     if ( $ENV{PLACK_ENV} && ( $ENV{PLACK_ENV} eq 'development' ) ) {
+
         $builder->add_middleware('Debug');
         $builder->add_middleware('StackTrace');
     }
 
-    if ( $$cliopts{rewrite} ) {
+    if ($rewrite) {
+
         $builder->add_middleware(
             "Plack::Middleware::Rewrite",
             request => sub {
-                s^(.+?)\.git(\/)?$^$1/.git^i;
+                s!^(.+?[^/]).git$!$1/.git!i;
             }
         );
     }
 
-    if ( $$cliopts{serve_static} ) {
+    if ($serve_static) {
         use Plack::App::File;
 
         $builder->add_middleware(
             "Plack::Middleware::Static",
             path         => sub { s!^/s/!! },
-            root         => $$cliopts{assets},
+            root         => $static_assets,
             pass_through => 1,
         );
 
         my @cgitstatic = glob "$cgit_sharedir/cgit.{png,js,css}";
-        dmsg \@cgitstatic;
+
+        # dmsg \@cgitstatic;
 
         foreach my $file ( map { path($_) } @cgitstatic ) {
             unless ( $file->exists ) {
@@ -338,35 +349,51 @@ method mount_middleware {
 }
 
 method new_instance ($opt) {
-    dynamically $CWD = $$opt{execdir} // $execdir;
+    dynamically $CWD = $$opt{execdir} // $cgit_execdir;
 
     my $app = Plack::App::WrapCGI->new(
         script  => $$opt{cgit},
         execute => 1
     )->to_app;
 
-    WWW::cgit::Instance->wrap( $app, cgit_pl => $self, %$opt );
+    const my %cgitrc_map => ( cachedir => 'cache-root', );
+
+    # dmsg \%cgitrc_map, $opt;
+
+    foreach my ( $k, $v ) (%$opt) {
+        next unless exists $cgitrc_map{$k};
+
+        # dmsg $k, $v;
+        $$opt{ $cgitrc_map{$k} } = $v;
+    }
+
+    WWW::cgit::Instance->wrap(
+        $app,
+        cgit_pl => $self,
+        %$opt
+    );
 }
 
 method to_app {
-    dmsg $builder;
+
+    # dmsg $builder;
     $builder->to_app;
 }
 
 method runner_arg {
     my @args = map { ( '--listen' => $_ ) } @$listen;
-    push @args, '--server', $$cliopts{server};
+    push @args, '--server', $$cliopt{server};
 
     my %deleted = ();
 
-    foreach my ( $k, $v ) (%$cliopts) {
-        $deleted{$k} = delete $$cliopts{$k} unless $v;
+    foreach my ( $k, $v ) (%$cliopt) {
+        $deleted{$k} = delete $$cliopt{$k} unless $v;
     }
 
-    dmsg \%deleted;
+    # dmsg \%deleted;
 
     foreach my ( $certfile, $keyfile )
-      ( $cliopts->@{qw'ssl_certfile ssl_keyfile'} )
+      ( $cliopt->@{qw'ssl_certfile ssl_keyfile'} )
     {
         next unless $certfile && $keyfile;
 

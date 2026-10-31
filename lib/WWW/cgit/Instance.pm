@@ -2,7 +2,7 @@ use Object::Pad ':experimental(:all)';
 
 package WWW::cgit::Instance;
 
-class WWW::cgit::Instance : isa(Plack::Middleware);
+class WWW::cgit::Instance : isa(Plack::Middleware) : does(WWW::cgit::Base);
 
 use utf8;
 use v5.40;
@@ -10,6 +10,7 @@ use v5.40;
 use Path::Tiny;
 use List::Util qw'any none';
 use IO::Handle::Common;
+use Const::Fast;
 
 field $cgit_pl  : param;
 field $instance : param(app);
@@ -17,11 +18,12 @@ field $cgitrc;    #: param;
 field $config : reader;
 field $reload_cgitrc : param : reader //= $ENV{RELOAD_CGITRC} ? true : false;
 
-# method BUILDARGS : common (%args) {
-#     ( delete $args{env}, 1, %args )
-# }
+ADJUST : params (:$cgitrc, %param) {
 
-ADJUST : params (:$cgitrc) { $self->cgitrc($cgitrc) };
+    # dmsg $self;
+    $self->cgitrc($cgitrc);
+    dmsg $self, $cgitrc, \%param;
+};
 
 method wrap : common ($app, @args) {
     my $self = $class->new( app => $app, @args );
@@ -36,7 +38,7 @@ method cgitrc ( $path, %opt ) {
 
 method load_cgitrc {
     my $config = $self->parse_cgitrc($cgitrc);
-    dmsg $self, $config;
+    dmsg $config;
     $config
 
     # TODO: Make sure its within user's provisioned root
@@ -45,28 +47,43 @@ method load_cgitrc {
 }
 
 method parse_cgitrc {
-    foreach my $line ( map { chomp $_; $_ } grep { !/^#/ } $cgitrc->lines_utf8 )
+    const my $begin_comment => qr/^#/;
+    foreach my $line (
+        map  { chomp $_; $_ }
+        grep { $_ !~ $begin_comment } $cgitrc->lines_utf8
+      )
     {
-        my ( $name, $strval ) = split /=/, $line;
+        const my $sep => qr/=/;
+        my ( $name, @strval ) = split( /$sep/, $line );
+        next unless $name;
+        my $field = ( $name =~ s/-/_/rg );
+        push @strval, $self->{$field};
 
-        next unless $name && $strval;
+        # dmsg \@strval;
 
-        my @listkeys =
+        next unless scalar @strval;
+
+        const my @listkeys =>
           qw(clone-prefix clone-url clone-prefix project-list readme snapshots repo.clone-url);
 
-        if ( any { $name eq $_ } @listkeys ) {
-            if ( $strval =~ s/^:(.+)$/$1/ ) {
-                $$config{$name} //= [];
-                push $$config{$name}->@*, $strval
-                  if none { $strval eq $_ } $$config{$name}->@*;
+        foreach my $strval (@strval) {
+            next unless $strval;
+            if ( any { $name eq $_ } @listkeys ) {
+                const my $append => qr/^:(.+)$/;
+                if ( $strval =~ s/$append/$1/ ) {
+                    $$config{$name} //= [];
+                    push $$config{$name}->@*, $strval
+                      if none { $strval eq $_ } $$config{$name}->@*;
+                }
+                else {
+                    const my $nbsp => qr/\s/;
+                    my @val = split /$nbsp/, $strval;
+                    $$config{$name} = \@val;
+                }
             }
             else {
-                my @val = split /\s/, $strval;
-                $$config{$name} = \@val;
+                $$config{$name} = $strval if $strval;
             }
-        }
-        else {
-            $$config{$name} = $strval;
         }
     }
 
@@ -79,6 +96,8 @@ method call( $env, %opt ) {
 
     dmsg $env, \%opt;
 
-    $instance->($env);
+    my $instance = $instance->($env);
+    dmsg $instance;
+    $instance;
 }
 
